@@ -1,0 +1,26 @@
+<mvc:View
+	controllerName="ns.frontend.controller.RegistrarActividad"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0"
+>
+    <Page id="idRegistrarActividadPage">
+        <customHeader >
+            <c:Fragment fragmentName="ns.frontend.fragment.Header" />
+        </customHeader>
+        <content>
+            <VBox class="sapUiMediumMargin">
+
+                <Label
+                    design="Bold"
+                    text="Grupo: Mis aplicaciones"
+                    textAlign="Begin" vAlign="Middle"
+                    wrapping="true" wrappingType="Hyphenated"
+                />
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

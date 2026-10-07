@@ -1,0 +1,21 @@
+<c:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+    xmlns:f="sap.f"
+>
+    <f:ShellBar
+        id="idHeaderShellBar"
+        title="{uiPantalla>/tituloHeader}" 
+        homeIcon="sap-icon://home"
+        showCopilot="true"
+        showSearch="true"
+        showMenuButton="true"
+        showNotifications="true"
+        notificationsNumber="2"
+        class="sapFShellBarFCLFPHeader"    
+    >
+        <f:profile>
+            <Avatar initials="UI"/>
+        </f:profile>
+    </f:ShellBar>
+</c:FragmentDefinition>
