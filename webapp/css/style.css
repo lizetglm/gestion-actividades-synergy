@@ -1,0 +1,164 @@
+.calendarPage{
+    background: #f7f7f7;
+}
+
+.topHeader{
+    background: #354a5f;
+    color: white;
+
+    padding: 10px 20px;
+
+    min-height: 42px;
+}
+
+
+.kpiContainer{
+    padding: 18px 20px 10px 20px;
+
+    gap: 12px;
+}
+
+
+.kpiCard{
+    box-sizing: border-box;
+
+    background: white;
+
+    padding: 12px 15px;
+
+    min-height: 80px;
+
+    border-left: 5px solid;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+
+.kpiCard .sapMTitle{
+    margin-bottom: 4px;
+}
+
+
+.kpiBlue{
+    border-left-color: #0070f2;
+}
+
+
+.kpiOrange{
+    border-left-color: #e9730c;
+}
+
+
+.kpiRed{
+    border-left-color: #bb0000;
+}
+
+.monthHeader{
+    padding: 8px 20px 12px 20px;
+}
+
+
+.monthHeader .sapMBtn{
+    min-width: 150px;
+}
+
+
+.weekHeader{
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    margin: 0 20px;
+
+    text-align: center;
+
+    font-weight: bold;
+
+    color: #555;
+}
+
+
+.weekHeader .sapMText{
+    padding: 8px 0;
+}
+
+
+.calendarGrid{
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    margin: 0 20px;
+
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
+
+.calendarDay{
+    position: relative;
+
+    box-sizing: border-box;
+
+    background: white;
+
+    padding: 7px;
+
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.emptyDay{
+    background: #f4f5f6;
+}
+
+.completedDay{
+    background: #e7f5e7;
+}
+
+.currentDay{
+    background: #d5e5fa;
+}
+
+.dayNumber{
+    font-size: 12px;
+
+    color: #555;
+}
+
+.dayStatus{
+    position: absolute;
+
+    top: 7px;
+    right: 8px;
+
+    color: #107e3e;
+
+    font-size: 12px;
+}
+
+.dayHours{
+    margin-top: 18px;
+
+    font-size: 11px;
+
+    color: #2b7c2b;
+}
+
+.legendContainer{
+    padding: 15px 0 20px 0;
+
+    gap: 25px;
+}
+
+
+.legendItem{
+    gap: 6px;
+}
+
+
+.legendItem .sapMText{
+    font-size: 12px;
+}
