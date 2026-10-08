@@ -30,7 +30,6 @@
                         class="contendorApps" items="{apps>/listaConsultor}"
                     >
                         <GenericTile 
-                            
                             class="sapUiTinyMarginTop tileLayout" 
                             header="{apps>titulo}" 
                             subheader="" 

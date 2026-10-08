@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View xmlns:form="sap.ui.layout.form"
 	controllerName="ns.frontend.controller.RegistrarActividad"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
@@ -6,19 +6,119 @@
 	displayBlock="true"
 	height="100%"
 	busyIndicatorDelay="0"
+    xmlns:mdc="sap.ui.mdc"
 >
     <Page id="idRegistrarActividadPage">
         <customHeader >
             <c:Fragment fragmentName="ns.frontend.fragment.Header" />
         </customHeader>
         <content>
-            <VBox class="sapUiMediumMargin">
+            <VBox class="sapUiMediumMargin gapBody">
+                <Breadcrumbs currentLocationText="{i18n>app1}">
+                    <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                </Breadcrumbs>
 
-                <Label
-                    design="Bold"
-                    text="Grupo: Mis aplicaciones"
-                    textAlign="Begin" vAlign="Middle"
-                    wrapping="true" wrappingType="Hyphenated"
+                <FlexBox 
+                    justifyContent="SpaceBetween"
+                >
+                    <Title
+                        level="H4" titleStyle="H4"
+                        text="{uiPantalla>/saludo}"
+                        wrapping="true"
+                        wrappingType="Hyphenated">
+                    </Title>
+                    <Button text="Guardar" iconFirst="true" icon="sap-icon://save" type="Emphasized" class="sapUiSmallMarginBegin"/>
+                </FlexBox>
+                
+                <!-- <OverflowToolbar design="Transparent" class=" ">
+                    <Title
+                        level="H4" titleStyle="H4"
+                        text="{uiPantalla>/saludo}">
+                    </Title>
+                    <ToolbarSpacer />
+                    <Button text="Guardar" type="Emphasized"/>
+                </OverflowToolbar> -->
+
+           
+                
+                <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
+                <form:SimpleForm 
+                    editable="true" 
+                    columnsM="2" columnsL="3" columnsXL="4"
+                    title="{i18n>formRegistrarActividad}"
+                    class="sapUiSmallMarginBottom"
+                    layout="ColumnLayout"
+                >
+                    <form:content>
+                        <Label text="Fecha" required="true" />
+                        <DatePicker value="{uiPantalla>/fechaCaptura}" />
+
+                        <Label text="Tipo de actividad" required="true" />
+                        <Input placeholder="Ej. Desarrollo" />
+
+                        <Label text="Horas invertidas" required="true" />
+                        <Input type="Number" placeholder="Ej. 3.5" />
+
+                        <Label text="." /> 
+                        <CheckBox 
+                            text="Marcar como Capacitación Interna" 
+                            selected="{uiPantalla>/esCapacitacion}" />
+
+                        <Label text="Cliente" required="true" />
+                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Cliente Alpha S.A." />
+
+                        <Label text="Proyecto" required="true" />
+                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Implementación RAP" />
+
+                        <Label text="Requerimiento" required="true" />
+                        <Input placeholder="Ej. REQ-00231" />
+
+                        <Label text="Descripción de la actividad" required="true" />
+                        <TextArea 
+                            placeholder="Ej. Desarrollo de validaciones en Behavior Implementation..."
+                            rows="4"
+                            growing="true"
+                            growingMaxLines="7"
+                            width="100%" />
+                        
+                    </form:content>
+                </form:SimpleForm>
+
+                <!-- Tabla de actividades registradas hoy -->
+                <Table headerText="{uiPantalla>/tableTitle}" alternateRowColors="true">
+                    <columns>
+                        <Column><Text text="Hora" design="Bold" /></Column>
+                        <Column><Text text="Cliente" design="Bold" /></Column>
+                        <Column><Text text="Requerimiento" design="Bold" /></Column>
+                        <Column><Text text="Descripción" design="Bold" /></Column>
+                        <Column><Text text="Horas" design="Bold" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="09:00" />
+                                <Text text="Cliente Alpha S.A." />
+                                <Text text="REQ-00231" />
+                                <Text text="Desarrollo" />
+                                <Text text="3.5 h" />
+                            </cells>
+                        </ColumnListItem>
+                        <ColumnListItem highlight="{= ${uiPantalla>/esCapacitacion} ? 'Information' : 'None' }">
+                            <cells>
+                                <Text text="09:00" />
+                                <Text text="Cliente Alpha S.A." />
+                                <Text text="REQ-00231" />
+                                <Text text="Desarrollo" />
+                                <Text text="3.5 h" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <ObjectStatus 
+                    text="{uiPantalla>/horasTotales}" 
+                    state="Success" 
+                    class="sapUiSmallMarginTop sapMTitleStyleH5 " 
                 />
             </VBox>
         </content>

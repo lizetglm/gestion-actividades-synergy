@@ -1,5 +1,9 @@
 /* Enter your custom styles here */
 
+.gapBody {
+    gap: 1rem;
+}
+
 .contendorApps {
     gap: 0.5rem;
 }
