@@ -1,0 +1,47 @@
+<c:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+>
+    <Dialog 
+        title="Detalles de la Actividad" 
+        contentWidth="500px"
+        class="sapUiPopupWithPadding"
+    >
+        <content>
+            <form:SimpleForm 
+                editable="false" 
+                layout="ColumnLayout" 
+                class="sapUiTinyMargin"
+            >
+                <form:content>
+                    <Label text="Fecha" />
+                    <Text text="{modelo>fecha}" />
+
+                    <Label text="Tipo de actividad" />
+                    <Text text="{modelo>tipoActividad}" />
+
+                    <Label text="Hora" />
+                    <Text text="{modelo>hora}" />
+
+                    <Label text="Cliente y Proyecto" />
+                    <Text text="{modelo>cliente} - {modelo>proyecto}" />
+
+                    <Label text="Requerimiento" />
+                    <Text text="{modelo>requerimiento}" />
+
+                    <Label text="Horas invertidas" />
+                    <ObjectStatus text="{modelo>horas} hrs" state="Information" />
+
+                    <Label text="Descripción completa" />
+                    <Text text="{modelo>descripcion}" />
+                </form:content>
+            </form:SimpleForm>
+        </content>
+
+        <endButton>
+            <Button text="Cerrar" press=".onCerrarDialogo" type="Transparent"/>
+        </endButton>
+
+    </Dialog>
+</c:FragmentDefinition>

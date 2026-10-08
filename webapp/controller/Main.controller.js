@@ -29,7 +29,7 @@ function (Controller, JSONModel) {
                     titulo: this.getResourceBundle().getText("app2"),
                     descripcion: this.getResourceBundle().getText("desc2"),
                     icono: "sap-icon://calendar",
-                    ruta: "RouteMain"
+                    ruta: "RouteCalendarioActividades"
                 },
                 {
                     titulo: this.getResourceBundle().getText("app3"),

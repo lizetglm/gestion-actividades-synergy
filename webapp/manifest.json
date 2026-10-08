@@ -112,6 +112,13 @@
           "target": [
             "TargetRegistrarActividad"
           ]
+        },
+        {
+          "name": "RouteCalendarioActividades",
+          "pattern": "calendario",
+          "target": [
+            "TargetCalendarioActividades"
+          ]
         }
       ],
       "targets": {
@@ -128,8 +135,14 @@
           "clearControlAggregation": false,
           "viewId": "RegistrarActividad",
           "viewName": "RegistrarActividad"
+        },
+        "TargetCalendarioActividades": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "CalendarioActividades",
+          "viewName": "CalendarioActividades"
         }
-        
       }
     },
     "rootView": {

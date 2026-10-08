@@ -6,7 +6,6 @@
 	displayBlock="true"
 	height="100%"
 	busyIndicatorDelay="0"
-    xmlns:mdc="sap.ui.mdc"
 >
     <Page id="idRegistrarActividadPage">
         <customHeader >
@@ -27,7 +26,12 @@
                         wrapping="true"
                         wrappingType="Hyphenated">
                     </Title>
-                    <Button text="Guardar" iconFirst="true" icon="sap-icon://save" type="Emphasized" class="sapUiSmallMarginBegin"/>
+                    <Button text="Guardar" 
+                        iconFirst="true" icon="sap-icon://save" 
+                        type="Emphasized" 
+                        class="sapUiSmallMarginBegin"
+                        press=".onGuardar"    
+                    />
                 </FlexBox>
                 
                 <!-- <OverflowToolbar design="Transparent" class=" ">
@@ -54,10 +58,10 @@
                         <DatePicker value="{uiPantalla>/fechaCaptura}" />
 
                         <Label text="Tipo de actividad" required="true" />
-                        <Input placeholder="Ej. Desarrollo" />
+                        <Input placeholder="Ej. Desarrollo" value="{uiPantalla>/tipoActividad}" id="tipoActividadInput"/>
 
                         <Label text="Horas invertidas" required="true" />
-                        <Input type="Number" placeholder="Ej. 3.5" />
+                        <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput"/>
 
                         <Label text="." /> 
                         <CheckBox 
@@ -65,13 +69,13 @@
                             selected="{uiPantalla>/esCapacitacion}" />
 
                         <Label text="Cliente" required="true" />
-                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Cliente Alpha S.A." />
+                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Cliente Alpha S.A." value="{uiPantalla>/cliente}" id="clienteInput"/>
 
                         <Label text="Proyecto" required="true" />
-                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Implementación RAP" />
+                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Implementación RAP" value="{uiPantalla>/proyecto}" id="proyectoInput"/>
 
                         <Label text="Requerimiento" required="true" />
-                        <Input placeholder="Ej. REQ-00231" />
+                        <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput"/>
 
                         <Label text="Descripción de la actividad" required="true" />
                         <TextArea 
@@ -79,13 +83,16 @@
                             rows="4"
                             growing="true"
                             growingMaxLines="7"
-                            width="100%" />
+                            width="100%" 
+                            value="{uiPantalla>/descripcion}"
+                            id="descripcionInput"
+                        />
                         
                     </form:content>
                 </form:SimpleForm>
 
                 <!-- Tabla de actividades registradas hoy -->
-                <Table headerText="{uiPantalla>/tableTitle}" alternateRowColors="true">
+                <Table headerText="{uiPantalla>/tableTitle}" alternateRowColors="true" items="{modelo>/}">
                     <columns>
                         <Column><Text text="Hora" design="Bold" /></Column>
                         <Column><Text text="Cliente" design="Bold" /></Column>
@@ -94,27 +101,21 @@
                         <Column><Text text="Horas" design="Bold" /></Column>
                     </columns>
                     <items>
-                        <ColumnListItem>
+                        <ColumnListItem type="Active" press=".onFilaClickeada"
+                            highlight="{= ${uiPantalla>/esCapacitacion} ? 'Information' : 'None' }"
+                        >
                             <cells>
-                                <Text text="09:00" />
-                                <Text text="Cliente Alpha S.A." />
-                                <Text text="REQ-00231" />
-                                <Text text="Desarrollo" />
-                                <Text text="3.5 h" />
-                            </cells>
-                        </ColumnListItem>
-                        <ColumnListItem highlight="{= ${uiPantalla>/esCapacitacion} ? 'Information' : 'None' }">
-                            <cells>
-                                <Text text="09:00" />
-                                <Text text="Cliente Alpha S.A." />
-                                <Text text="REQ-00231" />
-                                <Text text="Desarrollo" />
-                                <Text text="3.5 h" />
+                                <Text text="{modelo>fecha}" />
+                                <Text text="{modelo>cliente}" />
+                                <Text text="{modelo>requerimiento}" />
+                                <Text text="{modelo>descripcion}" />
+                                <Text text="{modelo>horas} h" />
                             </cells>
                         </ColumnListItem>
                     </items>
                 </Table>
 
+                <!-- Horas totales -->
                 <ObjectStatus 
                     text="{uiPantalla>/horasTotales}" 
                     state="Success" 
