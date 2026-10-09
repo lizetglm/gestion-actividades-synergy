@@ -27,6 +27,25 @@ sap.ui.define([
             };
 
             this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
+
+            let oModelo = [
+                { 
+                    nombre: "Juan Pérez", cliente: "Cliente A", equipo: "Equipo 1", estatusReg: "Activo", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "María López", cliente: "Cliente B", equipo: "Equipo 2", estatusReg: "Pendiente", estatusFirma: "Sin firmar"
+                },
+                { 
+                    nombre: "Carlos García", cliente: "Cliente C", equipo: "Equipo 1", estatusReg: "Activo", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "Ana Torres", cliente: "Cliente D", equipo: "Equipo 3", estatusReg: "Pendiente", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "Ana Torres", cliente: "Cliente D", equipo: "Equipo 3", estatusReg: "n/a", estatusFirma: "N/a"
+                }
+            ];
+            this.getView().setModel(new JSONModel(oModelo), "modelo");
         },
 
         onBack: function() {

@@ -16,7 +16,7 @@
     gap: 0.5rem;
 }
 
-/* Estructura base de tu nueva tarjeta personalizada */
+/* Panel de cumplimiento */
 .tarjetaKpi {
     background-color: #ffffff;
     border-radius: 8px; 
@@ -27,18 +27,29 @@
     overflow: hidden; 
 }
 
-/* Los bordes gruesos del lado izquierdo */
+/* bordes del lado izquierdo */
 .bordeAzul { border-left: 6px solid #0070f2; }
 .bordeVerde { border-left: 6px solid #2b7c2b; }
 .bordeNaranja { border-left: 6px solid #e9730c; }
 .bordeRojo { border-left: 6px solid #bb0000; }
 
-/* Forzamos el color corporativo correcto en el número grande */
 .textoAzul span { color: #0070f2 !important; }
 .textoVerde span { color: #2b7c2b !important; }
 .textoNaranja span { color: #e9730c !important; }
 .textoRojo span { color: #bb0000 !important; }
 
+.tablaFondoColor tr[data-estadoreg="Pendiente"] > td {
+    background-color: rgba(233, 115, 12, 0.08) !important; 
+}
+.tablaFondoColor tr[data-estadofirma="Sin firmar"] > td {
+    background-color: rgba(187, 0, 0, 0.08) !important; 
+}
+/* .tablaFondoColor tr[data-estadofila="Completo"] > td {
+    background-color: rgba(43, 124, 43, 0.08) !important;
+}
+.tablaFondoColor tr[data-estadoreg="Completo"][data-estadofirma="Firmado"] > td {
+    background-color: rgba(43, 124, 43, 0.08) !important;
+} */
 
 
 /* CHELSEA''''''''''''''''''''''''''''''''' */

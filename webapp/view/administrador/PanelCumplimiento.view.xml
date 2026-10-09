@@ -17,6 +17,7 @@
                     <Link text="{i18n>tituloGrupo1}" press=".onBack" />
                 </Breadcrumbs>
 
+                <!-- Subitutlo y filtros -->
                 <FlexBox justifyContent="SpaceBetween" alignItems="Center" wrap="Wrap" class="gapPanelFiltros" >
                     <Title
                         level="H4" titleStyle="H4"
@@ -80,28 +81,46 @@
                 <!-- Detalles por consultor -->
                 <Table 
                     headerText="Detalle por consultor" 
-                    alternateRowColors="true" 
-                    items="{modelo>/consultores}"
-                    class="">
+                    alternateRowColors="false" 
+                    items="{modelo>/}"
+                    class="tablaFondoColor"
+                >
                     <columns>
-                        <Column><Text text="Consultor" design="Bold" /></Column>
-                        <Column><Text text="Cliente" design="Bold" /></Column>
-                        <Column><Text text="Equipo/Área" design="Bold" /></Column>
-                        <Column><Text text="Estatus de registro" design="Bold" /></Column>
-                        <Column><Text text="Estatus de firma" design="Bold" /></Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Consultor" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Cliente" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Equipo/Área" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Estatus de registro" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Estatus de firma" design="Bold" />
+                        </Column>
                     </columns>
                     <items>
-                        <ColumnListItem>
+                        <ColumnListItem 
+                            highlight="{= (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : ${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }"
+                        >
+                            <customData>
+                                <c:CustomData key="estadoreg" value="{modelo>estatusReg}" writeToDom="true" />
+                                <c:CustomData key="estadofirma" value="{modelo>estatusFirma}" writeToDom="true" />
+                            </customData>
+                            
                             <cells>
                                 <Text text="{modelo>nombre}" />
                                 <Text text="{modelo>cliente}" />
                                 <Text text="{modelo>equipo}" />
                                 <ObjectStatus 
                                     text="{modelo>estatusReg}" 
-                                    state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Sin registrar' ? 'Error' : 'Warning') }" />
+                                    state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }" />
                                 <ObjectStatus 
                                     text="{modelo>estatusFirma}" 
-                                    state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Pendiente de firma' ? 'Error' : 'None') }" />
+                                    state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : 'None') }" />
                             </cells>
                         </ColumnListItem>
                     </items>
@@ -110,6 +129,7 @@
             </VBox>
         </content>
 
+        <!-- Botones de acciones -->
         <footer>
             <OverflowToolbar>
                 <Button text="Enviar recordatorio masivo" type="Emphasized" icon="sap-icon://email" />

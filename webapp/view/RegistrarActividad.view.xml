@@ -17,8 +17,10 @@
                     <Link text="{i18n>tituloGrupo1}" press=".onBack" />
                 </Breadcrumbs>
 
+                <!-- Subtitulo y boton -->
                 <FlexBox 
                     justifyContent="SpaceBetween"
+                    alignItems="End"
                 >
                     <Title
                         level="H4" titleStyle="H4"
@@ -33,7 +35,6 @@
                         press=".onGuardar"    
                     />
                 </FlexBox>
-                
                 <!-- <OverflowToolbar design="Transparent" class=" ">
                     <Title
                         level="H4" titleStyle="H4"
@@ -42,7 +43,6 @@
                     <ToolbarSpacer />
                     <Button text="Guardar" type="Emphasized"/>
                 </OverflowToolbar> -->
-
            
                 
                 <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
@@ -92,16 +92,26 @@
                 </form:SimpleForm>
 
                 <!-- Tabla de actividades registradas hoy -->
-                <Table headerText="{uiPantalla>/tableTitle}" alternateRowColors="true" items="{modelo>/}">
+                <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}">
                     <columns>
-                        <Column><Text text="Hora" design="Bold" /></Column>
-                        <Column><Text text="Cliente" design="Bold" /></Column>
-                        <Column><Text text="Requerimiento" design="Bold" /></Column>
-                        <Column><Text text="Descripción" design="Bold" /></Column>
-                        <Column><Text text="Horas" design="Bold" /></Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Hora" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Cliente" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Requerimiento" design="Bold"/>
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Descripción" design="Bold" />
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                            <Text text="Horas" design="Bold" />
+                        </Column>
                     </columns>
                     <items>
-                        <ColumnListItem type="Active" press=".onFilaClickeada"
+                        <ColumnListItem type="Active" press=".onFilaClickeada" 
                             highlight="{= ${uiPantalla>/esCapacitacion} ? 'Information' : 'None' }"
                         >
                             <cells>
@@ -118,6 +128,7 @@
             </VBox>
         </content>
 
+        <!-- Horas registradas -->
         <footer>
             <OverflowToolbar >
                 <ObjectStatus 
