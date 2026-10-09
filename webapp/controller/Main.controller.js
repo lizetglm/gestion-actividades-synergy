@@ -62,7 +62,7 @@ function (Controller, JSONModel) {
                     titulo: this.getResourceBundle().getText("appAdmin1"),
                     descripcion: this.getResourceBundle().getText("descAdmin1"),
                     icono: "sap-icon://activity-2",
-                    ruta: "RouteMain"
+                    ruta: "RoutePanelCumplimiento"
                 },
                 {
                     titulo: this.getResourceBundle().getText("appAdmin2"),

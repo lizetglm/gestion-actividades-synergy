@@ -1,0 +1,122 @@
+<mvc:View xmlns:layout="sap.ui.layout"
+	controllerName="ns.frontend.controller.administrador.PanelCumplimiento"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0"
+>
+    <Page id="idPanelCumplimientoPage">
+        <customHeader >
+            <c:Fragment fragmentName="ns.frontend.fragment.Header" />
+        </customHeader>
+        <content>
+            <VBox class="sapUiMediumMargin gapBody">
+                <Breadcrumbs currentLocationText="{i18n>appAdmin1}">
+                    <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                </Breadcrumbs>
+
+                <FlexBox justifyContent="SpaceBetween" alignItems="Center" wrap="Wrap" class="gapPanelFiltros" >
+                    <Title
+                        level="H4" titleStyle="H4"
+                        text="{uiPantalla>/saludo}"
+                        wrapping="true"
+                        wrappingType="Hyphenated">
+                    </Title>
+                    
+                    <!-- Filtors -->
+                    <FlexBox wrap="Wrap" class="gapPanelFiltros" >
+                        <VBox class="sapUiMediumMarginEnd">
+                            <Label text="Cliente" />
+                            <Select width="200px" selectedKey="Todos">
+                                <c:Item key="Todos" text="Todos" />
+                                <c:Item key="Alpha" text="Cliente Alpha S.A." />
+                                <c:Item key="Beta" text="Cliente Beta" />
+                            </Select>
+                        </VBox>
+                        <VBox>
+                            <Label text="Equipo/Área" />
+                            <Select width="200px" selectedKey="Todos">
+                                <c:Item key="Todos" text="Todos" />
+                                <c:Item key="SAP" text="Consultoría SAP" />
+                                <c:Item key="BTP" text="Integración BTP" />
+                            </Select>
+                        </VBox>
+                    </FlexBox>
+                </FlexBox>
+
+                <!-- Indicadores (KPI Tiles) -->
+                <layout:Grid class="noPadding sapUiSmallMarginTop">
+                    <VBox class="tarjetaKpi bordeAzul">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel1}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/activos}" class="textoAzul" />
+                        </FlexBox>
+                    </VBox>
+
+                    <VBox class="tarjetaKpi bordeVerde">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel2}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/completos}" class="textoVerde" />
+                        </FlexBox>
+                    </VBox>
+
+                    <VBox class="tarjetaKpi bordeNaranja">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel3}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/pendientes}" class="textoNaranja" />
+                        </FlexBox>
+                    </VBox>
+
+                    <VBox class="tarjetaKpi bordeRojo">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel4}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/sinFirmar}" class="textoRojo" />
+                        </FlexBox>
+                    </VBox>
+                </layout:Grid>
+
+                <!-- Detalles por consultor -->
+                <Table 
+                    headerText="Detalle por consultor" 
+                    alternateRowColors="true" 
+                    items="{modelo>/consultores}"
+                    class="">
+                    <columns>
+                        <Column><Text text="Consultor" design="Bold" /></Column>
+                        <Column><Text text="Cliente" design="Bold" /></Column>
+                        <Column><Text text="Equipo/Área" design="Bold" /></Column>
+                        <Column><Text text="Estatus de registro" design="Bold" /></Column>
+                        <Column><Text text="Estatus de firma" design="Bold" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{modelo>nombre}" />
+                                <Text text="{modelo>cliente}" />
+                                <Text text="{modelo>equipo}" />
+                                <ObjectStatus 
+                                    text="{modelo>estatusReg}" 
+                                    state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Sin registrar' ? 'Error' : 'Warning') }" />
+                                <ObjectStatus 
+                                    text="{modelo>estatusFirma}" 
+                                    state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Pendiente de firma' ? 'Error' : 'None') }" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+            </VBox>
+        </content>
+
+        <footer>
+            <OverflowToolbar>
+                <Button text="Enviar recordatorio masivo" type="Emphasized" icon="sap-icon://email" />
+                <Button text="Consolidar reportes del área" type="Accept" icon="sap-icon://copy" />
+                <Button text="Exportar detalle" type="Neutral" icon="sap-icon://excel-attachment" />
+                <ToolbarSpacer /> 
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

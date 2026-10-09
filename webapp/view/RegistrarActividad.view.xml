@@ -115,13 +115,17 @@
                     </items>
                 </Table>
 
-                <!-- Horas totales -->
+            </VBox>
+        </content>
+
+        <footer>
+            <OverflowToolbar >
                 <ObjectStatus 
                     text="{uiPantalla>/horasTotales}" 
                     state="Success" 
-                    class="sapUiSmallMarginTop sapMTitleStyleH5 " 
+                    class="sapMTitleStyleH5 " 
                 />
-            </VBox>
-        </content>
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>

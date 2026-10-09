@@ -8,6 +8,39 @@
     gap: 0.5rem;
 }
 
+.noPadding {
+    padding: 0 !important;
+}
+
+.gapPanelFiltros {
+    gap: 0.5rem;
+}
+
+/* Estructura base de tu nueva tarjeta personalizada */
+.tarjetaKpi {
+    background-color: #ffffff;
+    border-radius: 8px; 
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.15); 
+    height: 70px;
+    width: 100%; 
+    box-sizing: border-box;
+    overflow: hidden; 
+}
+
+/* Los bordes gruesos del lado izquierdo */
+.bordeAzul { border-left: 6px solid #0070f2; }
+.bordeVerde { border-left: 6px solid #2b7c2b; }
+.bordeNaranja { border-left: 6px solid #e9730c; }
+.bordeRojo { border-left: 6px solid #bb0000; }
+
+/* Forzamos el color corporativo correcto en el número grande */
+.textoAzul span { color: #0070f2 !important; }
+.textoVerde span { color: #2b7c2b !important; }
+.textoNaranja span { color: #e9730c !important; }
+.textoRojo span { color: #bb0000 !important; }
+
+
+
 /* CHELSEA''''''''''''''''''''''''''''''''' */
 .calendarPage{
     background: #f7f7f7;

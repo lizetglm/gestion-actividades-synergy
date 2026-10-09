@@ -119,6 +119,13 @@
           "target": [
             "TargetCalendarioActividades"
           ]
+        },
+        {
+          "name": "RoutePanelCumplimiento",
+          "pattern": "panelCumplimiento",
+          "target": [
+            "TargetPanelCumplimiento"
+          ]
         }
       ],
       "targets": {
@@ -142,6 +149,13 @@
           "clearControlAggregation": false,
           "viewId": "CalendarioActividades",
           "viewName": "CalendarioActividades"
+        },
+        "TargetPanelCumplimiento": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "PanelCumplimiento",
+          "viewName": "administrador.PanelCumplimiento"
         }
       }
     },
