@@ -18,18 +18,15 @@
                 </Breadcrumbs>
 
                 <!-- Subtitulo y boton -->
-                <FlexBox 
-                    justifyContent="SpaceBetween"
-                    alignItems="End"
-                >
+                <FlexBox justifyContent="SpaceBetween" alignItems="End" >
                     <Title
                         level="H4" titleStyle="H4"
                         text="{uiPantalla>/saludo}"
                         wrapping="true"
                         wrappingType="Hyphenated">
                     </Title>
-                    <Button text="Guardar" 
-                        iconFirst="true" icon="sap-icon://save" 
+                    <Button text="{i18n>save}" 
+                        icon="sap-icon://save" 
                         type="Emphasized" 
                         class="sapUiSmallMarginBegin"
                         press=".onGuardar"    
@@ -54,30 +51,30 @@
                     layout="ColumnLayout"
                 >
                     <form:content>
-                        <Label text="Fecha" required="true" />
+                        <Label text="{i18n>formFecha}" required="true" />
                         <DatePicker value="{uiPantalla>/fechaCaptura}" />
 
-                        <Label text="Tipo de actividad" required="true" />
+                        <Label text="{i18n>formTipoActividad}" required="true" />
                         <Input placeholder="Ej. Desarrollo" value="{uiPantalla>/tipoActividad}" id="tipoActividadInput"/>
 
-                        <Label text="Horas invertidas" required="true" />
+                        <Label text="{i18n>formHInvertidas}" required="true" />
                         <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput"/>
 
                         <Label text="." /> 
                         <CheckBox 
-                            text="Marcar como Capacitación Interna" 
+                            text="{i18n>formCapacitacion}" 
                             selected="{uiPantalla>/esCapacitacion}" />
 
-                        <Label text="Cliente" required="true" />
+                        <Label text="{i18n>customer}" required="true" />
                         <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Cliente Alpha S.A." value="{uiPantalla>/cliente}" id="clienteInput"/>
 
-                        <Label text="Proyecto" required="true" />
+                        <Label text="{i18n>project}" required="true" />
                         <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Implementación RAP" value="{uiPantalla>/proyecto}" id="proyectoInput"/>
 
-                        <Label text="Requerimiento" required="true" />
+                        <Label text="{i18n>formRequerimiento}" required="true" />
                         <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput"/>
 
-                        <Label text="Descripción de la actividad" required="true" />
+                        <Label text="{i18n>formDescripcion}" required="true" />
                         <TextArea 
                             placeholder="Ej. Desarrollo de validaciones en Behavior Implementation..."
                             rows="4"
@@ -87,7 +84,6 @@
                             value="{uiPantalla>/descripcion}"
                             id="descripcionInput"
                         />
-                        
                     </form:content>
                 </form:SimpleForm>
 
@@ -95,25 +91,23 @@
                 <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}">
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Hora" design="Bold" />
+                            <Text text="{i18n>tblHora}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Cliente" design="Bold" />
+                            <Text text="{i18n>customer}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Requerimiento" design="Bold"/>
+                            <Text text="{i18n>formRequerimiento}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Descripción" design="Bold" />
+                            <Text text="{i18n>description}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Horas" design="Bold" />
+                            <Text text="{i18n>tblHoras}" />
                         </Column>
                     </columns>
                     <items>
-                        <ColumnListItem type="Active" press=".onFilaClickeada" 
-                            highlight="{= ${uiPantalla>/esCapacitacion} ? 'Information' : 'None' }"
-                        >
+                        <ColumnListItem type="Active" press=".onFilaClickeada" >
                             <cells>
                                 <Text text="{modelo>fecha}" />
                                 <Text text="{modelo>cliente}" />
@@ -124,6 +118,7 @@
                         </ColumnListItem>
                     </items>
                 </Table>
+
 
             </VBox>
         </content>

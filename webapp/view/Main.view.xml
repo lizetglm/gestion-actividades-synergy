@@ -22,11 +22,11 @@
                 <VBox class="sapUiSmallMarginTopBottom  ">
                     <Label
                         design="Bold"
-                        text="Grupo: Mis aplicaciones"
-                        textAlign="Begin" vAlign="Middle"
+                        text="{i18n>consultantGroup}"
+                        vAlign="Middle"
                         wrapping="true" wrappingType="Hyphenated"
                     />
-                    <FlexBox id="idFlexBox" backgroundDesign="Transparent" wrap="Wrap" 
+                    <FlexBox id="idFlexBox"  wrap="Wrap" 
                         class="contendorApps" items="{apps>/listaConsultor}"
                     >
                         <GenericTile 
@@ -45,11 +45,11 @@
                 <VBox class="sapUiSmallMarginTopBottom  ">
                     <Label
                         design="Bold"
-                        text="Grupo: Administración"
-                        textAlign="Begin" vAlign="Middle"
+                        text="{i18n>adminGroup}"
+                        vAlign="Middle"
                         wrapping="true" wrappingType="Hyphenated"
                     />
-                    <FlexBox id="idFlexBox2" backgroundDesign="Transparent" wrap="Wrap" 
+                    <FlexBox id="idFlexBox2"  wrap="Wrap" 
                         class="contendorApps" items="{apps>/listaAdmin}"
                     >
                         <GenericTile 
@@ -62,8 +62,6 @@
                         </GenericTile>
                     </FlexBox>
                 </VBox>
-
-                
 
             </VBox>
         </content>

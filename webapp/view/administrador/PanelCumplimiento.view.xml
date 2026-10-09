@@ -29,7 +29,7 @@
                     <!-- Filtors -->
                     <FlexBox wrap="Wrap" class="gapPanelFiltros" >
                         <VBox class="sapUiMediumMarginEnd">
-                            <Label text="Cliente" />
+                            <Label text="{i18n>customer}" />
                             <Select width="200px" selectedKey="Todos">
                                 <c:Item key="Todos" text="Todos" />
                                 <c:Item key="Alpha" text="Cliente Alpha S.A." />
@@ -37,7 +37,7 @@
                             </Select>
                         </VBox>
                         <VBox>
-                            <Label text="Equipo/Área" />
+                            <Label text="{i18n>filtro2}" />
                             <Select width="200px" selectedKey="Todos">
                                 <c:Item key="Todos" text="Todos" />
                                 <c:Item key="SAP" text="Consultoría SAP" />
@@ -80,26 +80,26 @@
 
                 <!-- Detalles por consultor -->
                 <Table 
-                    headerText="Detalle por consultor" 
+                    headerText="{i18n>detallePorConsultor}" 
                     alternateRowColors="false" 
                     items="{modelo>/}"
                     class="tablaFondoColor"
                 >
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Consultor" design="Bold" />
+                            <Text text="{i18n>consultant}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Cliente" design="Bold" />
+                            <Text text="{i18n>customer}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Equipo/Área" design="Bold" />
+                            <Text text="{i18n>filtro2}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Estatus de registro" design="Bold" />
+                            <Text text="{i18n>estatusReg}" />
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                            <Text text="Estatus de firma" design="Bold" />
+                            <Text text="{i18n>estatusFirma}" />
                         </Column>
                     </columns>
                     <items>
@@ -132,9 +132,9 @@
         <!-- Botones de acciones -->
         <footer>
             <OverflowToolbar>
-                <Button text="Enviar recordatorio masivo" type="Emphasized" icon="sap-icon://email" />
-                <Button text="Consolidar reportes del área" type="Accept" icon="sap-icon://copy" />
-                <Button text="Exportar detalle" type="Neutral" icon="sap-icon://excel-attachment" />
+                <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
+                <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
+                <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
                 <ToolbarSpacer /> 
             </OverflowToolbar>
         </footer>
