@@ -41,7 +41,7 @@ function (Controller, JSONModel) {
                     titulo: this.getResourceBundle().getText("app4"),
                     descripcion: this.getResourceBundle().getText("desc4"),
                     icono: "sap-icon://pending",
-                    ruta: "RouteMain"
+                    ruta: "RouteReporteMensual"
                 },
                 {
                     titulo: this.getResourceBundle().getText("app5"),

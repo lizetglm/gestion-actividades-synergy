@@ -121,6 +121,13 @@
           ]
         },
         {
+          "name": "RouteReporteMensual",
+          "pattern": "reporteMensual",
+          "target": [
+            "TargetReporteMensual"
+          ]
+        },
+        {
           "name": "RoutePanelCumplimiento",
           "pattern": "panelCumplimiento",
           "target": [
@@ -156,6 +163,13 @@
           "clearControlAggregation": false,
           "viewId": "CalendarioActividades",
           "viewName": "CalendarioActividades"
+        },
+        "TargetReporteMensual": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "ReporteMensual",
+          "viewName": "ReporteMensual"
         },
         "TargetPanelCumplimiento": {
           "viewType": "XML",
