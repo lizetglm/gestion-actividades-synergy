@@ -128,7 +128,12 @@ sap.ui.define([
 
             onExportExcel: function () {
 
-            }
+            },
+
+            onPressVerReporte: function () {
+    var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+    oRouter.navTo("RouteReporteMensual");
+}
 
         }
     );

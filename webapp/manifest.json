@@ -102,6 +102,13 @@
           "target": [
             "TargetCalendarioActividades"
           ]
+        },
+        {
+          "name": "RouteReporteMensual",
+          "pattern": "reporte",
+          "target": [
+            "TargetReporteMensual"
+          ]
         }
       ],
       "targets": {
@@ -111,6 +118,13 @@
           "clearControlAggregation": false,
           "viewId": "CalendarioActividades",
           "viewName": "CalendarioActividades"
+        },
+        "TargetReporteMensual": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "ReporteMensual",
+          "viewName": "ReporteMensual"
         }
       }
     },

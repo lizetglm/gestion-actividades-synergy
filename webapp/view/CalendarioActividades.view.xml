@@ -11,6 +11,7 @@
         class="calendarPage">
 
         <content>
+        <Button id="btnVerReporte" text="Ver Reporte Mensual" press="onPressVerReporte" type="Emphasized"/>
             <HBox
                 id="topHeader"
                 class="calendarHeader"
