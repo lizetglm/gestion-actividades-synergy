@@ -126,6 +126,13 @@
           "target": [
             "TargetPanelCumplimiento"
           ]
+        },
+        {
+          "name": "RouteClientesProyectos",
+          "pattern": "clientesProyectos",
+          "target": [
+            "TargetClientesProyectos"
+          ]
         }
       ],
       "targets": {
@@ -155,7 +162,14 @@
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "PanelCumplimiento",
-          "viewName": "administrador.PanelCumplimiento"
+          "viewName": "admin.PanelCumplimiento"
+        },
+        "TargetClientesProyectos": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "ClientesProyectos",
+          "viewName": "admin.ClientesProyectos"
         }
       }
     },

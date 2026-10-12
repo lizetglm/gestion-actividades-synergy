@@ -6,7 +6,7 @@ sap.ui.define([
 ) {
 	"use strict";
 
-	return Controller.extend("ns.frontend.controller.administrador.PanelCumplimiento", {
+	return Controller.extend("ns.frontend.controller.admin.PanelCumplimiento", {
         getResourceBundle: function () {
             return this.getOwnerComponent().getModel("i18n").getResourceBundle();
         },
@@ -43,6 +43,28 @@ sap.ui.define([
                 },
                 { 
                     nombre: "Ana Torres", cliente: "Cliente D", equipo: "Equipo 3", estatusReg: "n/a", estatusFirma: "N/a"
+                },{ 
+                    nombre: "Juan Pérez", cliente: "Cliente A", equipo: "Equipo 1", estatusReg: "Activo", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "María López", cliente: "Cliente B", equipo: "Equipo 2", estatusReg: "Pendiente", estatusFirma: "Sin firmar"
+                },
+                { 
+                    nombre: "Carlos García", cliente: "Cliente C", equipo: "Equipo 1", estatusReg: "Activo", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "Ana Torres", cliente: "Cliente D", equipo: "Equipo 3", estatusReg: "Pendiente", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "Ana Torres", cliente: "Cliente D", equipo: "Equipo 3", estatusReg: "n/a", estatusFirma: "N/a"
+                },{ 
+                    nombre: "Juan Pérez", cliente: "Cliente A", equipo: "Equipo 1", estatusReg: "Activo", estatusFirma: "Firmado"
+                },
+                { 
+                    nombre: "María López", cliente: "Cliente B", equipo: "Equipo 2", estatusReg: "Pendiente", estatusFirma: "Sin firmar"
+                },
+                { 
+                    nombre: "Carlos García", cliente: "Cliente C", equipo: "Equipo 1", estatusReg: "Activo", estatusFirma: "Firmado"
                 }
             ];
             this.getView().setModel(new JSONModel(oModelo), "modelo");

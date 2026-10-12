@@ -1,0 +1,146 @@
+<mvc:View xmlns:layout="sap.ui.layout"
+	controllerName="ns.frontend.controller.admin.PanelCumplimiento"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0"
+    xmlns:f="sap.f"
+>
+    <f:DynamicPage id="pagePanel" headerExpanded="true" class="sapUiSizeCompact">
+        
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:breadcrumbs >
+                   <Breadcrumbs currentLocationText="{i18n>appAdmin1}"
+                    class="sapUiSmallMarginTopBottom">
+                        <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+                
+                <f:heading>
+                    <Title
+                        level="H4" titleStyle="H4"
+                        text="{uiPantalla>/saludo}"
+                        wrapping="true"
+                        wrappingType="Hyphenated">
+                    </Title>
+                </f:heading>
+
+                <f:actions>
+                    <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
+                <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
+                <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
+                </f:actions>
+
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <!-- CABECERA COLAPSABLE (Filtros y KPIs) -->
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+
+                <!-- Filtors -->
+                <FlexBox wrap="Wrap" class="gapPanelFiltros" >
+                    <VBox class="sapUiMediumMarginEnd">
+                        <Label text="{i18n>customer}" />
+                        <Select width="200px" selectedKey="Todos">
+                            <c:Item key="Todos" text="Todos" />
+                            <c:Item key="Alpha" text="Cliente Alpha S.A." />
+                            <c:Item key="Beta" text="Cliente Beta" />
+                        </Select>
+                    </VBox>
+                    <VBox>
+                        <Label text="{i18n>filtro2}" />
+                        <Select width="200px" selectedKey="Todos">
+                            <c:Item key="Todos" text="Todos" />
+                            <c:Item key="SAP" text="Consultoría SAP" />
+                            <c:Item key="BTP" text="Integración BTP" />
+                        </Select>
+                    </VBox>
+                </FlexBox>
+
+                <!-- Indicadores (KPI Tiles) -->
+                <layout:Grid class="noPadding sapUiSmallMarginTop">
+                    <VBox class="tarjetaKpi bordeAzul">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel1}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/activos}" class="textoAzul" />
+                        </FlexBox>
+                    </VBox>
+
+                    <VBox class="tarjetaKpi bordeVerde">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel2}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/completos}" class="textoVerde" />
+                        </FlexBox>
+                    </VBox>
+
+                    <VBox class="tarjetaKpi bordeNaranja">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel3}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/pendientes}" class="textoNaranja" />
+                        </FlexBox>
+                    </VBox>
+
+                    <VBox class="tarjetaKpi bordeRojo">
+                        <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
+                            <Text text="{i18n>kpiPanel4}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
+                            <Title level="H1" text="{uiPantalla>/kpis/sinFirmar}" class="textoRojo" />
+                        </FlexBox>
+                    </VBox>
+                </layout:Grid>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <!-- Detalles por consultor -->
+            <Table 
+                headerText="{i18n>detallePorConsultor}" 
+                items="{modelo>/}"
+                class="tablaFondoColor sapUiMediumMarginBottom"
+            >
+                <columns>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="{i18n>consultant}" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="{i18n>customer}" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="{i18n>filtro2}" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="{i18n>estatusReg}" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="{i18n>estatusFirma}" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem 
+                        highlight="{= (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : ${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }"
+                    >
+                        <customData>
+                            <c:CustomData key="estadoreg" value="{modelo>estatusReg}" writeToDom="true" />
+                            <c:CustomData key="estadofirma" value="{modelo>estatusFirma}" writeToDom="true" />
+                        </customData>
+                        
+                        <cells>
+                            <Text text="{modelo>nombre}" />
+                            <Text text="{modelo>cliente}" />
+                            <Text text="{modelo>equipo}" />
+                            <ObjectStatus 
+                                text="{modelo>estatusReg}" 
+                                state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }" />
+                            <ObjectStatus 
+                                text="{modelo>estatusFirma}" 
+                                state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : 'None') }" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
+</mvc:View>

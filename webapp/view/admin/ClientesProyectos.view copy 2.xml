@@ -1,0 +1,88 @@
+<mvc:View
+	controllerName="ns.frontend.controller.admin.ClientesProyectos"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0"
+>	
+	<f:DynamicPage id="pageClientes" headerExpanded="true" class="sapUiSizeCompact">
+
+        <f:title>
+            <f:DynamicPageTitle>
+				<f:breadcrumbs >
+                   <Breadcrumbs currentLocationText="{i18n>appAdmin1}"
+                    class="sapUiTinyMarginTopBottom">
+                        <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+				
+                <f:heading>
+                    <Title text="Catálogo de Clientes y Proyectos" level="H1" />
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <layout:HorizontalLayout allowWrapping="true">
+                    <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                        <Label text="Buscar Cliente" />
+                        <SearchField placeholder="Nombre del cliente..." width="300px" search=".onSearchCliente" />
+                    </layout:VerticalLayout>
+                    
+                    <layout:VerticalLayout>
+                        <Label text="Estatus" />
+                        <Select width="200px" selectedKey="Todos">
+                            <core:Item key="Todos" text="Todos" />
+                            <core:Item key="Activo" text="Activos" />
+                            <core:Item key="Inactivo" text="Inactivos" />
+                        </Select>
+                    </layout:VerticalLayout>
+                </layout:HorizontalLayout>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <Table 
+                id="tablaClientes"
+                items="{modelo>/clientes}" 
+                alternateRowColors="true"
+                class="sapUiSmallMarginTop">
+                
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="Clientes registrados" level="H2" />
+                        <ToolbarSpacer />
+                        <Button text="Nuevo Cliente" type="Emphasized" icon="sap-icon://add" press=".onNuevoCliente" />
+                    </OverflowToolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column><Text text="ID Cliente" design="Bold" /></Column>
+                    <Column><Text text="Nombre del Cliente" design="Bold" /></Column>
+                    <Column hAlign="Center"><Text text="Proyectos Asignados" design="Bold" /></Column>
+                    <Column><Text text="Estatus" design="Bold" /></Column>
+                </columns>
+
+                <items>
+                    <!-- type="Navigation" crea la flecha visual y el evento press -->
+                    <ColumnListItem type="Navigation" press=".onNavToProyectos">
+                        <cells>
+                            <Text text="{modelo>idCliente}" />
+                            <Text text="{modelo>nombre}" />
+                            <Text text="{modelo>totalProyectos}" />
+                            <ObjectStatus 
+                                text="{modelo>estatus}" 
+                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+        
+    </f:DynamicPage>
+</mvc:View>

@@ -1,5 +1,5 @@
 <mvc:View xmlns:layout="sap.ui.layout"
-	controllerName="ns.frontend.controller.administrador.PanelCumplimiento"
+	controllerName="ns.frontend.controller.admin.PanelCumplimiento"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
 	xmlns:c="sap.ui.core"
@@ -132,10 +132,10 @@
         <!-- Botones de acciones -->
         <footer>
             <OverflowToolbar>
+                <ToolbarSpacer /> 
                 <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
                 <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
                 <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
-                <ToolbarSpacer /> 
             </OverflowToolbar>
         </footer>
     </Page>
