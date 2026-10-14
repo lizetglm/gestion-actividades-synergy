@@ -9,7 +9,6 @@
     xmlns:f="sap.f"
 >
     <f:DynamicPage id="pagePanel" headerExpanded="true" class="sapUiSizeCompact">
-        
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs >
@@ -30,17 +29,15 @@
 
                 <f:actions>
                     <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
-                <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
-                <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
+                    <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
+                    <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
                 </f:actions>
-
             </f:DynamicPageTitle>
         </f:title>
 
         <!-- CABECERA COLAPSABLE (Filtros y KPIs) -->
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-
                 <!-- Filtors -->
                 <FlexBox wrap="Wrap" class="gapPanelFiltros" >
                     <VBox class="sapUiMediumMarginEnd">
@@ -98,7 +95,7 @@
             <!-- Detalles por consultor -->
             <Table 
                 headerText="{i18n>detallePorConsultor}" 
-                items="{modelo>/}"
+                items="{modelo>/oModelo}"
                 class="tablaFondoColor sapUiMediumMarginBottom"
             >
                 <columns>
@@ -118,6 +115,7 @@
                         <Text text="{i18n>estatusFirma}" />
                     </Column>
                 </columns>
+
                 <items>
                     <ColumnListItem 
                         highlight="{= (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : ${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }"
@@ -142,5 +140,6 @@
                 </items>
             </Table>
         </f:content>
+        
     </f:DynamicPage>
 </mvc:View>

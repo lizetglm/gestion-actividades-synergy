@@ -7,7 +7,7 @@
 	height="100%"
 	busyIndicatorDelay="0"
 >
-    <Page id="idRegistrarActividadPage">
+    <Page id="idRegistrarActividadPage" >
         <customHeader >
             <c:Fragment fragmentName="ns.frontend.fragment.Header" />
         </customHeader>

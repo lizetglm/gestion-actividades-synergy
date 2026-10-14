@@ -1,0 +1,34 @@
+{
+    "clientes": [
+        {
+            "idCliente": "CLI-001",
+            "nombre": "Alpha S.A. de C.V.",
+            "totalProyectos": 4,
+            "estatus": "Activo"
+        },
+        {
+            "idCliente": "CLI-002",
+            "nombre": "Beta Tech Solutions",
+            "totalProyectos": 2,
+            "estatus": "Activo"
+        },
+        {
+            "idCliente": "CLI-003",
+            "nombre": "Gamma Industrial Group",
+            "totalProyectos": 1,
+            "estatus": "Inactivo"
+        },
+        {
+            "idCliente": "CLI-004",
+            "nombre": "Delta Consultores",
+            "totalProyectos": 5,
+            "estatus": "Activo"
+        },
+        {
+            "idCliente": "CLI-005",
+            "nombre": "Omega Logística Global",
+            "totalProyectos": 3,
+            "estatus": "Activo"
+        }
+    ]
+}

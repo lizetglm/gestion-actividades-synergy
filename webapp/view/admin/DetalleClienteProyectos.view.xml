@@ -1,0 +1,138 @@
+<mvc:View
+    controllerName="ns.frontend.controller.admin.DetalleClienteProyectos"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:layout="sap.ui.layout"
+    xmlns:uxap="sap.uxap"
+    displayBlock="true"
+    height="100%"
+    busyIndicatorDelay="0"
+>
+    <uxap:ObjectPageLayout id="idDetalleObjectPageLayout" showTitleInHeaderContent="true">
+        <uxap:headerTitle>
+            <uxap:ObjectPageDynamicHeaderTitle>
+                <uxap:expandedHeading>
+                    <Title text="Denise Smith" wrapping="true"/>
+                </uxap:expandedHeading>
+
+                <uxap:snappedHeading>
+                    <FlexBox fitContainer="true" alignItems="Center">
+                        <Avatar src="sap-icon://picture" backgroundColor="Random" class="sapUiTinyMarginEnd"/>
+                        <Title text="Denise Smith" wrapping="true" />
+                    </FlexBox>
+                </uxap:snappedHeading>
+
+            </uxap:ObjectPageDynamicHeaderTitle>
+        </uxap:headerTitle>
+
+		<uxap:headerContent>
+			<FlexBox wrap="Wrap">
+				<Avatar src="sap-icon://picture" backgroundColor="Random" displaySize="L" class="sapUiTinyMarginEnd"/>
+
+				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
+					<ObjectStatus title="User ID" text="12345678"/>
+					<ObjectStatus title="Language" text="English"/>
+					<ObjectStatus title="Country" text="USA"/>
+					<ObjectStatus title="Phone Number" text="1-844-726-7733"/>
+				</layout:VerticalLayout>
+
+				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
+					<ObjectStatus title="Functional Area" text="Developement"/>
+					<ObjectStatus title="Cost Center" text="PI DFA GD Programs and Product"/>
+					<ObjectStatus title="Email" text="email@address.com"/>
+				</layout:VerticalLayout>
+			</FlexBox>
+		</uxap:headerContent>
+
+        <uxap:sections>
+            <!-- Proyectos Asociados  -->
+            <uxap:ObjectPageSection title="{i18n>seccionProyectos}" class="sapUiSmallMarginTopBottom" titleUppercase="false">
+                <uxap:subSections>
+                    <uxap:ObjectPageSubSection >
+                        <uxap:blocks>
+                            <Table 
+                                id="tablaProyectosDetalle"
+                                items="{modeloCliente>proyectos}" 
+                                alternateRowColors="true"
+                            >
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="Portafolio de Proyectos" level="H3" />
+                                        <ToolbarSpacer />
+                                        <Button text="Nuevo Proyecto" type="Accept" icon="sap-icon://add" press=".onNuevoProyecto" />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+
+                                <columns>
+                                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Nombre del Proyecto" design="Bold" /></Column>
+                                    <Column><Text text="Descripción" design="Bold" /></Column>
+                                    <Column minScreenWidth="Phone" demandPopin="true" hAlign="Center"><Text text="Estatus" design="Bold" /></Column>
+                                </columns>
+
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectIdentifier title="{modeloCliente>nombreProyecto}" text="{modeloCliente>idProyecto}" />
+                                            <Text text="{modeloCliente>descripcion}" />
+                                            <ObjectStatus text="{modeloCliente>estatusProyecto}" state="Information" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </uxap:blocks>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+
+            <!-- Consultores Asignados -->
+            <uxap:ObjectPageSection title="{i18n>seccionConsultores}" titleUppercase="false" class="sapUiSmallMarginTopBottom">
+                <uxap:subSections>
+                    <uxap:ObjectPageSubSection>
+                        <uxap:blocks>
+                            <Table 
+                                id="tablaConsultoresDetalle"
+                                items="{modeloCliente>consultores}" 
+                                alternateRowColors="true"
+                            >
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="Personal Asignado" level="H3" />
+                                        <ToolbarSpacer />
+                                        <Button text="Asignar Consultor" 
+                                                type="Emphasized" 
+                                                icon="sap-icon://add-employee" 
+                                                press=".onAsignarConsultor" 
+                                        />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+
+                                <columns>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                        <Text text="Consultor" /> 
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                        <Text text="Proyecto" /> 
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                     <Text text="Rol en el Proyecto" /> 
+                                     </Column>
+                                </columns>
+
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectIdentifier title="{modeloCliente>nombreConsultor}" />
+                                            <Text text="{modeloCliente>proyectoAsignado}" />
+                                            <Text text="{modeloCliente>rol}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </uxap:blocks>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+        </uxap:sections>
+
+    </uxap:ObjectPageLayout>
+</mvc:View>

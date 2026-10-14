@@ -21,7 +21,7 @@
                 </f:breadcrumbs>
 				
                 <f:heading>
-                    <Title text="Catálogo de Clientes y Proyectos" level="H1" />
+                    <Title text="{uiPantalla>/tituloHeader}" level="H1" />
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
@@ -51,7 +51,7 @@
                 id="tablaClientes"
                 items="{modelo>/clientes}" 
                 alternateRowColors="true"
-                class="sapUiSmallMarginTop">
+                class="sapUiSmallMarginTopBottom">
                 
                 <headerToolbar>
                     <OverflowToolbar>
@@ -62,10 +62,18 @@
                 </headerToolbar>
 
                 <columns>
-                    <Column><Text text="ID Cliente" design="Bold" /></Column>
-                    <Column><Text text="Nombre del Cliente" design="Bold" /></Column>
-                    <Column hAlign="Center"><Text text="Proyectos Asignados" design="Bold" /></Column>
-                    <Column><Text text="Estatus" design="Bold" /></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="ID Cliente" design="Bold" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Nombre del Cliente" design="Bold" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Proyectos Asignados" design="Bold" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Estatus" design="Bold" />
+                    </Column>
                 </columns>
 
                 <items>

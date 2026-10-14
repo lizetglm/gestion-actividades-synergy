@@ -24,6 +24,10 @@ sap.ui.define([
             };
 
             this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
+
+            // Modelos solo de prueba
+            var oModel = new JSONModel("model/clientes.json");
+            this.getView().setModel(oModel, "modelo");
 		},
 
 		onBack: function() {
@@ -54,11 +58,8 @@ sap.ui.define([
             
             // Extraemos el ID del cliente seleccionado
             var sIdCliente = oContext.getProperty("idCliente");
-
-            // Usamos el Router de SAPUI5 para viajar a la pantalla de detalle,
-            // pasándole el ID del cliente en la URL
-            var oRouter = this.getOwnerComponent().getRouter();
-            oRouter.navTo("detalleCliente", {
+        
+            this.getOwnerComponent().getRouter().navTo("RouteClienteProyectos/{clienteId}", {
                 clienteId: sIdCliente
             });
         },

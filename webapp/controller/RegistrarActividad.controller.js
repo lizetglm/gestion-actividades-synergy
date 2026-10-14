@@ -36,14 +36,15 @@ sap.ui.define([
 				}),
 				tableTitle: this.getResourceBundle().getText("tableActividadesHoy") + " (" + new Date().toLocaleDateString("es-MX") + ")"
 			};
+			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
 
+
+			// Modelos solo de prueba
 			let actividadesRegistradas = [
 				{ fecha: new Date().toLocaleDateString("es-MX"), hora: "09:00", cliente: "Cliente Alpha S.A.", requerimiento: "REQ-00231", descripcion: "Desarrollo", horas: 3.5 },
            		{ fecha: new Date().toLocaleDateString("es-MX"), hora: "13:00", cliente: "Capacitación Interna", requerimiento: "SAP BTP / RAP", descripcion: "Curso Fiori", horas: 2.0 }
 			];
 			this.getView().setModel(new JSONModel(actividadesRegistradas), "modelo");
-
-			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
 		},
 
 		onBack: function() {

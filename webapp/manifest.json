@@ -140,50 +140,57 @@
           "target": [
             "TargetClientesProyectos"
           ]
+        },
+        {
+          "name": "RouteClienteProyectos/{clienteId}",
+          "pattern": "clienteProyectos/{clienteId}",
+          "target": [
+            "TargetDetalleCliente"
+          ]
         }
       ],
       "targets": {
         "TargetMain": {
-          "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "Main",
           "viewName": "Main"
         },
         "TargetRegistrarActividad": {
-          "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "RegistrarActividad",
           "viewName": "RegistrarActividad"
         },
         "TargetCalendarioActividades": {
-          "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "CalendarioActividades",
           "viewName": "CalendarioActividades"
         },
         "TargetReporteMensual": {
-          "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "ReporteMensual",
           "viewName": "ReporteMensual"
         },
         "TargetPanelCumplimiento": {
-          "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "PanelCumplimiento",
           "viewName": "admin.PanelCumplimiento"
         },
         "TargetClientesProyectos": {
-          "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "ClientesProyectos",
           "viewName": "admin.ClientesProyectos"
+        },
+        "TargetDetalleCliente": {
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "DetalleCliente",
+          "viewName": "admin.DetalleClienteProyectos"
         }
       }
     },

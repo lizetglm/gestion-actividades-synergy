@@ -82,7 +82,7 @@
                 <Table 
                     headerText="{i18n>detallePorConsultor}" 
                     alternateRowColors="false" 
-                    items="{modelo>/}"
+                    items="{modelo>/oModelo}"
                     class="tablaFondoColor"
                 >
                     <columns>

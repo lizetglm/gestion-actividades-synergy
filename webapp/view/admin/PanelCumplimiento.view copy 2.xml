@@ -9,12 +9,11 @@
     xmlns:f="sap.f"
 >
     <f:DynamicPage id="pagePanel" headerExpanded="true" class="sapUiSizeCompact">
-        
         <f:title>
             <f:DynamicPageTitle>
                 <f:breadcrumbs >
                    <Breadcrumbs currentLocationText="{i18n>appAdmin1}"
-                    class="sapUiTinyMarginTopBottom">
+                    class="sapUiSmallMarginTopBottom">
                         <Link text="{i18n>tituloGrupo1}" press=".onBack" />
                     </Breadcrumbs>
                 </f:breadcrumbs>
@@ -27,13 +26,18 @@
                         wrappingType="Hyphenated">
                     </Title>
                 </f:heading>
+
+                <f:actions>
+                    <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
+                <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
+                <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
+                </f:actions>
             </f:DynamicPageTitle>
         </f:title>
 
         <!-- CABECERA COLAPSABLE (Filtros y KPIs) -->
         <f:header>
             <f:DynamicPageHeader pinnable="true">
-
                 <!-- Filtors -->
                 <FlexBox wrap="Wrap" class="gapPanelFiltros" >
                     <VBox class="sapUiMediumMarginEnd">
@@ -91,8 +95,8 @@
             <!-- Detalles por consultor -->
             <Table 
                 headerText="{i18n>detallePorConsultor}" 
-                items="{modelo>/}"
-                class="tablaFondoColor"
+                items="{modelo>/oModelo}"
+                class="tablaFondoColor sapUiMediumMarginBottom"
             >
                 <columns>
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
@@ -111,6 +115,7 @@
                         <Text text="{i18n>estatusFirma}" />
                     </Column>
                 </columns>
+
                 <items>
                     <ColumnListItem 
                         highlight="{= (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : ${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }"
@@ -135,16 +140,6 @@
                 </items>
             </Table>
         </f:content>
-
-        <f:footer>
-            <OverflowToolbar>
-                <ToolbarSpacer /> 
-                
-                <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
-                <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
-                <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
-            </OverflowToolbar>
-        </f:footer>
-
+        
     </f:DynamicPage>
 </mvc:View>
