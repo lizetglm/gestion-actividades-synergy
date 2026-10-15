@@ -4,29 +4,34 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
     displayBlock="true">
-    
-    <Page id="reportPage" title="Mi Reporte Mensual" class="sapUiContentPadding">
+    <Page 
+        id="reportPage" 
+        title="{i18n>repTitle}"
+        class="sapUiContentPadding">
         <content>
-            <Bar id="reportBar" class="sapUiMediumMarginBottom">
-                <contentLeft>
-                    <Title id="reportTitle" text="Reporte de Actividades — Agosto 2026" level="H3" />
-                </contentLeft>
-                <contentRight>
-                    <HBox id="statusBox" alignItems="Center">
-                        <Label id="lblStatusText" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
-                        <ObjectStatus id="objStatus" text="Generado, pendiente de firma" state="Warning" />
-                    </HBox>
-                </contentRight>
-            </Bar>
-
-            <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap">
-                
-                <VBox id="leftColumn" width="68%" class="sapUiResponsiveMargin">
-                    <Panel id="panelReporte" backgroundDesign="Solid" headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA">
-                        <content>
-                            <Text id="txtConsultorInfo" text="Consultor: Juan Pérez  |  Cliente: Cliente Alpha S.A.  |  Periodo: 01-31/08/2026" class="sapUiMediumMarginBottom"/>
-                            
-                            <Table id="activityTable" class="sapUiMediumMarginBottom">
+        <HBox
+                id="monthHeade1r"
+                class="monthHeader"
+                justifyContent="SpaceBetween"
+                alignItems="Center">
+            <VBox id="vboxTituloRepor1te">
+                <Text
+                    id="text1111"
+                    text="Mis Aplicaciones > {i18n>repTitle}"
+                    class="sapUiSmallMarginBottom" /> 
+                <Title id="reportTitle" text="Reporte de Actividades — Agosto 2026" level="H3" />
+            </VBox>
+                <HBox id="statusBox" alignItems="Center">
+                    <Label id="lblStatusText" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
+                    <ObjectStatus id="objStatus" text="Generado, pendiente de firma" state="Warning" />
+                </HBox>
+        </HBox>
+        <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap" >
+            <VBox id="leftColumn" width="69%">
+                <Panel id="panelReporte" backgroundDesign="Solid" headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA" accessibleRole="Region" class="borde">
+                    <content>
+                        <Text id="txtConsultorInfo" text="Consultor: Juan Pérez  |  Cliente: Cliente Alpha S.A.  |  Periodo: 01-31/08/2026" class="sapUiSmallMarginBottom"/>    
+                            <Table id="activityTable" class="sapUiTinyMarginBottom borde">
                                 <columns>
                                     <Column id="colFecha"><Text id="txtColFecha" text="Fecha"/></Column>
                                     <Column id="colReq"><Text id="txtColReq" text="Requerimiento"/></Column>
@@ -68,41 +73,41 @@
                                     </ColumnListItem>
                                 </items>
                             </Table>
-
-                            <Toolbar id="toolbarTotales" class="sapUiMediumMarginBottom">
+                            <Toolbar id="toolbarTotales" class="sapUiSmallMarginBottom toolbarTotalesCustom">
                                 <content>
-                                    <Label id="lblTotales" text="Total de horas del periodo: 168.0 h   |   Horas de capacitación interna: 16.0 h" />
+                                    <Label id="lblTotales" text="Total de horas del periodo: 168.0 h   |   Horas de capacitación interna: 16.0 h" class="totalHorasText" />
                                 </content>
                             </Toolbar>
-
-                            <Text id="lblDeclaracion" text="Al firmar declaro que la información anterior refleja fielmente las actividades realizadas durante el periodo." class="sapUiSmallMarginBottom"/>
-                            <VBox id="boxFirma" class="sapUiMediumMarginTop">
-                                <Label id="lblFirma" text="Firma electrónica: __________________________________________________" class="sapUiMediumMarginBottom"/>
-                                <Label id="lblFechaFirma" text="Fecha de firma: ____________________"/>
+                            <Text id="lblDeclaracion" text="Al firmar declaro que la información anterior refleja fielmente las actividades realizadas durante el periodo." class="sapUiTinyMarginBottom textoGrisSuave"/>
+                            <VBox id="boxFirma" class="sapUiSmallMarginTop textoGrisSuave">
+                                <Label id="lblFirma" text="Firma electrónica: __________________________________________________" class="sapUiSmallMarginBottom"/>
+                                <Label id="lblFechaFirma" text="Fecha de firma: "/>
                             </VBox>
                         </content>
                     </Panel>
                 </VBox>
 
-                <VBox id="rightColumn" width="28%" class="sapUiResponsiveMargin">
-                    <Panel id="panelAcciones" backgroundDesign="Solid" headerText="Acciones" class="sapUiMediumMarginBottom">
+                <VBox id="rightColumn" width="29%">
+                    <Panel id="panelAccionesGlobal" backgroundDesign="Solid" headerText="Acciones" class="borde">
                         <content>
-                            <Button id="btnPDF" text="Descargar PDF" width="100%" class="sapUiTinyMarginBottom" icon="sap-icon://pdf-attachment" press="onDownloadPDF"/>
-                            <Button id="btnFirmar" text="Firmar y enviar a RR.HH." width="100%" type="Emphasized" class="sapUiTinyMarginBottom" press="onSignReport"/>
-                            <Button id="btnReapertura" text="Solicitar reapertura del periodo" width="100%" type="Reject" press="onRequestReopen"/>
-                        </content>
-                    </Panel>
-
-                    <Panel id="panelHistorial" backgroundDesign="Solid" headerText="Historial de estatus">
-                        <content>
-                            <VBox id="historialList">
-                                <Text id="h1" text="• 01/09  Reporte generado automáticamente" class="sapUiTinyMarginBottom"/>
-                                <Text id="h2" text="• 01/09  Notificación enviada al consultor"/>
-                            </VBox>
+                            <Panel id="panelAcciones">
+                                <content>
+                                    <Button id="btnPDF" text="Descargar PDF" width="100%" class="sapUiTinyMarginBottom" icon="sap-icon://pdf-attachment" press="onDownloadPDF"/>
+                                    <Button id="btnFirmar" text="Firmar y enviar a RR.HH." width="100%" type="Emphasized" class="sapUiTinyMarginBottom" press="onSignReport"/>
+                                    <Button id="btnReapertura" text="Solicitar reapertura del periodo" width="100%" type="Reject" press="onRequestReopen"/>
+                                </content>
+                            </Panel>
+                            <Panel id="panelHistorial" backgroundDesign="Translucent" headerText="Historial de estatus">
+                                <content>
+                                    <VBox id="historialList">
+                                        <Text id="h1" text="• 01/09  Reporte generado automáticamente" class="sapUiTinyMarginBottom"/>
+                                        <Text id="h2" text="• 01/09  Notificación enviada al consultor"/>
+                                    </VBox>
+                                </content>
+                            </Panel>
                         </content>
                     </Panel>
                 </VBox>
-
             </HBox>
         </content>
     </Page>

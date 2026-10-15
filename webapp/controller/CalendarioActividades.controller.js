@@ -2,139 +2,102 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/VBox",
     "sap/m/Text"
-], function (Controller, VBox, Text) {
+], function (Controller, VBox, Text){
     "use strict";
-
     return Controller.extend(
         "com.cg.actividades.vistacalendarioactividades.controller.CalendarioActividades",
         {
-
-            onInit: function () {
+            onInit: function(){
                 this._crearCalendario();
             },
-
-
-            _crearCalendario: function () {
-
+            _crearCalendario: function(){
                 var oCalendar = this.byId("calendarGrid");
-
                 oCalendar.removeAllItems();
-
                 var iYear = 2026;
                 var iMonth = 8;
                 var oFirstDay = new Date(iYear, iMonth, 1);
-                var iDaysInMonth = new Date(
-                    iYear,
-                    iMonth + 1,
-                    0
-                ).getDate();
+                var iDaysInMonth = new Date(iYear, iMonth + 1, 0).getDate();
                 var iStartDay = oFirstDay.getDay();
-
-
-                if (iStartDay === 0) {
+                if(iStartDay === 0){
                     iStartDay = 6;
-                } else {
+                }else{
                     iStartDay = iStartDay - 1;
                 }
-
-
-                for (var i = 0; i < iStartDay; i++) {
-
+                for(var i = 0; i < iStartDay; i++){
                     var oEmptyDay = new VBox({
                         height: "70px"
                     });
-
                     oEmptyDay.addStyleClass(
                         "calendarDay"
                     );
-
                     oEmptyDay.addStyleClass(
                         "emptyDay"
                     );
-
                     oCalendar.addItem(oEmptyDay);
                 }
-
-                for (
+                for(
                     var iDay = 1;
                     iDay <= iDaysInMonth;
                     iDay++
-                ) {
-
+                ){
                     var oDay = new VBox({
                         height: "70px"
                     });
-
                     oDay.addStyleClass(
                         "calendarDay"
                     );
-
-
                     var oNumber = new Text({
                         text: String(iDay)
                     });
-
                     oNumber.addStyleClass(
                         "dayNumber"
                     );
-
                     oDay.addItem(oNumber);
-
-
-                    if (iDay <= 11) {
-
+                    if(iDay <= 11){
                         oDay.addStyleClass(
                             "completedDay"
                         );
-
                         var oStatus = new Text({
                             text: "●"
-                        });
-
+                        }).addStyleClass("grandeCirculo");
                         oStatus.addStyleClass(
                             "dayStatus"
                         );
-
                         oDay.addItem(oStatus);
-
-
                         var oHours = new Text({
                             text: "5.5 h"
                         });
-
                         oHours.addStyleClass(
                             "dayHours"
                         );
-
                         oDay.addItem(oHours);
                     }
-
-
-                    if (iDay === 11) {
-
+                    if(iDay === 11){
                         oDay.removeStyleClass(
                             "completedDay"
                         );
-
                         oDay.addStyleClass(
                             "currentDay"
                         );
                     }
-
-
                     oCalendar.addItem(oDay);
                 }
             },
-
-            onExportExcel: function () {
-
+            onExportExcel: function(){
+            // Falta
             },
-
-            onPressVerReporte: function () {
-    var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-    oRouter.navTo("RouteReporteMensual");
-}
-
+            onPressVerReporte: function(){
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RouteReporteMensual");
+            },
+            onPressVerUsuarios: function(){
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RoutePerfiles");
+            },
+            onPressVerUsuarios: function () {
+                var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                oRouter.navTo("RoutePerfiles");
+            }
         }
     );
 });

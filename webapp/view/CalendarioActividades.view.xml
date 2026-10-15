@@ -7,204 +7,154 @@
 
     <Page
         id="page"
-        title="Mis Actividades"
+        title="{i18n>title}"
         class="calendarPage">
 
         <content>
-        <Button id="btnVerReporte" text="Ver Reporte Mensual" press="onPressVerReporte" type="Emphasized"/>
             <HBox
                 id="topHeader"
                 class="calendarHeader"
                 justifyContent="SpaceBetween"
                 alignItems="Center">
-
                 <Title
                     id="pageTitle"
                     level="H2"/>
-
-                <Text
-                    id="userName"
-                    text="J. Pérez"/>
-
             </HBox>
-
-
-            <HBox
-                id="kpiContainer"
-                class="kpiContainer"
-                justifyContent="SpaceBetween">
-
-                <VBox
-                    id="kpi1"
-                    class="kpiCard kpiBlue">
-
-                    <Title
-                        id="title1"
-                        text="62.5 h"
-                        level="H2"/>
-
-                    <Text
-                        id="text1"
-                        text="Horas registradas en el mes"/>
-
-                </VBox>
-
-                <VBox
-                    id="kpi2"
-                    class="kpiCard kpiBlue">
-
-                    <Title
-                        id="title2"
-                        text="8 / 11"
-                        level="H2"/>
-
-                    <Text
-                        id="text2"
-                        text="Días completos"/>
-
-                </VBox>
-
-                <VBox
-                    id="kpi3"
-                    class="kpiCard kpiOrange">
-
-                    <Title
-                        id="title3"
-                        text="3"
-                        level="H2"/>
-
-                    <Text
-                        id="text3"
-                        text="Días pendientes"/>
-
-                </VBox>
-
-                <VBox
-                    id="kpi4"
-                    class="kpiCard kpiRed">
-
-                    <Title
-                        id="title4"
-                        text="Pendiente"
-                        level="H2"/>
-
-                    <Text
-                        id="text4"
-                        text="Estatus del reporte mensual"/>
-
-                </VBox>
-
-            </HBox>
-
             <HBox
                 id="monthHeader"
                 class="monthHeader"
                 justifyContent="SpaceBetween"
                 alignItems="Center">
-
-                <Title
-                    id="monthTitle"
-                    text="Septiembre 2026"
-                    level="H3"/>
-
+                <VBox id="vboxTituloReporte">
+                    <Text
+                        id="text11"
+                        text="Mis Aplicaciones > {i18n>title}"
+                        class="sapUiSmallMarginBottom" /> 
+                    <Title
+                        id="monthTitle"
+                        text="Septiembre 2026"
+                        class="month"
+                        level="H3"/>
+                </VBox>
                 <Button
                     id="btnExport"
                     text="Exportar a Excel"
                     icon="sap-icon://excel-attachment"
                     press="onExportExcel"/>
-
             </HBox>
-
+            <HBox
+                id="kpiContainer"
+                class="kpiContainer"
+                justifyContent="SpaceBetween">
+                <VBox
+                    id="kpi1"
+                    class="kpiCard kpiBlue">
+                    <Title
+                        id="title1"
+                        text="62.5 h"
+                        level="H2"
+                        class="kpiazul" />
+                    <Text
+                        id="text1"
+                        text="Horas registradas en el mes"/>
+                </VBox>
+                <VBox
+                    id="kpi2"
+                    class="kpiCard kpiBlue">
+                    <Title
+                        id="title2"
+                        text="8 / 11"
+                        level="H2"
+                        class="kpiazul" />
+                    <Text
+                        id="text2"
+                        text="Días completos"/>
+                </VBox>
+                <VBox
+                    id="kpi3"
+                    class="kpiCard kpiOrange">
+                    <Title
+                        id="title3"
+                        text="3"
+                        level="H2"
+                        class="kpinaranja" />
+                    <Text
+                        id="text3"
+                        text="Días pendientes"/>
+                </VBox>
+                <VBox
+                    id="kpi4"
+                    class="kpiCard kpiRed">
+                    <Title
+                        id="title4"
+                        text="Pendiente"
+                        level="H2"
+                        class="pendiente" />
+                    <Text
+                        id="text4"
+                        text="Estatus del reporte mensual"/>
+                </VBox>
+            </HBox>
             <HBox
                 id="weekHeader"
                 class="weekHeader">
-
                 <Text
                     id="dayMonday"
                     text="Lun"/>
-
                 <Text
                     id="dayTuesday"
                     text="Mar"/>
-
                 <Text
                     id="dayWednesday"
                     text="Mié"/>
-
                 <Text
                     id="dayThursday"
                     text="Jue"/>
-
                 <Text
                     id="dayFriday"
                     text="Vie"/>
-
                 <Text
                     id="daySaturday"
                     text="Sáb"/>
-
                 <Text
                     id="daySunday"
                     text="Dom"/>
-
             </HBox>
-
-
             <VBox
                 id="calendarGrid"
                 class="calendarGrid"/>
-
-
             <HBox
                 id="legendContainer"
                 class="legendContainer"
                 justifyContent="Center">
-
                 <HBox id="legend"
                     class="legendItem"
                     alignItems="Center">
-
                     <core:Icon id="iconFullDay"
                         src="sap-icon://circle-task-2"
-                        color="#2b7c2b"/>
-
+                        color="#cfd8cf"/>
                     <Text id="textFullDay"
                         text="Día completo"/>
-
                 </HBox>
-
-
                 <HBox id="legend1"
                     class="legendItem"
                     alignItems="Center">
-
                     <core:Icon id="iconPartialDay"
                         src="sap-icon://circle-task-2"
                         color="#0070f2"/>
-
                     <Text id="textPartialDay" 
                         text="Día actual"/>
-
                 </HBox>
-
-
                 <HBox id="legend2"
                     class="legendItem"
                     alignItems="Center">
-
                     <core:Icon id="iconNoRecord"
                         src="sap-icon://circle-task-2"
                         color="#cccccc"/>
-
                     <Text id="textNoRecord"
                         text="Sin registrar"/>
-
                 </HBox>
-
             </HBox>
-
         </content>
-
     </Page>
-
 </mvc:View>

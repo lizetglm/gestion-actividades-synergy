@@ -82,9 +82,6 @@
         }
       ]
     },
-
-
-    
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
@@ -104,6 +101,13 @@
           ]
         },
         {
+        "name": "RoutePerfiles",
+        "pattern": "perfiles",
+        "target": [
+          "TargetPerfiles"
+        ]
+      },
+        {
           "name": "RouteReporteMensual",
           "pattern": "reporte",
           "target": [
@@ -118,7 +122,15 @@
           "clearControlAggregation": false,
           "viewId": "CalendarioActividades",
           "viewName": "CalendarioActividades"
-        },
+        },      
+      "TargetPerfiles": {
+        "viewType": "XML",
+        "transition": "slide",
+        "clearControlAggregation": false,
+        "viewId": "Perfiles",
+        "viewName": "Perfiles"
+      }
+      ,
         "TargetReporteMensual": {
           "viewType": "XML",
           "transition": "slide",
