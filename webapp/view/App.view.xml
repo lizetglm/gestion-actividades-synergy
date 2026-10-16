@@ -1,7 +1,41 @@
 <mvc:View controllerName="ns.frontend.controller.App"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <App id="app">
-    </App>
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    displayBlock="true"
+    height="100%"
+>
+    <tnt:ToolPage id="app" class="sapUiDemoToolPage" sideExpanded="false" >
+        <tnt:header>
+            <tnt:ToolHeader >
+                <Button id="sideNavigationToggleButton" icon="sap-icon://menu2" type="Transparent" press=".onSideNavButtonPress" tooltip="Menú">
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow"/>
+                    </layoutData>
+                </Button>
+                <ToolbarSpacer/>
+                <Title text="Gestión de Actividades de Consultoría" level="H2"/>
+                <ToolbarSpacer/>
+                <Button text="DU" type="Transparent"/>
+            </tnt:ToolHeader>
+        </tnt:header>
+
+        <tnt:sideContent >
+            <tnt:SideNavigation selectedKey="home" itemSelect=".onNavigationSelect" expanded="false" >
+                <tnt:NavigationList>
+                    <tnt:NavigationListItem text="Inicio" key="home" icon="sap-icon://home" />
+                    <tnt:NavigationListItem text="{i18n>app1}" key="registrarActividad" icon="sap-icon://add-activity" />
+                    <tnt:NavigationListItem text="{i18n>app2}" key="calendarioActividades" icon="sap-icon://calendar" />
+                    <tnt:NavigationListItem text="{i18n>app4}" key="reporteMensual" icon="sap-icon://pending" />
+                    <tnt:NavigationListItem text="{i18n>appAdmin1}" key="panelCumplimiento" icon="sap-icon://activity-2" />
+                    <tnt:NavigationListItem text="{i18n>appAdmin2}" key="clientesProyectos" icon="sap-icon://company-view" />
+                </tnt:NavigationList>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+
+        <tnt:mainContents>
+            <App id="mainContents"/>
+        </tnt:mainContents>
+
+    </tnt:ToolPage>
 </mvc:View>

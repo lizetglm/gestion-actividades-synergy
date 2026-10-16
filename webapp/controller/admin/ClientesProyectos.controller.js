@@ -49,9 +49,9 @@ sap.ui.define([
             oBinding.filter(aFilters);
         },
 
-        // --- 2. Lógica para Navegar a la Subpantalla (Proyectos) ---
+
         onNavToProyectos: function (oEvent) {
-            // Obtenemos la fila exacta a la que el usuario le dio clic
+            // fila a la que el usuario le dio clic
             var oItem = oEvent.getSource();
             // Obtenemos el contexto (los datos) de esa fila
             var oContext = oItem.getBindingContext("modelo");
@@ -64,10 +64,24 @@ sap.ui.define([
             });
         },
 
-        // --- 3. Lógica del Botón "Nuevo Cliente" ---
         onNuevoCliente: function () {
-            // Por ahora mostraremos un mensaje. Más adelante aquí abriremos un Dialog (Pop-up)
             MessageToast.show("Abriendo formulario para nuevo cliente...");
+        },
+
+        onEditarCliente: function (oEvent) {
+            var oItem = oEvent.getSource();
+            var oContext = oItem.getBindingContext("modelo");
+            var sClienteId = oContext.getProperty("idCliente");
+            
+            sap.m.MessageToast.show("Editando cliente con ID: " + sClienteId);
+        },
+
+        onInactivarCliente: function (oEvent) {
+            var oItem = oEvent.getSource();
+            var oContext = oItem.getBindingContext("modelo");
+            var sClienteId = oContext.getProperty("idCliente");
+            
+            sap.m.MessageToast.show("Inactivando cliente: " + sClienteId);
         }
 	});
 });

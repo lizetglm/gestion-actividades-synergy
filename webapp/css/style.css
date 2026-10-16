@@ -58,164 +58,719 @@
 .calendarPage{
     background: #f7f7f7;
 }
-
 .topHeader{
     background: #354a5f;
     color: white;
-
     padding: 10px 20px;
-
     min-height: 42px;
 }
-
-
 .kpiContainer{
-    padding: 18px 20px 10px 20px;
-
+    padding: 1px 20px 10px 20px;
     gap: 12px;
+    display: flex;
+    justify-content: center; 
+    flex-wrap: wrap;        
 }
-
-
+.pendiente{
+    color:#9e0202;
+    font-size: 1.3rem;
+}
+.kpiazul{
+    color:#0070f2;
+    font-size: 1.3rem;
+}
+.month{
+    font-weight: bold;
+    color: black;
+}
+.kpinaranja{
+    color:#e9730c;
+    font-size: 1.3rem;
+}
 .kpiCard{
     box-sizing: border-box;
-
     background: white;
-
     padding: 12px 15px;
-
     min-height: 80px;
-
     border-left: 5px solid;
-
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    flex: 1 1 220px;       
+    max-width: 270px;      
 }
-
-
 .kpiCard .sapMTitle{
     margin-bottom: 4px;
 }
-
-
 .kpiBlue{
     border-left-color: #0070f2;
 }
-
-
 .kpiOrange{
     border-left-color: #e9730c;
 }
-
-
 .kpiRed{
-    border-left-color: #bb0000;
+    border-left-color: #9e0202;
 }
-
 .monthHeader{
-    padding: 8px 20px 12px 20px;
+    padding: 8px 20px 5px 20px;
 }
-
-
+.borde{
+    border: 1px solid #b0bec5 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important; 
+    border-radius: 0%;
+}
 .monthHeader .sapMBtn{
     min-width: 150px;
 }
-
-
 .weekHeader{
     display: grid;
-
-    grid-template-columns:
-        repeat(7, 1fr);
-
+    grid-template-columns: repeat(7, 1fr);
     margin: 0 20px;
-
     text-align: center;
-
     font-weight: bold;
-
     color: #555;
 }
-
-
 .weekHeader .sapMText{
     padding: 8px 0;
 }
-
-
 .calendarGrid{
     display: grid;
-
-    grid-template-columns:
-        repeat(7, 1fr);
-
+    grid-template-columns: repeat(7, 1fr);
     margin: 0 20px;
-
     border-top: 1px solid #ddd;
     border-left: 1px solid #ddd;
 }
-
-
 .calendarDay{
     position: relative;
-
     box-sizing: border-box;
-
     background: white;
-
     padding: 7px;
-
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
-
 .emptyDay{
     background: #f4f5f6;
 }
-
 .completedDay{
-    background: #e7f5e7;
+    background: #d8e2d8;
 }
-
 .currentDay{
     background: #d5e5fa;
 }
-
 .dayNumber{
     font-size: 12px;
-
     color: #555;
 }
-
 .dayStatus{
     position: absolute;
-
     top: 7px;
     right: 8px;
-
     color: #107e3e;
-
     font-size: 12px;
 }
-
+.grandeCirculo{
+    font-size: 17px; 
+    color:#1b5f37;
+}
+.textSuccess{
+    color: #1b5f37 !important; 
+}
+.textDefault{
+    color: #6a6d70 !important; 
+}
+.mainLayout{
+    margin-top:0%;
+}
 .dayHours{
     margin-top: 18px;
-
     font-size: 11px;
-
     color: #2b7c2b;
 }
-
 .legendContainer{
     padding: 15px 0 20px 0;
-
     gap: 25px;
 }
-
-
 .legendItem{
     gap: 6px;
 }
-
-
 .legendItem .sapMText{
     font-size: 12px;
+}
+.userAdminPage, .mainLayout{
+    background: #f1f4f8;
+    height: 100%;
+}
+.mainLayout{
+    display: flex;
+    flex-direction: column;
+}
+.topBar{
+    background: #354a5f !important;
+    color: #ffffff;
+    padding: 0 20px;
+    min-height: 52px;
+    border: none !important;
+}
+.topBar .sapMTitle,
+.topBar .sapMBtnContent,
+.topBar .sapMBtnIcon{
+    color: #ffffff !important;
+}
+.topBar .sapMImage{
+    margin-right: 12px;
+}
+.appTitle{
+    margin-left: 10px;
+}
+.workspace{
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+.usersList{
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    background: transparent;
+}
+.usersList .sapMLIB{
+    background: #ffffff;
+    border-bottom: 1px solid #e0e4e8;
+}
+.usersList .sapMLIBSelected{
+    background: #e5eff9 !important;
+}
+.userListItem{
+    box-sizing: border-box;
+    padding: 12px 8px;
+    min-height: 76px;
+    gap: 8px;
+}
+.userName{
+    font-size: 14px;
+    color: #202a35;
+}
+.userId{
+    font-size: 12px;
+    color: #687582;
+    margin-top: 4px;
+}
+.usersList .sapMObjStatus{
+    white-space: nowrap;
+}
+.detailsPanel > .sapMTitle{
+    color: #354a5f;
+}
+.detailsTabs{
+    min-width: 0;
+    background: transparent;
+}
+.detailsTabs .sapMITBHead{
+    background: transparent;
+}
+.detailsTabs .sapMITBContent{
+    padding: 0;
+    background: transparent;
+    border-bottom: none;
+}
+.detailsTabs .sapMITBContainerContent{
+    border-bottom: none;
+}
+.generalCard{
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 22px 24px;
+    gap: 20px;
+    border-top: 1px solid #d6dce2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+#columnasInformacionGeneral{
+    gap: 12px;
+}
+.fieldColumn{
+    box-sizing: border-box;
+    padding: 0 12px 8px 0;
+    gap: 7px;
+}
+.fieldColumn .sapMLabel{
+    color: #687582;
+    margin-top: 7px;
+}
+.fieldColumn .sapMText{
+    color: #202a35;
+    overflow-wrap: anywhere;
+}
+#contenedorBotonEditar{
+    padding-top: 8px;
+}
+#botonEditarUsuario{
+    border: 1px solid #0070f2;
+}
+.rolesSection{
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 16px 10px;
+    gap: 10px;
+}
+.rolesSection > .sapMTitle{
+    color: #354a5f;
+    padding: 0 4px 8px;
+    border-bottom: 2px solid #0070f2;
+}
+#barraAccionesRoles{
+    background: #ffffff;
+    border: none;
+    padding: 0;
+}
+#tablaRoles{
+    background: #ffffff;
+}
+#tablaRoles .sapMListTblHeaderCell{
+    background: #f5f6f7;
+    border-bottom: 1px solid #d6dce2;
+}
+#tablaRoles .sapMListTblCell{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#tablaRoles .sapMListTblRow{
+    background: #ffffff;
+}
+#mensajeGruposPendientes, #mensajeAutorizacionesPendientes{
+    margin: 12px;
+}
+.bottomBar{
+    box-sizing: border-box;
+    background: #354a5f !important;
+    border: none !important;
+    padding: 0 16px;
+    min-height: 44px;
+}
+.bottomBar .sapMBtnContent,
+.bottomBar .sapMBtnIcon{
+    color: #ffffff;
+}
+.bottomBar .sapMBtnEmphasized .sapMBtnContent{
+    color: #ffffff;
+}
+.sapMListTblHeader, 
+.sapMListTblHeaderRow, 
+.sapMListTblHeaderCell{
+    background-color: #dee1e2 !important;
+    background-image: none !important;
+}
+.totalHorasText .sapMLabelTextWrapper,
+.totalHorasText{
+    font-size: 1rem !important; 
+    font-weight: bold !important;
+    color: #202a35 !important;    
+}
+.toolbarTotalesCustom{
+    background-color: transparent !important;
+    border: none !important;
+}
+.textoGrisSuave,
+.textoGrisSuave .sapMLabel,
+.textoGrisSuave .sapMText{
+    color: #687582 !important; 
+    font-size: 0.9rem !important;
+}
+.userAdminPage, .mainLayout{
+    background: #eef2f7;
+    height: 100%;
+}
+.mainLayout{
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.topBar{
+    box-sizing: border-box;
+    background: #354a5f !important;
+    color: #ffffff;
+    padding: 0 20px;
+    min-height: 54px;
+    height: 54px;
+    border: none !important;
+    flex-shrink: 0;
+}
+.topBar .sapMTitle, .topBar .sapMBtnContent, .topBar .sapMBtnIcon{
+    color: #ffffff !important;
+}
+.topBar .sapMImage{
+    margin-right: 12px;
+}
+.appTitle{
+    margin-left: 10px;
+    color: #ffffff !important;
+}
+.workspace{
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #eef2f7;
+}
+.usersPanel{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.usersPanel .sapMList{
+    height: auto;
+    min-height: 0;
+}
+
+.userListItem{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 8px;
+    min-height: 76px;
+    gap: 8px;
+}
+
+.userIdentity{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+#datosBrevesUsuario{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+#avatarUsuario{
+    flex-shrink: 0;
+}
+
+.userName,
+.userId{
+    display: block;
+}
+.searchContainer{
+    gap: 6px;
+    width: 100%;
+    flex-shrink: 0;
+}
+.searchContainer .sapMSFF{
+    background: #ffffff;
+}
+.searchContainer .sapMBtn{
+    flex-shrink: 0;
+}
+.usersList{
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    background: transparent;
+}
+.usersList .sapMLIB{
+    box-sizing: border-box;
+    background: #ffffff;
+    border-bottom: 1px solid #d9dee5;
+}
+.usersList .sapMLIBSelected{
+    background: #e1edf8 !important;
+    outline: 1px dotted #647c91;
+    outline-offset: -2px;
+}
+.userListItem{
+    box-sizing: border-box;
+    padding: 10px 8px;
+    min-height: 76px;
+    gap: 8px;
+}
+.userIdentity{
+    gap: 12px;
+    min-width: 0;
+}
+.userName{
+    font-size: 16px;
+    color: #20262d;
+}
+.userId{
+    font-size: 14px;
+    color: #60666d;
+    margin-top: 4px;
+}
+.usersList .sapMObjStatus{
+    white-space: nowrap;
+}
+.detailsPanel > .sapMTitle{
+    color: #454b52;
+    font-weight: 400;
+}
+.detailsTitle{
+    margin: 0 0 2px 4px;
+    font-weight: 400;
+}
+.detailsTabs{
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    background: transparent;
+}
+.detailsTabs .sapMITBHead{
+    background: transparent;
+}
+.detailsTabs .sapMITBText{
+    color: #555e67;
+}
+.detailsTabs .sapMITBSelected .sapMITBText{
+    color: #354a5f;
+}
+.detailsTabs .sapMITBContent{
+    padding: 0;
+    background: transparent;
+    border-bottom: none;
+}
+.detailsTabs .sapMITBContainerContent{
+    border-bottom: none;
+    background: transparent;
+}
+.generalCard{
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 20px 24px 12px;
+    gap: 12px;
+    min-height: 230px;
+    border-top: 1px solid #d6dce2;
+    box-shadow: none;
+}
+#columnasInformacionGeneral{
+    gap: 20px;
+}
+.fieldColumn{
+    box-sizing: border-box;
+    padding: 0 12px 8px 0;
+    gap: 5px;
+}
+.fieldColumn .sapMLabel{
+    color: #60666d;
+    margin-top: 3px;
+    font-size: 14px;
+}
+.fieldColumn .sapMText{
+    color: #20262d;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+.fieldColumn .sapMObjStatus{
+    margin-top: 0;
+}
+#contenedorBotonEditar{
+    padding-top: 4px;
+}
+#botonEditarUsuario{
+    border: 1px solid #286b8e;
+    background: transparent;
+}
+#botonEditarUsuario .sapMBtnContent{
+    color: #286b8e;
+}
+.rolesSection{
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 16px 10px 10px;
+    gap: 8px;
+}
+.rolesSection > .sapMTitle{
+    color: #454b52;
+    padding: 0 4px 8px;
+    border-bottom: 2px solid #4788b5;
+    font-weight: 400;
+}
+#barraAccionesRoles{
+    background: #ffffff;
+    border: none;
+    padding: 0;
+    min-height: 40px;
+}
+#botonAsignarNuevoRol{
+    border: 1px solid #286b8e;
+    background: #ffffff;
+}
+#botonAsignarNuevoRol .sapMBtnContent,
+#botonAsignarNuevoRol .sapMBtnIcon{
+    color: #286b8e;
+}
+#botonEliminarRol{
+    border: 1px solid #a33b3b;
+    background: #ffffff;
+}
+#tablaRoles{
+    background: #ffffff;
+}
+#tablaRoles .sapMListTblHeaderCell{
+    background: #f1f2f3 !important;
+    border-bottom: 1px solid #d6dce2;
+}
+#tablaRoles .sapMListTblHeaderCell .sapMText{
+    color: #343a40;
+    font-size: 14px;
+}
+#tablaRoles .sapMListTblCell{
+    padding-top: 9px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid #d9dee5;
+}
+#tablaRoles .sapMListTblCell .sapMText{
+    color: #343a40;
+    font-size: 14px;
+}
+#tablaRoles .sapMListTblRow{
+    background: #ffffff;
+}
+.emptyTabContent{
+    min-height: 180px;
+    background: #ffffff;
+}
+.bottomBar{
+    box-sizing: border-box;
+    background: #354a5f !important;
+    border: none !important;
+    padding: 0 16px;
+    min-height: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+.bottomBar .sapMBtnContent,
+.bottomBar .sapMBtnIcon{
+    color: #ffffff !important;
+}
+.bottomBar .sapMBtn:hover > .sapMBtnInner{
+    background: #405970;
+}
+.usersPanel{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+.usersPanel .sapMList{
+    height: 100%;
+    overflow-y: auto;
+}
+
+@media (max-width: 760px){
+    .workspace{
+        overflow-y: auto;
+        flex-direction: column;
+    }
+
+    .usersPanel,
+    .detailsPanel{
+        width: 100% !important;
+        min-width: 0;
+    }
+
+    .usersPanel{
+        max-height: 300px;
+        padding: 14px;
+    }
+
+    .detailsPanel{
+        padding: 16px 10px;
+        overflow: visible;
+    }
+
+    #columnasInformacionGeneral{
+        flex-wrap: wrap;
+    }
+
+    .fieldColumn{
+        width: 100% !important;
+    }
+
+    .generalCard{
+        padding: 14px;
+    }
+
+    .bottomBar{
+        padding: 0 6px;
+    }
+}
+
+.actionButtonsBar{
+    box-sizing: border-box;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 !important;
+    padding: 6px 16px 0;
+    gap: 4px;
+}
+.mainLayout{
+    min-height: 0;
+}
+.usersPanel .sapMList{
+    height: auto;
+}
+.detailsPanel{
+    box-sizing: border-box;
+    padding: 10px 24px 0;
+    gap: 8px;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #eef2f7;
+}
+#scrollContainerUsuarios{
+    min-height: 0;
+}
+.generalCard{
+    padding-bottom: 8px;
+    gap: 8px;
+}
+#contenedorBotonEditar{
+    padding-top: 2px;
+}
+.usersPanel{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+.usersPanel .sapMList{
+    height: auto;
+    min-height: 0;
+}
+.userListItem{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 8px;
+    min-height: 76px;
+    gap: 8px;
+}
+.userIdentity{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+#datosBrevesUsuario{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+#avatarUsuario{
+    flex-shrink: 0;
+}
+.userName, .userId{
+    display: block;
 }

@@ -22,6 +22,10 @@ sap.ui.define([
 			};
 
 			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
+		},
+
+		onBack: function() {
+			this.getOwnerComponent().getRouter().navTo("RouteClientesProyectos");
 		}
 	});
 });

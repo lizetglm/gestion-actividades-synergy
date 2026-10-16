@@ -95,7 +95,7 @@
         "async": true,
         "viewPath": "ns.frontend.view",
         "controlAggregation": "pages",
-        "controlId": "app",
+        "controlId": "mainContents",
         "clearControlAggregation": false
       },
       "routes": [

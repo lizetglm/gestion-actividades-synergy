@@ -7,15 +7,15 @@
 	height="100%"
 	busyIndicatorDelay="0"
 >
-    <Page id="idRegistrarActividadPage" >
-        <customHeader >
+    <Page id="idRegistrarActividadPage" showHeader="false" backgroundDesign="Transparent">
+        <!-- <customHeader >
             <c:Fragment fragmentName="ns.frontend.fragment.Header" />
-        </customHeader>
+        </customHeader> -->
         <content>
             <VBox class="sapUiMediumMargin gapBody">
-                <Breadcrumbs currentLocationText="{i18n>app1}">
+                <!-- <Breadcrumbs currentLocationText="{i18n>app1}">
                     <Link text="{i18n>tituloGrupo1}" press=".onBack" />
-                </Breadcrumbs>
+                </Breadcrumbs> -->
 
                 <!-- Subtitulo y boton -->
                 <FlexBox justifyContent="SpaceBetween" alignItems="End" >

@@ -12,13 +12,13 @@
         <uxap:headerTitle>
             <uxap:ObjectPageDynamicHeaderTitle>
                 <uxap:expandedHeading>
-                    <Title text="Denise Smith" wrapping="true"/>
+                    <Title text="Cliente: Mabe" wrapping="true"/>
                 </uxap:expandedHeading>
 
                 <uxap:snappedHeading>
                     <FlexBox fitContainer="true" alignItems="Center">
                         <Avatar src="sap-icon://picture" backgroundColor="Random" class="sapUiTinyMarginEnd"/>
-                        <Title text="Denise Smith" wrapping="true" />
+                        <Title text="Cliente: Mabe" wrapping="true" />
                     </FlexBox>
                 </uxap:snappedHeading>
 
@@ -26,20 +26,24 @@
         </uxap:headerTitle>
 
 		<uxap:headerContent>
+            <VBox class="sapUiSmallMarginBottom">
+                <Breadcrumbs currentLocationText="{i18n>appAdmin2.1}" class="sapUiSmallMarginBottom">
+                    <Link text="&lt;{i18n>appAdmin2}" press=".onBack" />
+                </Breadcrumbs>
+            </VBox>
 			<FlexBox wrap="Wrap">
 				<Avatar src="sap-icon://picture" backgroundColor="Random" displaySize="L" class="sapUiTinyMarginEnd"/>
 
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
 					<ObjectStatus title="User ID" text="12345678"/>
 					<ObjectStatus title="Language" text="English"/>
-					<ObjectStatus title="Country" text="USA"/>
-					<ObjectStatus title="Phone Number" text="1-844-726-7733"/>
+					<ObjectStatus title="{i18n>country}" text="MEX"/>
 				</layout:VerticalLayout>
 
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
-					<ObjectStatus title="Functional Area" text="Developement"/>
-					<ObjectStatus title="Cost Center" text="PI DFA GD Programs and Product"/>
-					<ObjectStatus title="Email" text="email@address.com"/>
+					<ObjectStatus title="{i18n>area}" text="Developement"/>
+					<ObjectStatus title="{i18n>numTelefono}" text="1-844-726-7733"/>
+					<ObjectStatus title="{i18n>email}" text="email@address.com"/>
 				</layout:VerticalLayout>
 			</FlexBox>
 		</uxap:headerContent>

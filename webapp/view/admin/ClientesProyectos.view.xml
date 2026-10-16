@@ -9,8 +9,7 @@
 	height="100%"
 	busyIndicatorDelay="0"
 >	
-	<f:DynamicPage id="pageClientes" headerExpanded="true" class="sapUiSizeCompact">
-
+	<f:DynamicPage id="pageClientes"  class="sapUiSizeCompact">
         <f:title>
             <f:DynamicPageTitle>
 				<f:breadcrumbs >
@@ -51,7 +50,7 @@
                 id="tablaClientes"
                 items="{modelo>/clientes}" 
                 alternateRowColors="true"
-                class="sapUiSmallMarginTopBottom">
+                class="sapUiMediumMarginBottom">
                 
                 <headerToolbar>
                     <OverflowToolbar>
@@ -74,10 +73,12 @@
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="Estatus" design="Bold" />
                     </Column>
+                    <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Acciones" design="Bold" />
+                    </Column>
                 </columns>
 
                 <items>
-                    <!-- type="Navigation" crea la flecha visual y el evento press -->
                     <ColumnListItem type="Navigation" press=".onNavToProyectos">
                         <cells>
                             <Text text="{modelo>idCliente}" />
@@ -85,7 +86,12 @@
                             <Text text="{modelo>totalProyectos}" />
                             <ObjectStatus 
                                 text="{modelo>estatus}" 
-                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" />
+                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" 
+                            />
+                            <HBox justifyContent="End" press="nonBubble">
+                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditarCliente" />
+                                <Button icon="sap-icon://delete" type="Transparent" tooltip="Inactivar" press=".onInactivarCliente" />
+                            </HBox>
                         </cells>
                     </ColumnListItem>
                 </items>
