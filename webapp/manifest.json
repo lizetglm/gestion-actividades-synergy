@@ -147,6 +147,13 @@
           "target": [
             "TargetDetalleCliente"
           ]
+        },
+        {
+          "name": "RoutePerfiles",
+          "pattern": "perfiles",
+          "target": [
+            "TargetPerfiles"
+          ]
         }
       ],
       "targets": {
@@ -191,6 +198,12 @@
           "clearControlAggregation": false,
           "viewId": "DetalleCliente",
           "viewName": "admin.DetalleClienteProyectos"
+        },
+        "TargetPerfiles": {
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Perfiles",
+          "viewName": "admin.Perfiles"
         }
       }
     },

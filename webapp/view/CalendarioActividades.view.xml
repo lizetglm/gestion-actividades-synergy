@@ -22,8 +22,19 @@
             <HBox
                 id="monthHeader"
                 class="monthHeader"
-                justifyContent="End"
+                justifyContent="SpaceBetween"
                 alignItems="Center">
+                <VBox id="vboxTituloReporte">
+                    <Text
+                        id="text11"
+                        text="Mis Aplicaciones > {i18n>title}"
+                        class="sapUiSmallMarginBottom" /> 
+                    <Title
+                        id="monthTitle"
+                        text="Septiembre 2026"
+                        class="month"
+                        level="H3"/>
+                </VBox>
                 <Button
                     id="btnExport"
                     text="Exportar a Excel"
@@ -146,5 +157,4 @@
         </content>
 
     </Page>
-
 </mvc:View>

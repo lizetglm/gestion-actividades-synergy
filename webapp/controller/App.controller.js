@@ -44,6 +44,8 @@ sap.ui.define(
                 oRouter.navTo("RoutePanelCumplimiento");
             } else if (sKey === "clientesProyectos") {
                 oRouter.navTo("RouteClientesProyectos");
+            } else if (sKey === "perfiles") {
+                oRouter.navTo("RoutePerfiles");
             }
         }
       });

@@ -1,0 +1,322 @@
+<mvc:View
+	controllerName="ns.frontend.controller.admin.Perfiles"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0"
+>
+	<Page showHeader="false"
+        id="pagePerfiles"
+        title="{i18n>profTitle}"
+        class="sapUiContentPadding">
+        <content>
+            <HBox
+                id="monthHeaderProf"
+                class="monthHeader"
+                justifyContent="SpaceBetween"
+                alignItems="Center">
+                <VBox id="vboxTituloPerfiles">
+                    <Text
+                        id="textProf"
+                        text="Mis Aplicaciones > {i18n>profTitle}"
+                        class="sapUiTinyMarginBottom" /> 
+                </VBox>
+            </HBox>
+            <VBox
+                id="layoutPrincipal"
+                height="100%"
+                fitContainer="true"
+                class="mainLayout">
+                <HBox
+                    id="areaTrabajo"
+                    fitContainer="true"
+                    class="workspace">
+                    <VBox
+                        id="panelUsuarios"
+                        width="30%"
+                        height="100%"
+                        class="usersPanel">
+                        <Title
+                            id="tituloListaUsuarios"
+                            text="Lista de Usuarios"
+                            level="H3"
+                            class="sectionTitle"/>
+                        <HBox
+                            id="contenedorBusqueda"
+                            alignItems="Center"
+                            class="searchContainer">
+                            <SearchField
+                                id="buscadorUsuarios"
+                                width="100%"
+                                placeholder="Search"
+                                liveChange=".onSearch"/>
+                            <Button
+                                id="botonFiltrarUsuarios"
+                                icon="sap-icon://filter"
+                                type="Transparent"
+                                tooltip="Filtrar usuarios"/>
+                        </HBox>
+                        <ScrollContainer
+                            id="scrollContainerUsuarios"
+                            height="calc(100% - 90px)"
+                            vertical="true"
+                            horizontal="false">
+                            <List
+                                id="listaUsuarios"
+                                items="{users>/users}"
+                                mode="SingleSelectMaster"
+                                includeItemInSelection="true"
+                                selectionChange=".onUserSelect"
+                                class="usersList"
+                                noDataText="No se encontraron usuarios">
+                                <items>
+                                    <CustomListItem
+                                        id="plantillaUsuario"
+                                        type="Active">
+                                        <HBox
+                                            id="contenidoUsuario"
+                                            alignItems="Center"
+                                            justifyContent="SpaceBetween"
+                                            class="userListItem">
+                                            <HBox
+                                                id="identidadUsuario"
+                                                alignItems="Center"
+                                                class="userIdentity">
+                                                <Avatar
+                                                    id="avatarUsuario"
+                                                    displayShape="Circle"
+                                                    displaySize="S"
+                                                    backgroundColor="Accent6"/>
+                                                <VBox
+                                                    id="datosBrevesUsuario">
+                                                    <Text
+                                                        id="nombreUsuarioLista"
+                                                        text="{users>fullName}"
+                                                        class="userName"/>
+                                                    <Text
+                                                        id="identificadorUsuarioLista"
+                                                        text="{users>userId}"
+                                                        class="userId"/>
+                                                </VBox>
+                                            </HBox>
+                                            <HBox id="activo" alignItems="Center">
+                                                <HBox id="activo1" alignItems="Center" visible="{= ${users>status} === 'Activo' }">
+                                                    <Text id="circulo" text="●" class="grandeCirculo textSuccess" />
+                                                    <Text id="circulo1" text="{users>status}" class="sapUiTinyMarginBegin textSuccess" />
+                                                </HBox>
+                                                <HBox id="incirculo" alignItems="Center" visible="{= ${users>status} !== 'Activo' }">
+                                                    <Text id="inactivo" text="{users>status}" class="textDefault" />
+                                                </HBox>
+                                            </HBox>
+                                        </HBox>
+                                    </CustomListItem>
+                                </items>
+                            </List>
+                        </ScrollContainer>
+                    </VBox>
+                    <VBox
+                        id="panelDetallesUsuario"
+                        width="70%"
+                        class="detailsPanel">
+                        <Title
+                            id="tituloDetallesUsuario"
+                            text="{= 'Detalles del Usuario: ' + (${users>/selectedUser/fullName} || '') }"
+                            level="H2"
+                            class="detailsTitle"/>
+                        <IconTabBar
+                            id="pestanasDetallesUsuario"
+                            expandable="false"
+                            selectedKey="general"
+                            class="detailsTabs">
+                            <items>
+                                <IconTabFilter
+                                    id="pestanaInformacionGeneral"
+                                    text="Información General"
+                                    key="general">
+                                    <VBox
+                                        id="tarjetaInformacionGeneral"
+                                        class="generalCard">
+                                        <HBox
+                                            id="columnasInformacionGeneral"
+                                            fitContainer="true"
+                                            class="generalColumns">
+                                            <VBox
+                                                id="columnaInformacionIzquierda"
+                                                width="50%"
+                                                class="fieldColumn">
+                                                <Label
+                                                    id="labelNombreCompleto"
+                                                    text="Nombre Completo"/>
+                                                <Text
+                                                    id="valorNombreCompleto"
+                                                    text="{users>/selectedUser/fullName}"/>
+                                                <Label
+                                                    id="labelIdUsuario"
+                                                    text="ID de Usuario"/>
+                                                <Text
+                                                    id="valorIdUsuario"
+                                                    text="{users>/selectedUser/userId}"/>
+                                                <Label
+                                                    id="labelCorreoElectronico"
+                                                    text="Correo Electrónico"/>
+                                                <Text
+                                                    id="valorCorreoElectronico"
+                                                    text="{users>/selectedUser/email}"/>
+                                                <Label
+                                                    id="labelDepartamentoIzquierdo"
+                                                    text="Departamento"/>
+                                                <Text
+                                                    id="valorDepartamentoIzquierdo"
+                                                    text="{users>/selectedUser/department}"/>
+                                            </VBox>
+                                            <VBox
+                                                id="columnaInformacionDerecha"
+                                                width="50%"
+                                                class="fieldColumn">
+                                                <Label
+                                                    id="labelDepartamento"
+                                                    text="Departamento"/>
+                                                <Text
+                                                    id="valorDepartamento"
+                                                    text="{users>/selectedUser/department}"/>
+                                                <Label
+                                                    id="labelUbicacion"
+                                                    text="Ubicación"/>
+                                                <Text
+                                                    id="valorUbicacion"
+                                                    text="{users>/selectedUser/location}"/>
+                                                <Label
+                                                    id="labelFechaCreacion"
+                                                    text="Fecha de Creación"/>
+                                                <Text
+                                                    id="valorFechaCreacion"
+                                                    text="{users>/selectedUser/creationDate}"/>
+                                                <Label
+                                                    id="labelEstadoUsuario"
+                                                    text="Estado"/>
+                                                <ObjectStatus
+                                                    id="valorEstadoUsuario"
+                                                    text="{users>/selectedUser/status}"
+                                                    state="{= ${users>/selectedUser/status} === 'Activo' ? 'Success' : 'None' }"/>
+                                            </VBox>
+                                        </HBox>
+                                        <HBox
+                                            id="contenedorBotonEditar"
+                                            justifyContent="End"
+                                            class="editButtonContainer">
+                                            <Button
+                                                id="botonEditarUsuario"
+                                                text="Editar"
+                                                press=".onEditUser"/>
+                                        </HBox>
+                                    </VBox>
+                                </IconTabFilter>
+                                <IconTabFilter
+                                    id="pestanaRolesAsignados"
+                                    text="Roles Asignados"
+                                    key="roles">
+                                    <VBox
+                                        id="seccionRolesAsignados"
+                                        class="rolesSection">
+                                        <Toolbar
+                                            id="barraAccionesRoles"
+                                            class="rolesToolbar">
+                                            <Button
+                                                id="botonAsignarNuevoRol"
+                                                text="Asignar Nuevo Rol"
+                                                icon="sap-icon://add"
+                                                press=".onAssignRole"/>
+                                            <Button
+                                                id="botonEliminarRol"
+                                                text="Eliminar Rol"
+                                                icon="sap-icon://delete"
+                                                type="Reject"
+                                                press=".onDeleteRole"/>
+                                        </Toolbar>
+                                        <Table
+                                            id="tablaRoles"
+                                            items="{users>/selectedUser/roles}"
+                                            mode="SingleSelectLeft"
+                                            noDataText="No hay roles asignados"
+                                            class="rolesTable">
+                                            <columns>
+                                                <Column id="columnaNombreRol">
+                                                    <Text id="textRol" text="Nombre del Rol"/>
+                                                </Column>
+                                                <Column id="columnaDescripcionRol">
+                                                    <Text id="textDescr" text="Descripción"/>
+                                                </Column>
+                                                <Column id="columnaSistemaOrigen">
+                                                    <Text id="textSys" text="Sistema de Origen"/>
+                                                </Column>
+                                                <Column id="columnaValidoDesde">
+                                                    <Text id="valTil" text="Válido Desde"/>
+                                                </Column>
+                                                <Column id="columnaValidoHasta">
+                                                    <Text id="valUnt" text="Válido Hasta"/>
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem
+                                                    id="plantillaFilaRol">
+                                                    <cells>
+                                                        <Text id="textName" text="{users>name}"/>
+                                                        <Text id="textDesc" text="{users>description}"/>
+                                                        <Text id="textSour" text="{users>source}"/>
+                                                        <Text id="textVal" text="{users>validFrom}"/>
+                                                        <Text id="textValTo" text="{users>validTo}"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </VBox>
+                                </IconTabFilter>
+                                <IconTabFilter
+                                    id="pestanaGrupos"
+                                    text="Grupos"
+                                    key="groups">
+                                    <VBox
+                                        id="contenidoGrupos"
+                                        class="emptyTabContent"/>
+                                </IconTabFilter>
+                                <IconTabFilter
+                                    id="pestanaAutorizacionesDirectas"
+                                    text="Autorizaciones Directas"
+                                    key="authorizations">
+                                    <VBox
+                                        id="contenidoAutorizaciones"
+                                        class="emptyTabContent"/>
+                                </IconTabFilter>
+                            </items>
+                        </IconTabBar>
+                    </VBox>
+                </HBox>
+                <HBox
+                    id="barraInferior"
+                    justifyContent="End"
+                    alignItems="Center"
+                    class="actionButtonsBar">
+                    <Button
+                        id="botonGuardar"
+                        text="Guardar"
+                        type="Emphasized"
+                        press=".onSave"
+                        class="sapUiTinyMarginEnd"/>
+                    <Button
+                        id="botonCancelar"
+                        text="Cancelar"
+                        type="Default"
+                        press=".onCancel"
+                        class="sapUiTinyMarginEnd"/>
+                    <Button
+                        id="botonCrearNuevoUsuario"
+                        text="Crear Nuevo Usuario"
+                        type="Transparent"
+                        press=".onCreateUser"/>
+                </HBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

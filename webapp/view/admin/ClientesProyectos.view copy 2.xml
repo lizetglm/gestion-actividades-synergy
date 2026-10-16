@@ -9,19 +9,18 @@
 	height="100%"
 	busyIndicatorDelay="0"
 >	
-	<f:DynamicPage id="pageClientes" headerExpanded="true" class="sapUiSizeCompact">
-
+	<f:DynamicPage id="pageClientes"  class="sapUiSizeCompact">
         <f:title>
             <f:DynamicPageTitle>
 				<f:breadcrumbs >
-                   <Breadcrumbs currentLocationText="{i18n>appAdmin1}"
-                    class="sapUiTinyMarginTopBottom">
+                   <Breadcrumbs currentLocationText="{i18n>appAdmin2}"
+                    class="sapUiSmallMarginTopBottom">
                         <Link text="{i18n>tituloGrupo1}" press=".onBack" />
                     </Breadcrumbs>
                 </f:breadcrumbs>
 				
                 <f:heading>
-                    <Title text="Catálogo de Clientes y Proyectos" level="H1" />
+                    <Title text="{uiPantalla>/tituloHeader}" level="H1" />
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
@@ -51,7 +50,7 @@
                 id="tablaClientes"
                 items="{modelo>/clientes}" 
                 alternateRowColors="true"
-                class="sapUiSmallMarginTop">
+                class="sapUiMediumMarginBottom">
                 
                 <headerToolbar>
                     <OverflowToolbar>
@@ -62,14 +61,24 @@
                 </headerToolbar>
 
                 <columns>
-                    <Column><Text text="ID Cliente" design="Bold" /></Column>
-                    <Column><Text text="Nombre del Cliente" design="Bold" /></Column>
-                    <Column hAlign="Center"><Text text="Proyectos Asignados" design="Bold" /></Column>
-                    <Column><Text text="Estatus" design="Bold" /></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="ID Cliente" design="Bold" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Nombre del Cliente" design="Bold" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Proyectos Asignados" design="Bold" />
+                    </Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Estatus" design="Bold" />
+                    </Column>
+                    <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
+                        <Text text="Acciones" design="Bold" />
+                    </Column>
                 </columns>
 
                 <items>
-                    <!-- type="Navigation" crea la flecha visual y el evento press -->
                     <ColumnListItem type="Navigation" press=".onNavToProyectos">
                         <cells>
                             <Text text="{modelo>idCliente}" />
@@ -77,7 +86,12 @@
                             <Text text="{modelo>totalProyectos}" />
                             <ObjectStatus 
                                 text="{modelo>estatus}" 
-                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" />
+                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" 
+                            />
+                            <HBox justifyContent="End" press="nonBubble">
+                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditarCliente" />
+                                <Button icon="sap-icon://delete" type="Transparent" tooltip="Inactivar" press=".onInactivarCliente" />
+                            </HBox>
                         </cells>
                     </ColumnListItem>
                 </items>

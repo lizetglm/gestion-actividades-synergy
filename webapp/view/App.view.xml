@@ -29,6 +29,7 @@
                     <tnt:NavigationListItem text="{i18n>app4}" key="reporteMensual" icon="sap-icon://pending" />
                     <tnt:NavigationListItem text="{i18n>appAdmin1}" key="panelCumplimiento" icon="sap-icon://activity-2" />
                     <tnt:NavigationListItem text="{i18n>appAdmin2}" key="clientesProyectos" icon="sap-icon://company-view" />
+                    <tnt:NavigationListItem text="{i18n>appAdmin3}" key="perfiles" icon="sap-icon://employee-lookup" />
                 </tnt:NavigationList>
             </tnt:SideNavigation>
         </tnt:sideContent>

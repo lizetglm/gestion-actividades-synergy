@@ -9,19 +9,23 @@
 >
     <Page id="reportPage" title="Mi Reporte Mensual" class="sapUiContentPadding" showHeader="false">
         <content>
-            <HBox
-                    id="monthHeade1r"
-                    class="monthHeader"
-                    justifyContent="SpaceBetween"
-                    alignItems="Center">
-                <VBox id="vboxTituloRepor1te">
-                    <Title id="reportTitle" text="Reporte de Actividades — Agosto 2026" level="H3" />
-                </VBox>
-                    <HBox id="statusBox" alignItems="Center">
-                        <Label id="lblStatusText" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
-                        <ObjectStatus id="objStatus" text="Generado, pendiente de firma" state="Warning" />
-                    </HBox>
-            </HBox>
+        <HBox
+                id="monthHeade1r"
+                class="monthHeader"
+                justifyContent="SpaceBetween"
+                alignItems="Center">
+            <VBox id="vboxTituloRepor1te">
+                <Text
+                    id="text1111"
+                    text="Mis Aplicaciones > {i18n>repTitle}"
+                    class="sapUiSmallMarginBottom" /> 
+                <Title id="reportTitle" text="Reporte de Actividades — Agosto 2026" level="H3" />
+            </VBox>
+                <HBox id="statusBox" alignItems="Center">
+                    <Label id="lblStatusText" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
+                    <ObjectStatus id="objStatus" text="Generado, pendiente de firma" state="Warning" />
+                </HBox>
+        </HBox>
         <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap" >
             <VBox id="leftColumn" width="69%">
                 <Panel id="panelReporte" backgroundDesign="Solid" headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA" accessibleRole="Region" class="borde">

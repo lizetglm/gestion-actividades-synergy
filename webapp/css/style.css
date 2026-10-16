@@ -1,17 +1,13 @@
 /* Enter your custom styles here */
-
 .gapBody {
     gap: 1rem;
 }
-
 .contendorApps {
     gap: 0.5rem;
 }
-
 .noPadding {
     padding: 0 !important;
 }
-
 .gapPanelFiltros {
     gap: 0.5rem;
 }

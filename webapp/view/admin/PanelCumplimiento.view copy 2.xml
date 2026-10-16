@@ -29,8 +29,8 @@
 
                 <f:actions>
                     <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
-                <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
-                <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
+                    <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
+                    <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
                 </f:actions>
             </f:DynamicPageTitle>
         </f:title>
