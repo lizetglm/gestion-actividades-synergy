@@ -28,15 +28,15 @@
 		<uxap:headerContent>
             <VBox class="sapUiSmallMarginBottom">
                 <Breadcrumbs currentLocationText="{i18n>appAdmin2.1}" class="sapUiSmallMarginBottom">
-                    <Link text="&lt;{i18n>appAdmin2}" press=".onBack" />
+                    <Link text="&lt; {i18n>appAdmin2}" press=".onBack" />
                 </Breadcrumbs>
             </VBox>
 			<FlexBox wrap="Wrap">
-				<Avatar src="sap-icon://picture" backgroundColor="Random" displaySize="L" class="sapUiTinyMarginEnd"/>
+				<Avatar src="sap-icon://picture" backgroundColor="Random" displaySize="M" class="sapUiTinyMarginEnd"/>
 
 				<layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
 					<ObjectStatus title="User ID" text="12345678"/>
-					<ObjectStatus title="Language" text="English"/>
+					<ObjectStatus title="{i18n>language}" text="English"/>
 					<ObjectStatus title="{i18n>country}" text="MEX"/>
 				</layout:VerticalLayout>
 
@@ -56,29 +56,39 @@
                         <uxap:blocks>
                             <Table 
                                 id="tablaProyectosDetalle"
-                                items="{modeloCliente>proyectos}" 
+                                items="{modelo>/proyectos}" 
                                 alternateRowColors="true"
                             >
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="Portafolio de Proyectos" level="H3" />
+                                        <Title text="{i18n>titleTableProyectos}" level="H3" />
                                         <ToolbarSpacer />
-                                        <Button text="Nuevo Proyecto" type="Accept" icon="sap-icon://add" press=".onNuevoProyecto" />
+                                        <Button text="{i18n>btnNuevoProyecto}" type="Emphasized" icon="sap-icon://add" press=".onNuevoProyecto" />
                                     </OverflowToolbar>
                                 </headerToolbar>
 
                                 <columns>
-                                    <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Nombre del Proyecto" design="Bold" /></Column>
-                                    <Column><Text text="Descripción" design="Bold" /></Column>
-                                    <Column minScreenWidth="Phone" demandPopin="true" hAlign="Center"><Text text="Estatus" design="Bold" /></Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="150px">
+                                        <Text text="{i18n>id}" />
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                        <Text text="{i18n>nameProject}" />
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                        <Text text="{i18n>description}" />
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="150px">
+                                        <Text text="{i18n>estatus}" />
+                                    </Column>
                                 </columns>
 
                                 <items>
                                     <ColumnListItem>
                                         <cells>
-                                            <ObjectIdentifier title="{modeloCliente>nombreProyecto}" text="{modeloCliente>idProyecto}" />
-                                            <Text text="{modeloCliente>descripcion}" />
-                                            <ObjectStatus text="{modeloCliente>estatusProyecto}" state="Information" />
+                                            <Text text="{modelo>idProyecto}" />
+                                            <Text text="{modelo>nombreProyecto}" />
+                                            <Text text="{modelo>descripcion}" />
+                                            <ObjectStatus text="{modelo>estatusProyecto}" state="Information" />
                                         </cells>
                                     </ColumnListItem>
                                 </items>
@@ -95,14 +105,14 @@
                         <uxap:blocks>
                             <Table 
                                 id="tablaConsultoresDetalle"
-                                items="{modeloCliente>consultores}" 
+                                items="{modelo>/consultores}" 
                                 alternateRowColors="true"
                             >
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="Personal Asignado" level="H3" />
+                                        <Title text="{i18n>titleTableConsultores}" level="H3" />
                                         <ToolbarSpacer />
-                                        <Button text="Asignar Consultor" 
+                                        <Button text="{i18n>btnAsignarConsultor}" 
                                                 type="Emphasized" 
                                                 icon="sap-icon://add-employee" 
                                                 press=".onAsignarConsultor" 
@@ -112,22 +122,22 @@
 
                                 <columns>
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                                        <Text text="Consultor" /> 
+                                        <Text text="{i18n>consultant}" /> 
                                     </Column>
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                                        <Text text="Proyecto" /> 
+                                        <Text text="{i18n>project}" /> 
                                     </Column>
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                                     <Text text="Rol en el Proyecto" /> 
+                                     <Text text="{i18n>rolProyecto}" /> 
                                      </Column>
                                 </columns>
 
                                 <items>
                                     <ColumnListItem>
                                         <cells>
-                                            <ObjectIdentifier title="{modeloCliente>nombreConsultor}" />
-                                            <Text text="{modeloCliente>proyectoAsignado}" />
-                                            <Text text="{modeloCliente>rol}" />
+                                            <Text text="{modelo>nombreConsultor}" />
+                                            <Text text="{modelo>proyectoAsignado}" />
+                                            <Text text="{modelo>rol}" />
                                         </cells>
                                     </ColumnListItem>
                                 </items>

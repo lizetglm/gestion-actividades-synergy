@@ -41,7 +41,8 @@
 				<Table 
 					id="tablaClientes"
 					items="{modelo>/clientes}" 
-					alternateRowColors="true">
+					alternateRowColors="true"
+					class="sapUiMediumMarginBottom">
 					
 					<headerToolbar>
 						<OverflowToolbar>
@@ -52,11 +53,21 @@
 					</headerToolbar>
 
 					<columns>
-						<!-- Usamos el Pop-in que aprendimos para que no se rompa en celulares -->
-						<Column><Text text="ID Cliente" design="Bold" /></Column>
-						<Column><Text text="Nombre del Cliente" design="Bold" /></Column>
-						<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Center"><Text text="Proyectos Asignados" design="Bold" /></Column>
-						<Column minScreenWidth="Tablet" demandPopin="true"><Text text="Estatus" design="Bold" /></Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Text text="ID Cliente" design="Bold" />
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Text text="Nombre del Cliente" design="Bold" />
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Text text="Proyectos Asignados" design="Bold" />
+						</Column>
+						<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Text text="Estatus" design="Bold" />
+						</Column>
+						<Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
+							<Text text="Acciones" design="Bold" />
+						</Column>
 					</columns>
 
 					<items>
@@ -67,14 +78,18 @@
 								<Text text="{modelo>totalProyectos}" />
 								<ObjectStatus 
 									text="{modelo>estatus}" 
-									state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" />
+									state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" 
+								/>
+								<HBox justifyContent="End" press="nonBubble" gap="0.6rem">
+									<Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditarCliente" />
+									<Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
+								</HBox>
 							</cells>
 						</ColumnListItem>
 					</items>
 				</Table>
 
-			</VBox>
-            
+			</VBox>            
         </content>
     </Page>
 </mvc:View>

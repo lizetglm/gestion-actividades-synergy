@@ -13,9 +13,9 @@
         </customHeader> -->
         <content>
             <VBox class="sapUiMediumMargin gapBody">
-                <!-- <Breadcrumbs currentLocationText="{i18n>app1}">
+                <Breadcrumbs currentLocationText="{i18n>app1}">
                     <Link text="{i18n>tituloGrupo1}" press=".onBack" />
-                </Breadcrumbs> -->
+                </Breadcrumbs>
 
                 <!-- Subtitulo y boton -->
                 <FlexBox justifyContent="SpaceBetween" alignItems="End" >

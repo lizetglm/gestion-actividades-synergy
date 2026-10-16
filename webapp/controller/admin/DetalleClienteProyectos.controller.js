@@ -22,6 +22,10 @@ sap.ui.define([
 			};
 
 			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
+
+			// Modelos solo de prueba
+            var oModel = new JSONModel("model/detalleCliente.json");
+            this.getView().setModel(oModel, "modelo");
 		},
 
 		onBack: function() {

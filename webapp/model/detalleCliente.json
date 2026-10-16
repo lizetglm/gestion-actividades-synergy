@@ -1,0 +1,53 @@
+{
+    "idCliente": "CLI-001",
+    "nombre": "Alpha S.A. de C.V.",
+    "estatus": "Activo",
+    "proyectos": [
+        {
+            "idProyecto": "PROJ-101",
+            "nombreProyecto": "Implementación SAP BTP",
+            "descripcion": "Migración de servicios cloud",
+            "estatusProyecto": "En Progreso"
+        },
+        {
+            "idProyecto": "PROJ-102",
+            "nombreProyecto": "Desarrollo de Aplicación Móvil",
+            "descripcion": "Aplicación para gestión de inventarios",
+            "estatusProyecto": "Completado"
+        },
+        {
+            "idProyecto": "PROJ-103",
+            "nombreProyecto": "Integración de Sistemas",
+            "descripcion": "Integración de sistemas internos con SAP",
+            "estatusProyecto": "En Progreso"
+        },
+        {
+            "idProyecto": "PROJ-104",
+            "nombreProyecto": "Optimización de Procesos",
+            "descripcion": "Reingeniería de procesos internos",
+            "estatusProyecto": "Pendiente"
+        }
+    ],
+    "consultores": [
+        {
+            "nombreConsultor": "Lizet López",
+            "proyectoAsignado": "Implementación SAP BTP",
+            "rol": "Desarrolladora ABAP RAP / Fiori"
+        },
+        {
+            "nombreConsultor": "Juan Pérez",
+            "proyectoAsignado": "Desarrollo de Aplicación Móvil",
+            "rol": "Desarrollador Mobile"
+        },
+        {
+            "nombreConsultor": "María García",
+            "proyectoAsignado": "Integración de Sistemas",
+            "rol": "Arquitecta de Integración"
+        },
+        {
+            "nombreConsultor": "Carlos Sánchez",
+            "proyectoAsignado": "Optimización de Procesos",
+            "rol": "Analista de Procesos"
+        }
+    ]
+}

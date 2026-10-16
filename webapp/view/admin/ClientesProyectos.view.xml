@@ -88,9 +88,9 @@
                                 text="{modelo>estatus}" 
                                 state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" 
                             />
-                            <HBox justifyContent="End" press="nonBubble">
-                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditarCliente" />
-                                <Button icon="sap-icon://delete" type="Transparent" tooltip="Inactivar" press=".onInactivarCliente" />
+                            <HBox justifyContent="End" press="nonBubble" gap="0.6rem">
+                                <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditarCliente" />
+                                <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
                             </HBox>
                         </cells>
                     </ColumnListItem>
