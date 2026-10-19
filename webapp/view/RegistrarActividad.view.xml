@@ -32,15 +32,62 @@
                         press=".onGuardar"    
                     />
                 </FlexBox>
-                <!-- <OverflowToolbar design="Transparent" class=" ">
-                    <Title
-                        level="H4" titleStyle="H4"
-                        text="{uiPantalla>/saludo}">
-                    </Title>
-                    <ToolbarSpacer />
-                    <Button text="Guardar" type="Emphasized"/>
-                </OverflowToolbar> -->
-           
+
+                <Panel >
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Contexto de Trabajo" level="H3"/>
+                            <ToolbarSpacer />
+                            
+                            <ObjectStatus 
+                                text="{= ${uiPantalla>/esCapacitacion} ? 'Modo: Capacitación Interna' : ((${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Activo: ' + ${uiPantalla>/cliente} : 'Pendiente de seleccionar') }"
+                                state="{= ${uiPantalla>/esCapacitacion} || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Success' : 'Warning' }" 
+                                icon="{= ${uiPantalla>/esCapacitacion} || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'sap-icon://status-positive' : 'sap-icon://alert' }"
+                            />
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <content>
+                        <VBox >
+                            <!-- <Label text="¿Es una actividad de capacitación interna?" class="sapUiTinyMarginTop" />  -->
+                            <CheckBox 
+                                text="{i18n>formCapacitacion}" 
+                                selected="{uiPantalla>/esCapacitacion}"
+                                class="sapUiTinyMarginTop" />
+
+                            <form:SimpleForm editable="true" layout="ColumnLayout" columnsM="2" >
+                                <form:content>
+                                    <Label text="{i18n>customer}" required="true" />
+                                    <Select id="clienteSelect" 
+                                        wrapItemsText="true" 
+                                        enabled="{= !${uiPantalla>/esCapacitacion} }"
+                                        selectedKey="{uiPantalla>/cliente}"
+                                    >
+                                        <items>
+                                            <c:Item key="" text="-- Seleccione un cliente --" />
+                                            <c:Item key="cliente1" text="Cliente Alpha S.A." />
+                                            <c:Item key="cliente2" text="Cliente Beta S.A." />
+                                            <c:Item key="cliente3" text="Cliente Gamma S.A." />
+                                        </items>
+                                    </Select>
+
+                                    <Label text="{i18n>project}" required="true" />
+                                    <Select id="proyectoSelect"
+                                        wrapItemsText="true" 
+                                        enabled="{= !${uiPantalla>/esCapacitacion} }"
+                                        selectedKey="{uiPantalla>/proyecto}"
+                                    >
+                                        <items>
+                                            <c:Item key="" text="-- Seleccione un proyecto --" />
+                                            <c:Item key="Implementación RAP" text="Implementación RAP" />
+                                            <c:Item key="Desarrollo Fiori" text="Desarrollo Fiori" />
+                                            <c:Item key="Integración BTP" text="Integración BTP" />
+                                        </items>
+                                    </Select>
+                                </form:content>
+                            </form:SimpleForm>
+                        </VBox>
+                    </content>
+                </Panel>
                 
                 <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
                 <form:SimpleForm 
@@ -60,16 +107,6 @@
                         <Label text="{i18n>formHInvertidas}" required="true" />
                         <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput"/>
 
-                        <Label text="." /> 
-                        <CheckBox 
-                            text="{i18n>formCapacitacion}" 
-                            selected="{uiPantalla>/esCapacitacion}" />
-
-                        <Label text="{i18n>customer}" required="true" />
-                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Cliente Alpha S.A." value="{uiPantalla>/cliente}" id="clienteInput"/>
-
-                        <Label text="{i18n>project}" required="true" />
-                        <Input enabled="{= !${uiPantalla>/esCapacitacion} }" placeholder="Ej. Implementación RAP" value="{uiPantalla>/proyecto}" id="proyectoInput"/>
 
                         <Label text="{i18n>formRequerimiento}" required="true" />
                         <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput"/>

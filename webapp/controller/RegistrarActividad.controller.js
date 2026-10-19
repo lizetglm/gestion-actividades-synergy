@@ -51,20 +51,43 @@ sap.ui.define([
 			this.getOwnerComponent().getRouter().navTo("RouteMain");
 		},
 
+		limpiarFormulario: function() {
+			let oModelUI = this.getView().getModel("uiPantalla");
+			oModelUI.setProperty("/descripcion", "");
+			oModelUI.setProperty("/horasInvertidas", "");
+			oModelUI.setProperty("/tipoActividad", "");
+			oModelUI.setProperty("/requerimiento", "");
+			oModelUI.setProperty("/hora", "");
+		},
+
 		onGuardar: function(oEvent) {
 			let oModelUI = this.getView().getModel("uiPantalla");
 			let actividadesRegistradas = this.getView().getModel("modelo").getData();
 			let formData = oModelUI.getData();
+			let oClienteSelect = this.byId("clienteSelect");
+    		let oProyectoSelect = this.byId("proyectoSelect");
 
 			// SANITIZAR DATOS
             let sFechaCaptura = (formData.fechaCaptura || "").trim();
 			let sTipoActividad = (formData.tipoActividad || "").trim();
-			let sCliente = (formData.cliente || "").trim();
-			let sProyecto = (formData.proyecto || "").trim();
-            let sRequerimiento = (formData.requerimiento || "").trim();
+			let sCliente = oClienteSelect ? (oClienteSelect.getSelectedKey() || "").trim() : "";
+    		let sProyecto = oProyectoSelect ? (oProyectoSelect.getSelectedKey() || "").trim() : "";
+			let sRequerimiento = (formData.requerimiento || "").trim();
             let sDescripcion = (formData.descripcion || "").trim();
             let sHoras = parseFloat(formData.horasInvertidas);
-			
+
+			if (!formData.esCapacitacion && sCliente === "") {
+                MessageBox.error("Recuerda seleccionar el contexto del trabajo (Cliente).", {
+					onClose: function () { oClienteSelect.focus(); }
+				});
+                return; 
+            }
+			if (!formData.esCapacitacion && sProyecto === "") {
+                MessageBox.error("Recuerda seleccionar el contexto del trabajo (Proyecto).", {
+					onClose: function () { oProyectoSelect.focus(); }
+				});
+                return; 
+            }
 			if (sFechaCaptura === "") {
 				MessageBox.error("Por favor, ingresa la Fecha de captura.");
 				return;
@@ -85,20 +108,7 @@ sap.ui.define([
 				});
                 return;
             }
-			if (!formData.esCapacitacion && sCliente === "") {
-				let iCliente = this.byId("clienteInput");
-                MessageBox.error("Por favor, ingresa el Cliente.", {
-					onClose: function () { iCliente.focus(); }
-				});
-                return; 
-            }
-			if (!formData.esCapacitacion && sProyecto === "") {
-				let iP = this.byId("proyectoInput");
-                MessageBox.error("Por favor, ingresa el Proyecto.", {
-					onClose: function () { iP.focus(); }
-				});
-                return; 
-            }
+			
             if (sRequerimiento === "") {
 				let iR = this.byId("requerimientoInput");
 				MessageBox.error("Por favor, ingresa el Requerimiento.", {
@@ -113,8 +123,8 @@ sap.ui.define([
 				});
                 return;
             }
-            
 
+			// Agregar la nueva actividad al modelo
 			actividadesRegistradas.push({
 				fecha: sFechaCaptura,
 				tipoActividad: sTipoActividad,
@@ -134,14 +144,9 @@ sap.ui.define([
 			//actulizar el total de horas
 			let totalHoras = actividadesRegistradas.reduce((total, actividad) => total + parseFloat(actividad.horas), 0);
 			oModelUI.setProperty("/horasTotales", this.getResourceBundle().getText("horasTotales", [actividadesRegistradas.length, totalHoras.toFixed(1)]));
-
-			// Limpiar el formulario 
-            oModelUI.setProperty("/descripcion", "");
-            oModelUI.setProperty("/horasInvertidas", "");
-			oModelUI.setProperty("/tipoActividad", "");
-			oModelUI.setProperty("/requerimiento", "");
-			oModelUI.setProperty("/hora", "");
-			oModelUI.setProperty("/esCapacitacion", false);
+			
+			// limpar formulario
+            this.limpiarFormulario();
 		},
 
 		onFilaClickeada: function (oEvent) {
