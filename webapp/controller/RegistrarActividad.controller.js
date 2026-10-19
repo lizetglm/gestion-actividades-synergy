@@ -76,7 +76,7 @@ sap.ui.define([
             let sDescripcion = (formData.descripcion || "").trim();
             let sHoras = parseFloat(formData.horasInvertidas);
 
-			if (!formData.esCapacitacion && sCliente === "") {
+			if (sCliente === "") {
                 MessageBox.error("Recuerda seleccionar el contexto del trabajo (Cliente).", {
 					onClose: function () { oClienteSelect.focus(); }
 				});
@@ -92,15 +92,6 @@ sap.ui.define([
 				MessageBox.error("Por favor, ingresa la Fecha de captura.");
 				return;
 			}
-			if (sTipoActividad === "") {
-				let iTipoActividad = this.byId("tipoActividadInput");
-				// iTipoActividad.setValueState("Error");
-				// iTipoActividad.setValueStateText("El Tipo de actividad es obligatorio.");
-				MessageBox.error("Por favor, selecciona el Tipo de actividad.", {
-					onClose: function () { iTipoActividad.focus(); }
-				});
-				return;
-			}
 			if (!sHoras || sHoras <= 0) {
 				let iH = this.byId("horasInvertidasInput");
 				MessageBox.error("Por favor, ingresa una cantidad de horas válida.", {
@@ -108,30 +99,41 @@ sap.ui.define([
 				});
                 return;
             }
-			
-            if (sRequerimiento === "") {
-				let iR = this.byId("requerimientoInput");
-				MessageBox.error("Por favor, ingresa el Requerimiento.", {
-					onClose: function () { iR.focus(); }
-				});
-                return;
+			//quitar este if si no es asi el fuljo o campos especificos para capacitacion
+			if (!formData.esCapacitacion) {
+                if (sTipoActividad === "") {
+                    let iTipoActividad = this.byId("tipoActividadInput");
+					// iTipoActividad.setValueState("Error");
+					// iTipoActividad.setValueStateText("El Tipo de actividad es obligatorio.");
+                    MessageBox.error("Por favor, selecciona el Tipo de actividad.", {
+                        onClose: function () { iTipoActividad.focus(); }
+                    });
+                    return;
+                }
+                if (sRequerimiento === "") {
+                    let iR = this.byId("requerimientoInput");
+                    MessageBox.error("Por favor, ingresa el Requerimiento.", {
+                        onClose: function () { iR.focus(); }
+                    });
+                    return;
+                }
             }
-            if (sDescripcion === "") {
+			if (sDescripcion === "") {
 				let iD = this.byId("descripcionInput");
 				MessageBox.error("Por favor, ingresa la Descripción de la actividad.", {
 					onClose: function () { iD.focus(); }
 				});
-                return;
-            }
+				return;
+			}
 
 			// Agregar la nueva actividad al modelo
 			actividadesRegistradas.push({
 				fecha: sFechaCaptura,
-				tipoActividad: sTipoActividad,
-				hora: new Date().toLocaleTimeString("es-MX", { hour: '2-digit', minute: '2-digit' }),
+				tipoActividad: formData.esCapacitacion ? "Capacitación Interna" : sTipoActividad,
+				hora: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }),
 				cliente: formData.esCapacitacion ? "Capacitación Interna" : sCliente,
-				proyecto: formData.esCapacitacion ? "Capacitación Interna" : sProyecto,
-				requerimiento: formData.requerimiento,
+				proyecto: formData.esCapacitacion ? "bench" : sProyecto,
+				requerimiento: formData.esCapacitacion ? "bench" : sRequerimiento,
 				descripcion: formData.descripcion,
 				horas: formData.horasInvertidas
 			});

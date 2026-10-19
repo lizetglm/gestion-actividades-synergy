@@ -17,7 +17,6 @@
                     <Link text="{i18n>tituloGrupo1}" press=".onBack" />
                 </Breadcrumbs>
 
-                <!-- Subtitulo y boton -->
                 <FlexBox justifyContent="SpaceBetween" alignItems="End" >
                     <Title
                         level="H4" titleStyle="H4"
@@ -33,21 +32,22 @@
                     />
                 </FlexBox>
 
+                <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
+                <!-- CONTEXTO DE TRABAJO -->
                 <Panel >
                     <headerToolbar>
                         <OverflowToolbar>
-                            <Title text="Contexto de Trabajo" level="H3"/>
+                            <Title text="{i18n>contextoTrabajo}" level="H3"/>
                             <ToolbarSpacer />
                             <ObjectStatus 
-                                text="{= ${uiPantalla>/esCapacitacion} ? 'Modo: Capacitación Interna' : ((${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Activo: ' + ${uiPantalla>/cliente} : 'Pendiente de seleccionar') }"
-                                state="{= ${uiPantalla>/esCapacitacion} || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Success' : 'Warning' }" 
-                                icon="{= ${uiPantalla>/esCapacitacion} || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'sap-icon://status-positive' : 'sap-icon://alert' }"
+                                text="{= (( ${uiPantalla>/esCapacitacion} &amp;&amp; ${uiPantalla>/cliente} )) ? 'Modo: Capacitación Interna' : ((${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Activo: ' + ${uiPantalla>/cliente} : 'Pendiente de seleccionar') }"
+                                state="{= (${uiPantalla>/esCapacitacion} &amp;&amp; ${uiPantalla>/cliente}) || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Success' : 'Warning' }" 
+                                icon="{= (${uiPantalla>/esCapacitacion} &amp;&amp; ${uiPantalla>/cliente}) || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'sap-icon://status-positive' : 'sap-icon://alert' }"
                             />
                         </OverflowToolbar>
                     </headerToolbar>
                     <content>
                         <VBox >
-                            <!-- <Label text="¿Es una actividad de capacitación interna?" class="sapUiTinyMarginTop" />  -->
                             <CheckBox 
                                 text="{i18n>formCapacitacion}" 
                                 selected="{uiPantalla>/esCapacitacion}"
@@ -58,7 +58,6 @@
                                     <Label text="{i18n>customer}" required="true" />
                                     <Select id="clienteSelect" 
                                         wrapItemsText="true" 
-                                        enabled="{= !${uiPantalla>/esCapacitacion} }"
                                         selectedKey="{uiPantalla>/cliente}"
                                     >
                                         <items>
@@ -88,7 +87,7 @@
                     </content>
                 </Panel>
                 
-                <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
+                <!-- DATOS DE LA ACTIVDAD -->
                 <form:SimpleForm 
                     editable="true" 
                     columnsM="2" columnsL="3" columnsXL="4"
@@ -100,29 +99,30 @@
                         <Label text="{i18n>formFecha}" required="true" />
                         <DatePicker value="{uiPantalla>/fechaCaptura}" />
 
-                        <Label text="{i18n>formTipoActividad}" required="true" />
-                        <Input placeholder="Ej. Desarrollo" value="{uiPantalla>/tipoActividad}" id="tipoActividadInput"/>
-
                         <Label text="{i18n>formHInvertidas}" required="true" />
                         <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput"/>
 
-                        <Label text="{i18n>formRequerimiento}" required="true" />
-                        <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput"/>
+                        <!-- campos para actividad normal -->
+                        <Label text="{i18n>formTipoActividad}" required="true" visible="{= !${uiPantalla>/esCapacitacion} }" />
+                        <Input placeholder="Ej. Desarrollo" value="{uiPantalla>/tipoActividad}" id="tipoActividadInput" visible="{= !${uiPantalla>/esCapacitacion} }" />
+
+                        <Label text="{i18n>formRequerimiento}" required="true" visible="{= !${uiPantalla>/esCapacitacion} }" />
+                        <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput" visible="{= !${uiPantalla>/esCapacitacion} }" />
+                        <!-- - - - - - - - - - - - - - - -  -->
 
                         <Label text="{i18n>formDescripcion}" required="true" />
-                        <TextArea 
-                            placeholder="Ej. Desarrollo de validaciones en Behavior Implementation..."
+                        <TextArea  id="descripcionInput"
+                            placeholder="Ej. Curso avanzado de SAP RAP y BTP, Ej. Desarrollo de nueva funcionalidad en la aplicación Fiori ..."
                             rows="4"
                             growing="true"
-                            growingMaxLines="7"
+                            growingMaxLines="6"
                             width="100%" 
                             value="{uiPantalla>/descripcion}"
-                            id="descripcionInput"
                         />
                     </form:content>
                 </form:SimpleForm>
 
-                <!-- Tabla de actividades registradas hoy -->
+                <!-- TABLA DE ACTIVIDADES REGISTRADAS HOY -->
                 <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}">
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
@@ -154,18 +154,16 @@
                     </items>
                 </Table>
 
-
             </VBox>
         </content>
 
-        <!-- Horas registradas -->
+        <!-- HORAS REGISTRADAS TOTAL -->
         <footer>
             <OverflowToolbar >
                 <ObjectStatus 
                     text="{uiPantalla>/horasTotales}" 
                     state="Success" 
-                    class="sapMTitleStyleH5 " 
-                />
+                    class="sapMTitleStyleH5 " />
             </OverflowToolbar>
         </footer>
     </Page>
