@@ -38,7 +38,6 @@
                         <OverflowToolbar>
                             <Title text="Contexto de Trabajo" level="H3"/>
                             <ToolbarSpacer />
-                            
                             <ObjectStatus 
                                 text="{= ${uiPantalla>/esCapacitacion} ? 'Modo: Capacitación Interna' : ((${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Activo: ' + ${uiPantalla>/cliente} : 'Pendiente de seleccionar') }"
                                 state="{= ${uiPantalla>/esCapacitacion} || (${uiPantalla>/cliente} &amp;&amp; ${uiPantalla>/proyecto}) ? 'Success' : 'Warning' }" 
@@ -106,7 +105,6 @@
 
                         <Label text="{i18n>formHInvertidas}" required="true" />
                         <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput"/>
-
 
                         <Label text="{i18n>formRequerimiento}" required="true" />
                         <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput"/>
