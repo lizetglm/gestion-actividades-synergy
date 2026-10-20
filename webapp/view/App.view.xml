@@ -21,7 +21,7 @@
         </tnt:header>
 
         <tnt:sideContent >
-            <tnt:SideNavigation selectedKey="home" itemSelect=".onNavigationSelect" expanded="false" >
+            <tnt:SideNavigation id="sideNavigation" selectedKey="home" itemSelect=".onNavigationSelect" expanded="false" >
                 <tnt:NavigationList>
                     <tnt:NavigationListItem text="Inicio" key="home" icon="sap-icon://home" />
                     <tnt:NavigationListItem text="{i18n>app1}" key="registrarActividad" icon="sap-icon://add-activity" />

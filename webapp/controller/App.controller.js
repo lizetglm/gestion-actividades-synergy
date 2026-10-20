@@ -7,25 +7,53 @@ sap.ui.define(
   
       return BaseController.extend("ns.frontend.controller.App", {
         onInit: function () {
-            // El menú lateral arranca oculto por defecto para limpiar la pantalla
             var oToolPage = this.byId("app");
             if (oToolPage) {
                 oToolPage.setSideExpanded(false);
             }
+
+            // Escuchar cada cambio de ruta en la aplicación
+            this.getOwnerComponent().getRouter().attachRouteMatched(this.onRouteChange, this);
         },
 
         onSideNavButtonPress: function () {
             var oToolPage = this.byId("app");
             var bExpanded = oToolPage.getSideExpanded();
-            // Alterna la apertura/cierre del menú lateral al hacer clic
             oToolPage.setSideExpanded(!bExpanded);
+        },
+
+        onRouteChange: function (oEvent) {
+            var sRouteName = oEvent.getParameter("name"); //nombre de la ruta
+            var oSideNavigation = this.byId("sideNavigation");
+            var sKey = "";
+
+            // mapeo del nombre de la rta y el key del sidemenu
+            if (sRouteName === "RouteMain") {
+                sKey = "home";
+            } else if (sRouteName === "RouteRegistrarActividad") {
+                sKey = "registrarActividad";
+            } else if (sRouteName === "RouteCalendarioActividades") {
+                sKey = "calendarioActividades";
+            } else if (sRouteName === "RouteReporteMensual") {
+                sKey = "reporteMensual";
+            } else if (sRouteName === "RoutePanelCumplimiento") {
+                sKey = "panelCumplimiento";
+            } else if (sRouteName === "RouteClientesProyectos") {
+                sKey = "clientesProyectos";
+            } else if (sRouteName === "RoutePerfiles") {
+                sKey = "perfiles";
+            }
+
+            // sombrear el elemento seleccionado en el sidemenu
+            if (sKey && oSideNavigation) {
+                oSideNavigation.setSelectedKey(sKey);
+            }
         },
 
         onNavigationSelect: function (oEvent) {
             var sKey = oEvent.getParameter("item").getKey();
             var oRouter = this.getOwnerComponent().getRouter();
 
-            // Cierra el menú automáticamente al seleccionar una opción para dar espacio
             var oToolPage = this.byId("app");
             if (oToolPage) {
                 oToolPage.setSideExpanded(false);
