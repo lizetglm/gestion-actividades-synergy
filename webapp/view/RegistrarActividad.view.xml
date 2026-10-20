@@ -132,7 +132,13 @@
                 </Panel>
 
                 <!-- TABLA DE ACTIVIDADES REGISTRADAS HOY -->
-                <Table headerText="{uiPantalla>/tableTitle}" items="{modeloFiltrado>/}" alternateRowColors="true" >
+                <Title class="sapUiSmallMarginTop"
+                    level="H4" titleStyle="H4"
+                    text="{uiPantalla>/tableTitle}"
+                    wrapping="true"
+                    wrappingType="Hyphenated">
+                </Title>
+                <Table items="{modeloFiltrado>/}" alternateRowColors="true" >
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                             <Text text="{i18n>tblHora}" />
