@@ -132,7 +132,7 @@
                 </Panel>
 
                 <!-- TABLA DE ACTIVIDADES REGISTRADAS HOY -->
-                <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}">
+                <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}" alternateRowColors="true">
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                             <Text text="{i18n>tblHora}" />

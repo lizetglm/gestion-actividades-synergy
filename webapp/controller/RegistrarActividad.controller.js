@@ -101,15 +101,15 @@ sap.ui.define([
             }
 			//quitar este if si no es asi el fuljo o campos especificos para capacitacion
 			if (!formData.esCapacitacion) {
-                if (sTipoActividad === "") {
-                    let iTipoActividad = this.byId("tipoActividadInput");
-					// iTipoActividad.setValueState("Error");
-					// iTipoActividad.setValueStateText("El Tipo de actividad es obligatorio.");
-                    MessageBox.error("Por favor, selecciona el Tipo de actividad.", {
-                        onClose: function () { iTipoActividad.focus(); }
-                    });
-                    return;
-                }
+                // if (sTipoActividad === "") {
+                //     let iTipoActividad = this.byId("tipoActividadInput");
+				// 	// iTipoActividad.setValueState("Error");
+				// 	// iTipoActividad.setValueStateText("El Tipo de actividad es obligatorio.");
+                //     MessageBox.error("Por favor, selecciona el Tipo de actividad.", {
+                //         onClose: function () { iTipoActividad.focus(); }
+                //     });
+                //     return;
+                // }
                 if (sRequerimiento === "") {
                     let iR = this.byId("requerimientoInput");
                     MessageBox.error("Por favor, ingresa el Requerimiento.", {
