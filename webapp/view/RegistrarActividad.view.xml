@@ -7,12 +7,12 @@
 	height="100%"
 	busyIndicatorDelay="0"
 >
-    <Page id="idRegistrarActividadPage" showHeader="false" backgroundDesign="Transparent">
+    <Page id="idRegistrarActividadPage" showHeader="false" backgroundDesign="Transparent" class="sapUiResponsiveContentPadding" >
         <!-- <customHeader >
             <c:Fragment fragmentName="ns.frontend.fragment.Header" />
         </customHeader> -->
         <content>
-            <VBox class="sapUiMediumMargin gapBody">
+            <VBox class="sapUiSmallMargin gapBody">
                 <Breadcrumbs currentLocationText="{i18n>app1}">
                     <Link text="{i18n>tituloGrupo1}" press=".onBack" />
                 </Breadcrumbs>
@@ -34,7 +34,7 @@
 
                 <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
                 <!-- CONTEXTO DE TRABAJO -->
-                <Panel >
+                <Panel class="sapUiResponsiveContentPadding">
                     <headerToolbar>
                         <OverflowToolbar>
                             <Title text="{i18n>contextoTrabajo}" level="H3"/>
@@ -54,7 +54,7 @@
                                 class="sapUiTinyMarginTop sapUiSmallMarginBottom" />
 
                             <layout:Grid defaultSpan="L6 M6 S12" >
-                                <HBox width="100%" alignItems="Center" >
+                                <HBox width="100%" alignItems="Center" wrap="Wrap">
                                     <Label text="{i18n>customer}" required="true" class="sapUiSmallMarginEnd" />
                                     <Select id="clienteSelect" 
                                         wrapItemsText="true" 
@@ -68,7 +68,7 @@
                                         </items>
                                     </Select>
                                 </HBox>
-                                <HBox width="100%" alignItems="Center">
+                                <HBox width="100%" alignItems="Center" wrap="Wrap">
                                     <Label text="{i18n>project}" required="true" class="sapUiSmallMarginEnd" />
                                     <Select id="proyectoSelect"
                                         wrapItemsText="true" 
@@ -89,9 +89,9 @@
                 </Panel>
                 
                 <!-- DATOS DE LA ACTIVIDAD -->
-                <Panel headerText="{i18n>formRegistrarActividad}">
+                <Panel headerText="{i18n>formRegistrarActividad}" class="sapUiResponsiveContentPadding" >
                     <content>
-                        <layout:Grid defaultSpan="L12 M12 S12" >
+                        <layout:Grid defaultSpan="L12 M12 S12" class="sapUiSmallMarginTop">
                             <VBox>
                                 <layoutData>
                                     <layout:GridData span="L6 M6 S12"/>
