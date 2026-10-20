@@ -1,4 +1,4 @@
-<mvc:View xmlns:form="sap.ui.layout.form"
+<mvc:View xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form"
 	controllerName="ns.frontend.controller.RegistrarActividad"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
@@ -51,11 +51,11 @@
                             <CheckBox 
                                 text="{i18n>formCapacitacion}" 
                                 selected="{uiPantalla>/esCapacitacion}"
-                                class="sapUiTinyMarginTop" />
+                                class="sapUiTinyMarginTop sapUiSmallMarginBottom" />
 
-                            <form:SimpleForm editable="true" layout="ColumnLayout" columnsM="2" >
-                                <form:content>
-                                    <Label text="{i18n>customer}" required="true" />
+                            <layout:Grid defaultSpan="L6 M6 S12" >
+                                <HBox width="100%" alignItems="Center" >
+                                    <Label text="{i18n>customer}" required="true" class="sapUiSmallMarginEnd" />
                                     <Select id="clienteSelect" 
                                         wrapItemsText="true" 
                                         selectedKey="{uiPantalla>/cliente}"
@@ -67,8 +67,9 @@
                                             <c:Item key="cliente3" text="Cliente Gamma S.A." />
                                         </items>
                                     </Select>
-
-                                    <Label text="{i18n>project}" required="true" />
+                                </HBox>
+                                <HBox width="100%" alignItems="Center">
+                                    <Label text="{i18n>project}" required="true" class="sapUiSmallMarginEnd" />
                                     <Select id="proyectoSelect"
                                         wrapItemsText="true" 
                                         enabled="{= !${uiPantalla>/esCapacitacion} }"
@@ -81,46 +82,54 @@
                                             <c:Item key="Integración BTP" text="Integración BTP" />
                                         </items>
                                     </Select>
-                                </form:content>
-                            </form:SimpleForm>
+                                </HBox>
+                            </layout:Grid>
                         </VBox>
                     </content>
                 </Panel>
                 
-                <!-- DATOS DE LA ACTIVDAD -->
-                <form:SimpleForm 
-                    editable="true" 
-                    columnsM="2" columnsL="3" columnsXL="4"
-                    title="{i18n>formRegistrarActividad}"
-                    class="sapUiSmallMarginBottom"
-                    layout="ColumnLayout"
-                >
-                    <form:content>
-                        <Label text="{i18n>formFecha}" required="true" />
-                        <DatePicker value="{uiPantalla>/fechaCaptura}" />
+                <!-- DATOS DE LA ACTIVIDAD -->
+                <Panel headerText="{i18n>formRegistrarActividad}">
+                    <content>
+                        <layout:Grid defaultSpan="L12 M12 S12" >
+                            <VBox>
+                                <layoutData>
+                                    <layout:GridData span="L6 M6 S12"/>
+                                </layoutData>
+                                
+                                <VBox class="sapUiSmallMarginBottom">
+                                    <Label text="{i18n>formFecha}" required="true" />
+                                    <DatePicker value="{uiPantalla>/fechaCaptura}" width="100%" />
+                                </VBox>
 
-                        <Label text="{i18n>formHInvertidas}" required="true" />
-                        <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput"/>
+                                <VBox class="sapUiSmallMarginBottom">
+                                    <Label text="{i18n>formHInvertidas}" required="true" />
+                                    <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput" width="100%" />
+                                </VBox>
 
-                        <!-- campos para actividad normal -->
-                        <Label text="{i18n>formTipoActividad}" required="true" visible="{= !${uiPantalla>/esCapacitacion} }" />
-                        <Input placeholder="Ej. Desarrollo" value="{uiPantalla>/tipoActividad}" id="tipoActividadInput" visible="{= !${uiPantalla>/esCapacitacion} }" />
+                                <VBox visible="{= !${uiPantalla>/esCapacitacion} }">
+                                    <Label text="{i18n>formRequerimiento}" required="true" />
+                                    <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput" width="100%" />
+                                </VBox>
+                            </VBox>
 
-                        <Label text="{i18n>formRequerimiento}" required="true" visible="{= !${uiPantalla>/esCapacitacion} }" />
-                        <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput" visible="{= !${uiPantalla>/esCapacitacion} }" />
-                        <!-- - - - - - - - - - - - - - - -  -->
+                            <VBox>
+                                <layoutData>
+                                    <layout:GridData span="L6 M6 S12"/>
+                                </layoutData>
+                                
+                                <Label text="{i18n>formDescripcion}" required="true" />
+                                <TextArea id="descripcionInput"
+                                    placeholder="Ej. Curso avanzado de SAP RAP y BTP. Ej. Desarrollo de validaciones en Behavior Implementation..."
+                                    rows="8"
+                                    width="100%" 
+                                    value="{uiPantalla>/descripcion}"
+                                />
+                            </VBox>
 
-                        <Label text="{i18n>formDescripcion}" required="true" />
-                        <TextArea  id="descripcionInput"
-                            placeholder="Ej. Curso avanzado de SAP RAP y BTP, Ej. Desarrollo de nueva funcionalidad en la aplicación Fiori ..."
-                            rows="4"
-                            growing="true"
-                            growingMaxLines="6"
-                            width="100%" 
-                            value="{uiPantalla>/descripcion}"
-                        />
-                    </form:content>
-                </form:SimpleForm>
+                        </layout:Grid>
+                    </content>
+                </Panel>
 
                 <!-- TABLA DE ACTIVIDADES REGISTRADAS HOY -->
                 <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}">
