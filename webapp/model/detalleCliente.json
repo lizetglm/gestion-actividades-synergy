@@ -35,9 +35,29 @@
             "rol": "Desarrolladora ABAP RAP / Fiori"
         },
         {
+            "nombreConsultor": "Chelsea Garcia Telles",
+            "proyectoAsignado": "Implementación SAP BTP",
+            "rol": "Desarrolladora ABAP RAP / Fiori"
+        },
+        {
             "nombreConsultor": "Juan Pérez",
             "proyectoAsignado": "Desarrollo de Aplicación Móvil",
             "rol": "Desarrollador Mobile"
+        },
+        {
+            "nombreConsultor": "Ana Martínez",
+            "proyectoAsignado": "Desarrollo de Aplicación Móvil",
+            "rol": "Diseñadora UX/UI"
+        },
+        {
+            "nombreConsultor": "Luis Rodríguez",
+            "proyectoAsignado": "Integración de Sistemas",
+            "rol": "Especialista en Integración"
+        },
+        {
+            "nombreConsultor": "Sofía Hernández",
+            "proyectoAsignado": "Integración de Sistemas",
+            "rol": "Desarrolladora ABAP"
         },
         {
             "nombreConsultor": "María García",

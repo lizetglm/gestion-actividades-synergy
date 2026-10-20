@@ -80,6 +80,9 @@
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="150px">
                                         <Text text="{i18n>estatus}" />
                                     </Column>
+                                    <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
+                                        <Text text="Acciones" design="Bold" />
+                                    </Column>
                                 </columns>
 
                                 <items>
@@ -89,6 +92,10 @@
                                             <Text text="{modelo>nombreProyecto}" />
                                             <Text text="{modelo>descripcion}" />
                                             <ObjectStatus text="{modelo>estatusProyecto}" state="Information" />
+                                            <HBox justifyContent="End" press="nonBubble" gap="0.6rem">
+                                                <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditarCliente" />
+                                                <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
+                                            </HBox>
                                         </cells>
                                     </ColumnListItem>
                                 </items>
@@ -99,14 +106,19 @@
             </uxap:ObjectPageSection>
 
             <!-- Consultores Asignados -->
-            <uxap:ObjectPageSection title="{i18n>seccionConsultores}" titleUppercase="false" class="sapUiSmallMarginTopBottom">
+            <uxap:ObjectPageSection title="{i18n>seccionConsultores}" titleUppercase="false" class="sapUiSmallMarginTopBottom sapUiMediumMarginBottom">
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table 
                                 id="tablaConsultoresDetalle"
-                                items="{modelo>/consultores}" 
-                                alternateRowColors="true"
+                                items="{
+                                    path: 'modelo>/consultores',
+                                    sorter: {
+                                        path: 'proyectoAsignado',
+                                        group: true
+                                    }
+                                }"
                             >
                                 <headerToolbar>
                                     <OverflowToolbar>
@@ -128,8 +140,11 @@
                                         <Text text="{i18n>project}" /> 
                                     </Column>
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                                     <Text text="{i18n>rolProyecto}" /> 
-                                     </Column>
+                                        <Text text="{i18n>rolProyecto}" /> 
+                                    </Column>
+                                     <Column width="100px" hAlign="Center" minScreenWidth="Tablet" demandPopin="true">
+                                        <Text text="Acciones" design="Bold" />
+                                    </Column>
                                 </columns>
 
                                 <items>
@@ -138,6 +153,7 @@
                                             <Text text="{modelo>nombreConsultor}" />
                                             <Text text="{modelo>proyectoAsignado}" />
                                             <Text text="{modelo>rol}" />
+                                            <Button icon="sap-icon://decline" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
                                         </cells>
                                     </ColumnListItem>
                                 </items>

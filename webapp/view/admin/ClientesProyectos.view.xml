@@ -84,10 +84,8 @@
                             <Text text="{modelo>idCliente}" />
                             <Text text="{modelo>nombre}" />
                             <Text text="{modelo>totalProyectos}" />
-                            <ObjectStatus 
-                                text="{modelo>estatus}" 
-                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" 
-                            />
+                            <ObjectStatus text="{modelo>estatus}" 
+                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" />
                             <HBox justifyContent="End" press="nonBubble" gap="0.6rem">
                                 <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditarCliente" />
                                 <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
