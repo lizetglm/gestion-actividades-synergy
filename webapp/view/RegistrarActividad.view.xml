@@ -97,12 +97,12 @@
                                     <layout:GridData span="L6 M6 S12"/>
                                 </layoutData>
                                 
-                                <VBox class="sapUiSmallMarginBottom">
+                                <VBox class="sapUiTinyMarginBottom">
                                     <Label text="{i18n>formFecha}" required="true" />
                                     <DatePicker value="{uiPantalla>/fechaCaptura}" width="100%" change=".onFechaChange" />
                                 </VBox>
 
-                                <VBox class="sapUiSmallMarginBottom">
+                                <VBox class="sapUiTinyMarginBottom">
                                     <Label text="{i18n>formHInvertidas}" required="true" />
                                     <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput" width="100%" />
                                 </VBox>
@@ -121,7 +121,7 @@
                                 <Label text="{i18n>formDescripcion}" required="true" />
                                 <TextArea id="descripcionInput"
                                     placeholder="Ej. Curso avanzado de SAP RAP y BTP. Ej. Desarrollo de validaciones en Behavior Implementation..."
-                                    rows="8"
+                                    rows="7"
                                     width="100%" 
                                     value="{uiPantalla>/descripcion}"
                                 />
