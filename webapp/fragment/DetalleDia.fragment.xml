@@ -1,0 +1,43 @@
+<c:FragmentDefinition 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core">
+    <Dialog title="Detalle de Actividades del Día" contentWidth="650px" contentHeight="400px">
+        <content>
+            <Table 
+                id="tablaDetalleDia" 
+                items="{dialogo>/actividadesDia}"
+                alternateRowColors="true"
+                class="sapUiResponsiveMargin">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="Registros del día seleccionado" level="H3"/>
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="Hora" design="Bold" /></Column>
+                    <Column><Text text="Cliente / Proyecto" design="Bold" /></Column>
+                    <Column><Text text="Descripción" design="Bold" /></Column>
+                    <Column><Text text="Horas" design="Bold" /></Column>
+                    <Column hAlign="End"><Text text="Acciones" design="Bold" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{dialogo>hora}" />
+                            <Text text="{dialogo>cliente}" />
+                            <Text text="{dialogo>descripcion}" />
+                            <Text text="{modelo>horas} h" />
+                            <HBox justifyContent="End">
+                                <Button icon="sap-icon://edit" type="Transparent" press=".onEditarActividad" tooltip="Editar" />
+                                <Button icon="sap-icon://delete" type="Transparent" press=".onEliminarActividad" tooltip="Eliminar" />
+                            </HBox>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+        <beginButton>
+            <Button text="Cerrar" press=".onCerrarDialogoDia" type="Emphasized" />
+        </beginButton>
+    </Dialog>
+</c:FragmentDefinition>

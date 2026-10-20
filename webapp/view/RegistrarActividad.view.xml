@@ -99,7 +99,7 @@
                                 
                                 <VBox class="sapUiSmallMarginBottom">
                                     <Label text="{i18n>formFecha}" required="true" />
-                                    <DatePicker value="{uiPantalla>/fechaCaptura}" width="100%" />
+                                    <DatePicker value="{uiPantalla>/fechaCaptura}" width="100%" change=".onFechaChange" />
                                 </VBox>
 
                                 <VBox class="sapUiSmallMarginBottom">
@@ -132,7 +132,7 @@
                 </Panel>
 
                 <!-- TABLA DE ACTIVIDADES REGISTRADAS HOY -->
-                <Table headerText="{uiPantalla>/tableTitle}" items="{modelo>/}" alternateRowColors="true">
+                <Table headerText="{uiPantalla>/tableTitle}" items="{modeloFiltrado>/}" alternateRowColors="true" >
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                             <Text text="{i18n>tblHora}" />
@@ -153,11 +153,11 @@
                     <items>
                         <ColumnListItem type="Active" press=".onFilaClickeada" >
                             <cells>
-                                <Text text="{modelo>fecha}" />
-                                <Text text="{modelo>cliente}" />
-                                <Text text="{modelo>requerimiento}" />
-                                <Text text="{modelo>descripcion}" />
-                                <Text text="{modelo>horas} h" />
+                                <Text text="{modeloFiltrado>fecha}" />
+                                <Text text="{modeloFiltrado>cliente}" />
+                                <Text text="{modeloFiltrado>requerimiento}" />
+                                <Text text="{modeloFiltrado>descripcion}" />
+                                <Text text="{modeloFiltrado>horas} h" />
                             </cells>
                         </ColumnListItem>
                     </items>

@@ -15,12 +15,14 @@ sap.ui.define([
         },
 		
 		onInit: function() {
+			let sFechaHoy = new Date().toLocaleDateString("es-MX");
+
 			let  uiEstado = {
 				tituloHeader: this.getResourceBundle().getText("titleRegistrarActividad"),
 				userName: "User",
 				horasTotales: this.getResourceBundle().getText("horasTotales", ["1", "0.0"]),
 				
-				fechaCaptura: new Date().toLocaleDateString("es-MX"),
+				fechaCaptura: sFechaHoy,
 				tipoActividad: "",
 				horasInvertidas: "",
 				esCapacitacion: false,
@@ -29,15 +31,10 @@ sap.ui.define([
 				requerimiento: "",
 				descripcion: "",
 
-				saludo: this.getResourceBundle().getText("saludoRegistroActividad") + " - " + new Date().toLocaleDateString("es-MX", {
-					day: "numeric",
-					month: "long",
-					year: "numeric"
-				}),
+				saludo: this.getResourceBundle().getText("saludoRegistroActividad") ,
 				tableTitle: this.getResourceBundle().getText("tableActividadesHoy") + " (" + new Date().toLocaleDateString("es-MX") + ")"
 			};
 			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
-
 
 			// Modelos solo de prueba
 			let actividadesRegistradas = [
@@ -45,11 +42,39 @@ sap.ui.define([
            		{ fecha: new Date().toLocaleDateString("es-MX"), hora: "13:00", cliente: "Capacitación Interna", requerimiento: "SAP BTP / RAP", descripcion: "Curso Fiori", horas: 2.0 }
 			];
 			this.getView().setModel(new JSONModel(actividadesRegistradas), "modelo");
+
+			// Filtrado de la tabla
+			this._actualizarTablaYTotales(sFechaHoy);
 		},
 
 		onBack: function() {
 			this.getOwnerComponent().getRouter().navTo("RouteMain");
 		},
+
+		onFechaChange: function(oEvent) {
+			let oDatePicker = oEvent.getSource();
+			let oSelectedDate = oDatePicker.getDateValue();
+			
+			if (oSelectedDate) {
+				let sFechaFormateada = oSelectedDate.toLocaleDateString("es-MX");
+				this.getView().getModel("uiPantalla").setProperty("/fechaCaptura", sFechaFormateada);
+				this._actualizarTablaYTotales(sFechaFormateada);
+			}
+		},
+		_actualizarTablaYTotales: function(sFecha) {
+            let aTodas = this.getView().getModel("modelo").getData() || [];
+            let aFiltradas = aTodas.filter(act => act.fecha === sFecha);
+
+            // Actualizar modelo de la tabla filtrada
+            this.getView().setModel(new JSONModel(aFiltradas), "modeloFiltrado");
+			this.getView().getModel("modeloFiltrado").refresh(true);
+
+            // Calcular total de horas del día
+            let fTotal = aFiltradas.reduce((acc, curr) => acc + parseFloat(curr.horas || 0), 0);
+            let oModelUI = this.getView().getModel("uiPantalla");
+            oModelUI.setProperty("/horasTotales", this.getResourceBundle().getText("horasTotales", [sFecha, fTotal.toFixed(1)]));
+			oModelUI.setProperty("/tableTitle", this.getResourceBundle().getText("tableActividadesHoy") + " (" + sFecha + ")");
+        },
 
 		limpiarFormulario: function() {
 			let oModelUI = this.getView().getModel("uiPantalla");
@@ -140,13 +165,9 @@ sap.ui.define([
 			this.getView().getModel("modelo").setData(actividadesRegistradas);
 			MessageToast.show("Actividad registrada exitosamente.");
 
-			//refrescar el modelo para que la tabla se actualice
-			this.getView().getModel("modelo").refresh(true);
+			// Actualizar vista filtrada de la tabla y totales
+            this._actualizarTablaYTotales(sFechaCaptura);
 
-			//actulizar el total de horas
-			let totalHoras = actividadesRegistradas.reduce((total, actividad) => total + parseFloat(actividad.horas), 0);
-			oModelUI.setProperty("/horasTotales", this.getResourceBundle().getText("horasTotales", [actividadesRegistradas.length, totalHoras.toFixed(1)]));
-			
 			// limpar formulario
             this.limpiarFormulario();
 		},
