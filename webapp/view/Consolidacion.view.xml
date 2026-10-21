@@ -1,501 +1,281 @@
+
 <mvc:View
+    id="viewConsolidacion"
     controllerName="com.cg.actividades.vistacalendarioactividades.controller.Consolidacion"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
     xmlns="sap.m"
     displayBlock="true">
+
     <Page
         id="pageConsolidacion"
-        title="{i18n>consolidacionTitle}"
-        class="sapUiContentPadding">
+        showHeader="false"
+        enableScrolling="true"
+        class="consolidationPage">
+
         <content>
             <HBox
-                id="monthHe1aderProf"
+                id="monthHeaderProf1"
                 class="monthHeader"
                 justifyContent="SpaceBetween"
                 alignItems="Center">
-                <VBox id="vboxTituloPe1rfiles">
+                <VBox id="vboxTitu1loPerfiles">
                     <Text
-                        id="textPro1f"
+                        id="textPr1of"
                         text="Mis Aplicaciones > {i18n>consolidacionTitle}"
-                        class="sapUiTinyMarginBottom" />
+                        class="sapUiTinyMarginBottom" /> 
                 </VBox>
-            </HBox>
-            <VBox
-                id="layoutPrinci1pal"
-                height="100%"
-                fitContainer="true"
-                class="mainLayout">
-                <HBox
-                    id="areaTrabajo1"
-                    fitContainer="true"
-                    class="workspace">
-                    <VBox
-                        id="panelUsuar1ios"
-                        width="30%"
-                        height="100%"
-                        class="usersPanel">
-                        <Title
-                            id="tituloListaUsu11arios"
-                            text="Criterios de selección"
-                            level="H3"
-                            class="sectionTitle"/>
-                        <HBox
-                            id="contenedor1Busqueda"
-                            alignItems="Center"
-                            class="searchContainer">
-                            <SearchField
-                                id="buscadorUsu1arios"
-                                width="100%"
-                                placeholder="Cliente valor"
-                                liveChange=".onSearch"/>
-                            <Button
-                                id="botonFiltra1rUsuarios"
-                                icon="sap-icon://filter"
-                                type="Transparent"
-                                tooltip="Filtrar usuarios"/>
-                        </HBox>
-                        <ScrollContainer
-                            id="scrollCo1ntainerUsuarios"
-                            height="calc(100% - 90px)"
-                            vertical="true"
-                            horizontal="false">
-                            
 
 
-
-<VBox
-                id="kpiContainer1"
-                class="selectores">
-
-                <HBox
-                    id="periodFilter"
-                    class="selector">
-
-                    <VBox id="vbox">
-                        <Title
-                            id="periodTitle"
-                            text="Periodo"
-                            level="H5"/>
-
-                        <ComboBox
-                            id="periodComboBox"
-                            selectedKey="{filterModel>/period}"
-                            width="100%">
-
-                            <core:Item
-                                id="todosPeriodos"
-                                key="All"
-                                text="Todos los periodos"/>
-
-                            <core:Item
-                                id="agosto2026"
-                                key="Aug2026"
-                                text="Agosto 2026"/>
-
-                            <core:Item
-                                id="septiembre2026"
-                                key="Sep2026"
-                                text="Septiembre 2026"/>
-                        </ComboBox>
-                    </VBox>
-                </HBox>
-
-                <HBox
-                    id="statusFilter"
-                    class="kpiCard kpiOrange">
-
-                    <VBox id="draft">
-                        <Title
-                            id="statusTitle"
-                            text="Estatus de Consolidación"
-                            level="H5"/>
-
-                        <ComboBox
-                            id="statusComboBox"
-                            selectedKey="{filterModel>/status}"
-                            width="100%">
-
-                            <core:Item
-                                id="todosEstatus"
-                                key="All"
-                                text="Todos los estatus"/>
-
-                            <core:Item
-                                id="listoParaAprobacion"
-                                key="Ready"
-                                text="Listo para Aprobación"/>
-
-                            <core:Item
-                                id="borrador"
-                                key="Draft"
-                                text="Borrador"/>
-                        </ComboBox>
-                    </VBox>
-                </HBox>
-
-                <HBox
-                    id="quickAction"
-                    class="kpiCard borde">
-
-                    <VBox
-                        id="quickActionBox"
-                        class="quickActionBox">
-
-                        <Title
-                            id="quickActionTitle"
-                            text="Acción Rápida"
-                            level="H5"/>
-
-                        <Button
-                            id="quickActionButton"
-                            text="Ejecutar / Go"
-                            type="Emphasized"
-                            press="onExecuteFilter"
-                            width="100%"/>
-                    </VBox>
-                </HBox>
-            </VBox>
-
-
-
-
-
-
-
-
-                        </ScrollContainer>
-                    </VBox>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <VBox
-                        id="panelDetallesUsu1ario"
-                        width="70%"
-                        class="detailsPanel">
-                        <Title
-                            id="tituloDetallesUs1uario"
-                            text="{= 'Detalles del Usuario: ' + (${users>/selectedUser/fullName} || '') }"
-                            level="H2"
-                            class="detailsTitle"/>
-                        
-                        <VBox
-                id="monthHeader1"
-                class="monthHeader">
-
-                <Table
-                    id="consolidacionTable"
-                    items="{consolidacionModel>/reports}"
-                    mode="MultiSelect"
-                    selectionChange="onSelectionChange"
-                    class="borde">
-
-                    <headerToolbar>
-                        <OverflowToolbar
-                            id="tableToolbar"
-                            class="tableToolbar">
-
-                            <Title
-                                id="reportTitle1"
-                                text="Reportes Mensuales y Paquetes de Clientes"
-                                level="H3"/>
-
-                            <ToolbarSpacer id="tot"/>
-
-                            <Button
-                                id="tdot"
-                                text="Exportar"
-                                icon="sap-icon://export"
-                                press="onExportReport"/>
-
-                            <Button
-                                id="towt"
+                <Button
+                                id="btnConfiguracionConsolidacion"
                                 text="Configuración"
                                 icon="sap-icon://action-settings"
+                                type="Transparent"
                                 press="onSettings"/>
-                        </OverflowToolbar>
-                    </headerToolbar>
+            </HBox>
+            
+            
+            <VBox
+                id="consolidationLayout"
+                class="consolidationLayout">
 
-                    <columns>
-                        <Column id="t1ot">
-                            <Text
-                                id="t12ot"
-                                text="Mes / Consultor"/>
-                        </Column>
+              
+                    <HBox
+                        id="filtersConsolidacion"
+                        class="consolidationFilters"
+                        alignItems="End"
+                        wrap="Wrap">
 
-                        <Column id="t2ot">
-                            <Text
-                                id="t22ot"
-                                text="Consolidación ID"/>
-                        </Column>
+                        <!-- Filtro de periodo -->
+                        <VBox
+                            id="filterFieldPeriodo"
+                            class="filterField">
 
-                        <Column id="t3ot">
-                            <Text
-                                id="t32ot"
-                                text="Headcount"/>
-                        </Column>
+                            <Label
+                                id="labelPeriodo"
+                                text="Periodo"
+                                labelFor="periodComboBox"/>
 
-                        <Column id="t4ot">
-                            <Text
-                                id="t42ot"
-                                text="Total Horas"/>
-                        </Column>
+                            <ComboBox
+                                id="periodComboBox"
+                                selectedKey="{filterModel>/period}"
+                                width="100%">
 
-                        <Column id="t5ot">
-                            <Text
-                                id="t52ot"
-                                text="Estatus de Envío"/>
-                        </Column>
-                    </columns>
+                                <core:Item
+                                    id="itemPeriodoTodos"
+                                    key="All"
+                                    text="Todos"/>
 
-                    <items>
-                        <ColumnListItem id="tot1">
-                            <cells>
-                                <ObjectIdentifier
-                                    id="tot21"
-                                    title="{consolidacionModel>Month}"
-                                    text="{consolidacionModel>Department}"/>
+                                <core:Item
+                                    id="itemPeriodoAgosto2026"
+                                    key="Aug2026"
+                                    text="Agosto 2026"/>
+
+                                <core:Item
+                                    id="itemPeriodoSeptiembre2026"
+                                    key="Sep2026"
+                                    text="Septiembre 2026"/>
+                            </ComboBox>
+                        </VBox>
+
+                        <!-- Filtro de estatus -->
+                        <VBox
+                            id="filterFieldEstatus"
+                            class="filterField">
+
+                            <Label
+                                id="labelEstatusConsolidacion"
+                                text="Estatus de consolidación"
+                                labelFor="statusComboBox"/>
+
+                            <ComboBox
+                                id="statusComboBox"
+                                selectedKey="{filterModel>/status}"
+                                width="100%">
+
+                                <core:Item
+                                    id="itemEstatusTodos"
+                                    key="All"
+                                    text="Todos"/>
+
+                                <core:Item
+                                    id="itemEstatusReady"
+                                    key="Ready"
+                                    text="Listo para aprobación"/>
+
+                                <core:Item
+                                    id="itemEstatusDraft"
+                                    key="Draft"
+                                    text="Borrador"/>
+                            </ComboBox>
+                        </VBox>
+
+                        <!-- Filtro de agrupación -->
+                        <VBox
+                            id="filterFieldAgrupacion"
+                            class="filterField">
+
+                            <Label
+                                id="labelAgruparPor"
+                                text="Agrupar por"
+                                labelFor="groupByComboBox"/>
+
+                            <ComboBox
+                                id="groupByComboBox"
+                                selectedKey="{filterModel>/groupBy}"
+                                width="100%">
+
+                                <core:Item
+                                    id="itemAgruparDepartamento"
+                                    key="Department"
+                                    text="Departamento"/>
+
+                                <core:Item
+                                    id="itemAgruparMes"
+                                    key="Month"
+                                    text="Mes"/>
+
+                                <core:Item
+                                    id="itemAgruparEstatus"
+                                    key="Status"
+                                    text="Estatus"/>
+                            </ComboBox>
+                        </VBox>
+
+                        <ToolbarSpacer id="spacerFiltrosConsolidacion"/>
+
+                        <Button
+                            id="executeFilterButton"
+                            text="Go"
+                            type="Emphasized"
+                            press="onExecuteFilter"
+                            class="goButton"/>
+                    </HBox>
+
+             
+                    <Table
+                        id="consolidacionTable"
+                        items="{consolidacionModel>/reports}"
+                        mode="MultiSelect"
+                        selectionChange="onSelectionChange"
+                        includeItemInSelection="true"
+                        growing="true"
+                        growingScrollToLoad="true"
+                        class="consolidationTable">
+
+                        <columns>
+                            <Column id="columnMesDepartamento" width="28%">
+                                <Text
+                                    id="headerMesDepartamento"
+                                    text="Mes / Departamento"/>
+                            </Column>
+
+                            <Column id="columnConsolidacionID" width="18%">
+                                <Text
+                                    id="headerConsolidacionID"
+                                    text="Consolidación ID"/>
+                            </Column>
+
+                            <Column
+                                id="columnHeadcount"
+                                width="16%"
+                                hAlign="End">
 
                                 <Text
-                                    id="tot111"
-                                    text="{consolidacionModel>ConsolidacionID}"/>
+                                    id="headerHeadcount"
+                                    text="Headcount"/>
+                            </Column>
+
+                            <Column
+                                id="columnTotalHoras"
+                                width="18%"
+                                hAlign="End">
 
                                 <Text
-                                    id="tot13"
-                                    text="{consolidacionModel>Headcount}"/>
+                                    id="headerTotalHoras"
+                                    text="Total horas"/>
+                            </Column>
 
+                            <Column id="columnEstatusEnvio" width="20%">
                                 <Text
-                                    id="tot14"
-                                    text="{consolidacionModel>TotalHours}"
-                                    class="totalHorasText"/>
+                                    id="headerEstatusEnvio"
+                                    text="Estatus de envío"/>
+                            </Column>
+                        </columns>
 
-                                <ObjectStatus
-                                    id="tot15"
-                                    text="{consolidacionModel>StatusText}"
-                                    state="{consolidacionModel>StatusState}"/>
-                            </cells>
-                        </ColumnListItem>
-                    </items>
-                </Table>
-            </VBox>
+                        <items>
+                            <ColumnListItem
+                                id="templateFilaConsolidacion"
+                                vAlign="Middle">
 
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <IconTabBar
-                            id="pestanasDetalles1Usuario"
-                            expandable="false"
-                            selectedKey="general"
-                            class="detailsTabs">
-                            <items>
-                                <IconTabFilter
-                                    id="pestanaInfo1rmacionGeneral"
-                                    text="Información General"
-                                    key="general">
-                                    <VBox
-                                        id="tarjetaInformaci1onGeneral"
-                                        class="generalCard">
-                                        <HBox
-                                            id="columnasInform1acionGeneral"
-                                            fitContainer="true"
-                                            class="generalColumns">
-                                            <VBox
-                                                id="columnaInfo1rmacionIzquierda"
-                                                width="50%"
-                                                class="fieldColumn">
-                                                <Label
-                                                    id="labe1lNombreCompleto"
-                                                    text="Nombre Completo"/>
-                                                <Text
-                                                    id="valorNomb1reCompleto"
-                                                    text="{users>/selectedUser/fullName}"/>
-                                                <Label
-                                                    id="labelIdU1suario"
-                                                    text="ID de Usuario"/>
-                                                <Text
-                                                    id="valorId1Usuario"
-                                                    text="{users>/selectedUser/userId}"/>
-                                                <Label
-                                                    id="labelC1orreoElectronico"
-                                                    text="Correo Electrónico"/>
-                                                <Text
-                                                    id="valorCo1rreoElectronico"
-                                                    text="{users>/selectedUser/email}"/>
-                                                <Label
-                                                    id="labelD1epartamentoIzquierdo"
-                                                    text="Departamento"/>
-                                                <Text
-                                                    id="valorDe1partamentoIzquierdo"
-                                                    text="{users>/selectedUser/department}"/>
-                                            </VBox>
-                                            <VBox
-                                                id="columna1InformacionDerecha"
-                                                width="50%"
-                                                class="fieldColumn">
-                                                <Label
-                                                    id="labelD1epartamento"
-                                                    text="Departamento"/>
-                                                <Text
-                                                    id="valor1Departamento"
-                                                    text="{users>/selectedUser/department}"/>
-                                                <Label
-                                                    id="label1Ubicacion"
-                                                    text="Ubicación"/>
-                                                <Text
-                                                    id="valor1Ubicacion"
-                                                    text="{users>/selectedUser/location}"/>
-                                                <Label
-                                                    id="labe1lFechaCreacion"
-                                                    text="Fecha de Creación"/>
-                                                <Text
-                                                    id="valo1rFechaCreacion"
-                                                    text="{users>/selectedUser/creationDate}"/>
-                                                <Label
-                                                    id="label1EstadoUsuario"
-                                                    text="Estado"/>
-                                                <ObjectStatus
-                                                    id="val1orEstadoUsuario"
-                                                    text="{users>/selectedUser/status}"
-                                                    state="{= ${users>/selectedUser/status} === 'Activo' ? 'Success' : 'None' }"/>
-                                            </VBox>
-                                        </HBox>
-                                        <HBox
-                                            id="conte1nedorBotonEditar"
-                                            justifyContent="End"
-                                            class="editButtonContainer">
-                                            <Button
-                                                id="b1otonEditarUsuario"
-                                                text="Editar"
-                                                press=".onEditUser"/>
-                                        </HBox>
+                                <cells>
+                                    <VBox id="cellMesDepartamento">
+                                        <Text
+                                            id="cellMesReporte"
+                                            text="{consolidacionModel>Month}"
+                                            class="reportMonth"/>
+
+                                        <Text
+                                            id="cellDepartamentoReporte"
+                                            text="{consolidacionModel>Department}"
+                                            class="reportDepartment"/>
                                     </VBox>
-                                </IconTabFilter>
-                                <IconTabFilter
-                                    id="pestana1RolesAsignados"
-                                    text="Roles Asignados"
-                                    key="roles">
-                                    <VBox
-                                        id="secc1ionRolesAsignados"
-                                        class="rolesSection">
-                                        <Toolbar
-                                            id="barra1AccionesRoles"
-                                            class="rolesToolbar">
-                                            <Button
-                                                id="bot1onAsignarNuevoRol"
-                                                text="Asignar Nuevo Rol"
-                                                icon="sap-icon://add"
-                                                press=".onAssignRole"/>
-                                            <Button
-                                                id="bo1tonEliminarRol"
-                                                text="Eliminar Rol"
-                                                icon="sap-icon://delete"
-                                                type="Reject"
-                                                press=".onDeleteRole"/>
-                                        </Toolbar>
-                                        <Table
-                                            id="tab1laRoles"
-                                            items="{users>/selectedUser/roles}"
-                                            mode="SingleSelectLeft"
-                                            noDataText="No hay roles asignados"
-                                            class="rolesTable">
-                                            <columns>
-                                                <Column id="colu1mnaNombreRol">
-                                                    <Text id="te1xtRol" text="Nombre del Rol"/>
-                                                </Column>
-                                                <Column id="column1aDescripcionRol">
-                                                    <Text id="te1xtDescr" text="Descripción"/>
-                                                </Column>
-                                                <Column id="columnaS1istemaOrigen">
-                                                    <Text id="text1Sys" text="Sistema de Origen"/>
-                                                </Column>
-                                                <Column id="columnaVa1lidoDesde">
-                                                    <Text id="valT1il" text="Válido Desde"/>
-                                                </Column>
-                                                <Column id="columnaValid1oHasta">
-                                                    <Text id="val1Unt" text="Válido Hasta"/>
-                                                </Column>
-                                            </columns>
-                                            <items>
-                                                <ColumnListItem
-                                                    id="plantillaFilaRo1l">
-                                                    <cells>
-                                                        <Text id="text1Name" text="{users>name}"/>
-                                                        <Text id="text1Desc" text="{users>description}"/>
-                                                        <Text id="text1Sour" text="{users>source}"/>
-                                                        <Text id="text1Val" text="{users>validFrom}"/>
-                                                        <Text id="textV1alTo" text="{users>validTo}"/>
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                    </VBox>
-                                </IconTabFilter>
-                                <IconTabFilter
-                                    id="pestanaGru1pos"
-                                    text="Grupos"
-                                    key="groups">
-                                    <VBox
-                                        id="contenidoGru1pos"
-                                        class="emptyTabContent"/>
-                                </IconTabFilter>
-                                <IconTabFilter
-                                    id="pestanaAutorizacionesDirec1tas"
-                                    text="Autorizaciones Directas"
-                                    key="authorizations">
-                                    <VBox
-                                        id="contenidoAutorizacione1s"
-                                        class="emptyTabContent"/>
-                                </IconTabFilter>
-                            </items>
-                        </IconTabBar>
-                    </VBox>
-                </HBox>
+
+                                    <Text
+                                        id="cellConsolidacionID"
+                                        text="{consolidacionModel>ConsolidacionID}"/>
+
+                                    <Text
+                                        id="cellHeadcount"
+                                        text="{consolidacionModel>Headcount}"/>
+
+                                    <Text
+                                        id="cellTotalHoras"
+                                        text="{consolidacionModel>TotalHours}"
+                                        class="totalHorasText"/>
+
+                                    <ObjectStatus
+                                        id="cellEstatusEnvio"
+                                        text="{consolidacionModel>StatusText}"
+                                        state="{consolidacionModel>StatusState}"
+                                        inverted="true"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </VBox>
+
+                <!-- Barra inferior de acciones -->
                 <HBox
-                    id="barraInferior1"
-                    justifyContent="End"
-                    alignItems="Center"
-                    class="actionButtonsBar">
+                    id="bottomActionsConsolidacion"
+                    class="consolidationBottomBar"
+                    alignItems="Center">
+
+                    <Text
+                        id="selectedRowsText"
+                        text="Selecciona los reportes que deseas procesar."/>
+
+                    <ToolbarSpacer id="spacerAccionesInferiores"/>
+
                     <Button
-                        id="botonGuardar1"
-                        text="Guardar"
+                        id="btnEnviarAprobacion"
+                        text="Enviar a aprobación"
                         type="Emphasized"
-                        press=".onSave"
-                        class="sapUiTinyMarginEnd"/>
+                        icon="sap-icon://paper-plane"
+                        press="onSave"/>
+
                     <Button
-                        id="botonCancelar1"
+                        id="btnGuardarBorrador"
+                        text="Guardar borrador"
+                        press="onSaveDraft"/>
+
+                    <Button
+                        id="btnCancelarConsolidacion"
                         text="Cancelar"
-                        type="Default"
-                        press=".onCancel"
-                        class="sapUiTinyMarginEnd"/>
-                    <Button
-                        id="botonCrearNuevoUsuario1"
-                        text="Crear Nuevo Usuario"
                         type="Transparent"
-                        press=".onCreateUser"/>
+                        press="onCancel"/>
                 </HBox>
-            </VBox>
         </content>
     </Page>
 </mvc:View>
-
-

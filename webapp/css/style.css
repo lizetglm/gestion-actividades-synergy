@@ -788,19 +788,197 @@
 .selector{
     box-sizing: border-box;
     background: white;
-    padding: 12px 15px;
+    padding: 5px 15px;
     border-left: 5px solid;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-    flex: 1 1 100px;       
+    flex: 1 1 220px;       
     max-width: 270px;    
-height: 18px;
+    height: 18px;
     border-left-color: #0070f2;
 }
 
 .selectores{
-    padding: 1px 10px 10px 20px;
+    padding: 1px 10px 1px 20px;
     gap: 12px;
     display: flex;
     justify-content: center; 
     flex-wrap: wrap;   
+}
+
+
+
+.consolidationPage,
+.consolidationPage .sapMPageEnableScrolling {
+    background: #f5f6f7;
+}
+
+.consolidationLayout {
+   
+    display: flex;
+    flex-direction: column;
+    background: #f5f6f7;
+}
+
+
+.consolidationTopBar {
+    box-sizing: border-box;
+    min-height: 54px;
+    padding: 0 24px;
+    gap: 12px;
+    background: #26394d;
+    flex-shrink: 0;
+}
+
+.consolidationTopBar .sapMTitle,
+.consolidationTopBar .sapMBtnContent,
+.consolidationTopBar .sapMBtnIcon {
+    color: #fff !important;
+}
+
+.consolidationTopBar .sapMBtnInner {
+    border-color: transparent !important;
+    background: transparent !important;
+}
+
+.consolidationTopBar .sapMSFF {
+    background: #fff;
+    border-radius: 4px;
+}
+
+.headerTitle {
+    margin-left: 4px;
+}
+
+
+.consolidationContent {
+    padding: 12px 30px 20px;
+    gap: 12px;
+}
+
+.breadcrumbText {
+    color: #526579;
+    font-size: 12px;
+}
+
+.pageTitleRow {
+    min-height: 42px;
+    gap: 12px;
+}
+
+.pageTitleRow .sapMTitle {
+    color: #202a35;
+    font-weight: 400;
+}
+
+
+.consolidationFilters {
+    gap: 12px;
+    padding: 8px 0 12px;
+}
+
+.filterField {
+    width: 185px;
+    min-width: 160px;
+    gap: 4px;
+}
+
+.filterField .sapMLabel {
+    color: #32363a;
+    font-size: 12px;
+}
+
+.filterField .sapMInputBaseContentWrapper {
+    background: #fff;
+    border-color: #8996a3;
+}
+
+.goButton {
+    min-width: 68px;
+}
+
+
+.consolidationTable {
+    background: #fff;
+    border: 1px solid #d5d9dd;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.consolidationTable .sapMListTblHeaderCell {
+    background: #f0f1f2 !important;
+    border-bottom: 1px solid #c9cdd1;
+}
+
+.consolidationTable .sapMListTblHeaderCell .sapMText {
+    color: #32363a;
+    font-size: 12px;
+}
+
+.consolidationTable .sapMListTblCell {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #e0e3e5;
+}
+
+.consolidationTable .sapMLIBSelected {
+    background: #e7f2fc !important;
+}
+
+.reportMonth {
+    color: #202a35;
+    font-size: 13px;
+}
+
+.reportDepartment {
+    color: #687582;
+    font-size: 11px;
+}
+
+
+.consolidationBottomBar {
+    box-sizing: border-box;
+    min-height: 52px;
+    padding: 6px 24px;
+    gap: 8px;
+    background: #26394d;
+    flex-shrink: 0;
+}
+
+.consolidationBottomBar .sapMText {
+    color: #fff;
+    font-size: 12px;
+}
+
+.consolidationBottomBar .sapMBtn:not(.sapMBtnEmphasized) .sapMBtnContent,
+.consolidationBottomBar .sapMBtn:not(.sapMBtnEmphasized) .sapMBtnIcon {
+    color: #fff;
+}
+
+@media (max-width: 760px) {
+    .consolidationTopBar {
+        padding: 0 8px;
+        gap: 4px;
+    }
+
+    .consolidationTopBar .sapMSF {
+        width: 140px !important;
+    }
+
+    .consolidationContent {
+        padding: 12px 10px;
+    }
+
+    .filterField {
+        flex: 1 1 180px;
+        width: auto;
+    }
+
+    .consolidationTable {
+        overflow-x: auto;
+    }
+
+    .consolidationBottomBar {
+        padding: 8px;
+        flex-wrap: wrap;
+    }
 }

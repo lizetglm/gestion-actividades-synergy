@@ -7,8 +7,7 @@
         id="pagePerfiles"
         title="{i18n>profTitle}"
         class="sapUiContentPadding">
-        
-       
+              
         <content>
             <HBox
                 id="monthHeaderProf"
@@ -32,7 +31,7 @@
                     id="areaTrabajo"
                     class="workspace">
                     
-                    <!-- Panel Izquierdo -->
+                    
                     <VBox
                         id="panelUsuarios"
                         width="35%"
