@@ -142,7 +142,7 @@
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                                         <Text text="{i18n>rolProyecto}" /> 
                                     </Column>
-                                     <Column width="100px" hAlign="Center" minScreenWidth="Tablet" demandPopin="true">
+                                     <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
                                         <Text text="Acciones" design="Bold" />
                                     </Column>
                                 </columns>
@@ -153,7 +153,9 @@
                                             <Text text="{modelo>nombreConsultor}" />
                                             <Text text="{modelo>proyectoAsignado}" />
                                             <Text text="{modelo>rol}" />
+                                            <HBox justifyContent="End">
                                             <Button icon="sap-icon://decline" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
+                                            </HBox>
                                         </cells>
                                     </ColumnListItem>
                                 </items>

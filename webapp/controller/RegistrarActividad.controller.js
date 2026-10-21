@@ -21,6 +21,7 @@ sap.ui.define([
 				tituloHeader: this.getResourceBundle().getText("titleRegistrarActividad"),
 				userName: "User",
 				horasTotales: this.getResourceBundle().getText("horasTotales", ["1", "0.0"]),
+				maximoHoras: 8,
 				
 				fechaCaptura: sFechaHoy,
 				tipoActividad: "",
@@ -72,11 +73,12 @@ sap.ui.define([
             // Calcular total de horas del día
             let fTotal = aFiltradas.reduce((acc, curr) => acc + parseFloat(curr.horas || 0), 0);
             let oModelUI = this.getView().getModel("uiPantalla");
+			
             oModelUI.setProperty("/horasTotales", this.getResourceBundle().getText("horasTotales", [sFecha, fTotal.toFixed(1)]));
 			oModelUI.setProperty("/tableTitle", this.getResourceBundle().getText("tableActividadesHoy") + " (" + sFecha + ")");
         },
 
-		limpiarFormulario: function() {
+		_limpiarFormulario: function() {
 			let oModelUI = this.getView().getModel("uiPantalla");
 			oModelUI.setProperty("/descripcion", "");
 			oModelUI.setProperty("/horasInvertidas", "");
@@ -87,7 +89,6 @@ sap.ui.define([
 
 		onGuardar: function(oEvent) {
 			let oModelUI = this.getView().getModel("uiPantalla");
-			let actividadesRegistradas = this.getView().getModel("modelo").getData();
 			let formData = oModelUI.getData();
 			let oClienteSelect = this.byId("clienteSelect");
     		let oProyectoSelect = this.byId("proyectoSelect");
@@ -151,7 +152,32 @@ sap.ui.define([
 				return;
 			}
 
-			// Agregar la nueva actividad al modelo
+			// VALIDACION DE HORAS
+            let aTodas = this.getView().getModel("modelo").getData() || [];
+            let aFiltradas = aTodas.filter(act => act.fecha === sFechaCaptura);
+			let fTotal = aFiltradas.reduce((acc, curr) => acc + parseFloat(curr.horas || 0), 0);
+            
+            if (fTotal + sHoras > formData.maximoHoras) {
+                MessageBox.error( this.getResourceBundle().getText("msjErrorHoras", [formData.maximoHoras, (fTotal + sHoras)]), {
+                        title: "Límite de horas excedido",
+						contentWidth: "400px",
+						onClose: function () {
+							let iH = this.byId("horasInvertidasInput");
+							iH.focus();
+						}.bind(this)
+				});
+				return; 
+            }
+
+            this._guardarDatosModelo(
+				sFechaCaptura, sTipoActividad, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData
+			);
+        },
+        
+        _guardarDatosModelo: function(sFechaCaptura, sTipoActividad, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData) {
+            let actividadesRegistradas = this.getView().getModel("modelo").getData();
+
+			// Agregar actividad al modelo
 			actividadesRegistradas.push({
 				fecha: sFechaCaptura,
 				tipoActividad: formData.esCapacitacion ? "Capacitación Interna" : sTipoActividad,
@@ -162,14 +188,15 @@ sap.ui.define([
 				descripcion: formData.descripcion,
 				horas: formData.horasInvertidas
 			});
-			this.getView().getModel("modelo").setData(actividadesRegistradas);
-			MessageToast.show("Actividad registrada exitosamente.");
 
-			// Actualizar vista filtrada de la tabla y totales
+            this.getView().getModel("modelo").setData(actividadesRegistradas);
+            MessageToast.show("Actividad registrada exitosamente.");
+
+            // Actualizar vista filtrada de la tabla y recalcular totales visuales
             this._actualizarTablaYTotales(sFechaCaptura);
 
-			// limpar formulario
-            this.limpiarFormulario();
+            // Limpiar formulario
+            this._limpiarFormulario();
 		},
 
 		onFilaClickeada: function (oEvent) {
