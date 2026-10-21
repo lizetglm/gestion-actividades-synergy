@@ -7,6 +7,8 @@
         id="pagePerfiles"
         title="{i18n>profTitle}"
         class="sapUiContentPadding">
+        
+       
         <content>
             <HBox
                 id="monthHeaderProf"
@@ -20,18 +22,20 @@
                         class="sapUiTinyMarginBottom" /> 
                 </VBox>
             </HBox>
+
             <VBox
                 id="layoutPrincipal"
-                height="100%"
-                fitContainer="true"
+             
                 class="mainLayout">
+                
                 <HBox
                     id="areaTrabajo"
-                    fitContainer="true"
                     class="workspace">
+                    
+                    <!-- Panel Izquierdo -->
                     <VBox
                         id="panelUsuarios"
-                        width="30%"
+                        width="35%"
                         height="100%"
                         class="usersPanel">
                         <Title
@@ -54,6 +58,7 @@
                                 type="Transparent"
                                 tooltip="Filtrar usuarios"/>
                         </HBox>
+                        
                         <ScrollContainer
                             id="scrollContainerUsuarios"
                             height="calc(100% - 90px)"
@@ -112,9 +117,12 @@
                             </List>
                         </ScrollContainer>
                     </VBox>
+
+                   
                     <VBox
                         id="panelDetallesUsuario"
-                        width="70%"
+                        width="65%"
+                        height="100%"
                         class="detailsPanel">
                         <Title
                             id="tituloDetallesUsuario"
@@ -142,56 +150,26 @@
                                                 id="columnaInformacionIzquierda"
                                                 width="50%"
                                                 class="fieldColumn">
-                                                <Label
-                                                    id="labelNombreCompleto"
-                                                    text="Nombre Completo"/>
-                                                <Text
-                                                    id="valorNombreCompleto"
-                                                    text="{users>/selectedUser/fullName}"/>
-                                                <Label
-                                                    id="labelIdUsuario"
-                                                    text="ID de Usuario"/>
-                                                <Text
-                                                    id="valorIdUsuario"
-                                                    text="{users>/selectedUser/userId}"/>
-                                                <Label
-                                                    id="labelCorreoElectronico"
-                                                    text="Correo Electrónico"/>
-                                                <Text
-                                                    id="valorCorreoElectronico"
-                                                    text="{users>/selectedUser/email}"/>
-                                                <Label
-                                                    id="labelDepartamentoIzquierdo"
-                                                    text="Departamento"/>
-                                                <Text
-                                                    id="valorDepartamentoIzquierdo"
-                                                    text="{users>/selectedUser/department}"/>
+                                                <Label id="labelNombreCompleto" text="Nombre Completo"/>
+                                                <Text id="valorNombreCompleto" text="{users>/selectedUser/fullName}"/>
+                                                <Label id="labelIdUsuario" text="ID de Usuario"/>
+                                                <Text id="valorIdUsuario" text="{users>/selectedUser/userId}"/>
+                                                <Label id="labelCorreoElectronico" text="Correo Electrónico"/>
+                                                <Text id="valorCorreoElectronico" text="{users>/selectedUser/email}"/>
+                                                <Label id="labelDepartamentoIzquierdo" text="Departamento"/>
+                                                <Text id="valorDepartamentoIzquierdo" text="{users>/selectedUser/department}"/>
                                             </VBox>
                                             <VBox
                                                 id="columnaInformacionDerecha"
                                                 width="50%"
                                                 class="fieldColumn">
-                                                <Label
-                                                    id="labelDepartamento"
-                                                    text="Departamento"/>
-                                                <Text
-                                                    id="valorDepartamento"
-                                                    text="{users>/selectedUser/department}"/>
-                                                <Label
-                                                    id="labelUbicacion"
-                                                    text="Ubicación"/>
-                                                <Text
-                                                    id="valorUbicacion"
-                                                    text="{users>/selectedUser/location}"/>
-                                                <Label
-                                                    id="labelFechaCreacion"
-                                                    text="Fecha de Creación"/>
-                                                <Text
-                                                    id="valorFechaCreacion"
-                                                    text="{users>/selectedUser/creationDate}"/>
-                                                <Label
-                                                    id="labelEstadoUsuario"
-                                                    text="Estado"/>
+                                                <Label id="labelDepartamento" text="Departamento"/>
+                                                <Text id="valorDepartamento" text="{users>/selectedUser/department}"/>
+                                                <Label id="labelUbicacion" text="Ubicación"/>
+                                                <Text id="valorUbicacion" text="{users>/selectedUser/location}"/>
+                                                <Label id="labelFechaCreacion" text="Fecha de Creación"/>
+                                                <Text id="valorFechaCreacion" text="{users>/selectedUser/creationDate}"/>
+                                                <Label id="labelEstadoUsuario" text="Estado"/>
                                                 <ObjectStatus
                                                     id="valorEstadoUsuario"
                                                     text="{users>/selectedUser/status}"
@@ -238,25 +216,14 @@
                                             noDataText="No hay roles asignados"
                                             class="rolesTable">
                                             <columns>
-                                                <Column id="columnaNombreRol">
-                                                    <Text id="textRol" text="Nombre del Rol"/>
-                                                </Column>
-                                                <Column id="columnaDescripcionRol">
-                                                    <Text id="textDescr" text="Descripción"/>
-                                                </Column>
-                                                <Column id="columnaSistemaOrigen">
-                                                    <Text id="textSys" text="Sistema de Origen"/>
-                                                </Column>
-                                                <Column id="columnaValidoDesde">
-                                                    <Text id="valTil" text="Válido Desde"/>
-                                                </Column>
-                                                <Column id="columnaValidoHasta">
-                                                    <Text id="valUnt" text="Válido Hasta"/>
-                                                </Column>
+                                                <Column id="columnaNombreRol"><Text id="textRol" text="Nombre del Rol"/></Column>
+                                                <Column id="columnaDescripcionRol"><Text id="textDescr" text="Descripción"/></Column>
+                                                <Column id="columnaSistemaOrigen"><Text id="textSys" text="Sistema de Origen"/></Column>
+                                                <Column id="columnaValidoDesde"><Text id="valTil" text="Válido Desde"/></Column>
+                                                <Column id="columnaValidoHasta"><Text id="valUnt" text="Válido Hasta"/></Column>
                                             </columns>
                                             <items>
-                                                <ColumnListItem
-                                                    id="plantillaFilaRol">
+                                                <ColumnListItem id="plantillaFilaRol">
                                                     <cells>
                                                         <Text id="textName" text="{users>name}"/>
                                                         <Text id="textDesc" text="{users>description}"/>
@@ -269,50 +236,39 @@
                                         </Table>
                                     </VBox>
                                 </IconTabFilter>
-                                <IconTabFilter
-                                    id="pestanaGrupos"
-                                    text="Grupos"
-                                    key="groups">
-                                    <VBox
-                                        id="contenidoGrupos"
-                                        class="emptyTabContent"/>
+                                <IconTabFilter id="pestanaGrupos" text="Grupos" key="groups">
+                                    <VBox id="contenidoGrupos" class="emptyTabContent"/>
                                 </IconTabFilter>
-                                <IconTabFilter
-                                    id="pestanaAutorizacionesDirectas"
-                                    text="Autorizaciones Directas"
-                                    key="authorizations">
-                                    <VBox
-                                        id="contenidoAutorizaciones"
-                                        class="emptyTabContent"/>
+                                <IconTabFilter id="pestanaAutorizacionesDirectas" text="Autorizaciones Directas" key="authorizations">
+                                    <VBox id="contenidoAutorizaciones" class="emptyTabContent"/>
                                 </IconTabFilter>
                             </items>
                         </IconTabBar>
-                    </VBox>
-                </HBox>
-                <HBox
-                    id="barraInferior"
-                    justifyContent="End"
-                    alignItems="Center"
-                    class="actionButtonsBar">
-                    <Button
-                        id="botonGuardar"
-                        text="Guardar"
-                        type="Emphasized"
-                        press=".onSave"
-                        class="sapUiTinyMarginEnd"/>
-                    <Button
-                        id="botonCancelar"
-                        text="Cancelar"
-                        type="Default"
-                        press=".onCancel"
-                        class="sapUiTinyMarginEnd"/>
-                    <Button
-                        id="botonCrearNuevoUsuario"
-                        text="Crear Nuevo Usuario"
-                        type="Transparent"
-                        press=".onCreateUser"/>
+                    </VBox> 
                 </HBox>
             </VBox>
         </content>
+
+
+        <footer>
+            <OverflowToolbar id="barraInferiorFooter">
+                <ToolbarSpacer id="tool"/>
+                <Button
+                    id="botonGuardar"
+                    text="Guardar"
+                    type="Emphasized"
+                    press=".onSave"/>
+                <Button
+                    id="botonCancelar"
+                    text="Cancelar"
+                    type="Default"
+                    press=".onCancel"/>
+                <Button
+                    id="botonCrearNuevoUsuario"
+                    text="Crear Nuevo Usuario"
+                    type="Transparent"
+                    press=".onCreateUser"/>
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>

@@ -113,6 +113,13 @@
           "target": [
             "TargetReporteMensual"
           ]
+        },
+        {
+          "name": "RouteConsolidacion",
+          "pattern": "consolidacion",
+          "target": [
+            "TargetConsolidacion"
+          ]
         }
       ],
       "targets": {
@@ -129,6 +136,13 @@
         "clearControlAggregation": false,
         "viewId": "Perfiles",
         "viewName": "Perfiles"
+      },      
+      "TargetConsolidacion": {
+        "viewType": "XML",
+        "transition": "slide",
+        "clearControlAggregation": false,
+        "viewId": "Consolidacion",
+        "viewName": "Consolidacion"
       }
       ,
         "TargetReporteMensual": {
