@@ -128,6 +128,13 @@
           ]
         },
         {
+          "name": "RouteConsolidacion",
+          "pattern": "consolidacion",
+          "target": [
+            "TargetConsolidacion"
+          ]
+        },
+        {
           "name": "RoutePanelCumplimiento",
           "pattern": "panelCumplimiento",
           "target": [
@@ -187,6 +194,12 @@
           "clearControlAggregation": false,
           "viewId": "ReporteMensual",
           "viewName": "ReporteMensual"
+        },
+         "TargetConsolidacion": {
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Consolidacion",
+          "viewName": "Consolidacion"
         },
         "TargetPanelCumplimiento": {
           "transition": "slide",

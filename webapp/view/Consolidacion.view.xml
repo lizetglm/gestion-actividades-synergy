@@ -1,0 +1,279 @@
+<mvc:View id="viewConsolidacion"
+	controllerName="ns.frontend.controller.Consolidacion"
+	displayBlock="true" height="100%" busyIndicatorDelay="0"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+>
+    <Page
+        id="pageConsolidacion"
+        showHeader="false"
+        enableScrolling="true"
+        class="consolidationPage">
+
+        <content>
+            <HBox
+                id="monthHeaderProf1"
+                class="monthHeader"
+                justifyContent="SpaceBetween"
+                alignItems="Center">
+                <VBox id="vboxTitu1loPerfiles">
+                    <Text
+                        id="textPr1of"
+                        text="Mis Aplicaciones > {i18n>consolidacionTitle}"
+                        class="sapUiTinyMarginBottom" /> 
+                </VBox>
+
+
+                <Button
+                                id="btnConfiguracionConsolidacion"
+                                text="Configuración"
+                                icon="sap-icon://action-settings"
+                                type="Transparent"
+                                press="onSettings"/>
+            </HBox>
+            
+            
+            <VBox
+                id="consolidationLayout"
+                class="consolidationLayout">
+
+              
+                    <HBox
+                        id="filtersConsolidacion"
+                        class="consolidationFilters"
+                        alignItems="End"
+                        wrap="Wrap">
+
+                        <!-- Filtro de periodo -->
+                        <VBox
+                            id="filterFieldPeriodo"
+                            class="filterField">
+
+                            <Label
+                                id="labelPeriodo"
+                                text="Periodo"
+                                labelFor="periodComboBox"/>
+
+                            <ComboBox
+                                id="periodComboBox"
+                                selectedKey="{filterModel>/period}"
+                                width="100%">
+
+                                <core:Item
+                                    id="itemPeriodoTodos"
+                                    key="All"
+                                    text="Todos"/>
+
+                                <core:Item
+                                    id="itemPeriodoAgosto2026"
+                                    key="Aug2026"
+                                    text="Agosto 2026"/>
+
+                                <core:Item
+                                    id="itemPeriodoSeptiembre2026"
+                                    key="Sep2026"
+                                    text="Septiembre 2026"/>
+                            </ComboBox>
+                        </VBox>
+
+                        <!-- Filtro de estatus -->
+                        <VBox
+                            id="filterFieldEstatus"
+                            class="filterField">
+
+                            <Label
+                                id="labelEstatusConsolidacion"
+                                text="Estatus de consolidación"
+                                labelFor="statusComboBox"/>
+
+                            <ComboBox
+                                id="statusComboBox"
+                                selectedKey="{filterModel>/status}"
+                                width="100%">
+
+                                <core:Item
+                                    id="itemEstatusTodos"
+                                    key="All"
+                                    text="Todos"/>
+
+                                <core:Item
+                                    id="itemEstatusReady"
+                                    key="Ready"
+                                    text="Listo para aprobación"/>
+
+                                <core:Item
+                                    id="itemEstatusDraft"
+                                    key="Draft"
+                                    text="Borrador"/>
+                            </ComboBox>
+                        </VBox>
+
+                        <!-- Filtro de agrupación -->
+                        <VBox
+                            id="filterFieldAgrupacion"
+                            class="filterField">
+
+                            <Label
+                                id="labelAgruparPor"
+                                text="Agrupar por"
+                                labelFor="groupByComboBox"/>
+
+                            <ComboBox
+                                id="groupByComboBox"
+                                selectedKey="{filterModel>/groupBy}"
+                                width="100%">
+
+                                <core:Item
+                                    id="itemAgruparDepartamento"
+                                    key="Department"
+                                    text="Departamento"/>
+
+                                <core:Item
+                                    id="itemAgruparMes"
+                                    key="Month"
+                                    text="Mes"/>
+
+                                <core:Item
+                                    id="itemAgruparEstatus"
+                                    key="Status"
+                                    text="Estatus"/>
+                            </ComboBox>
+                        </VBox>
+
+                        <ToolbarSpacer id="spacerFiltrosConsolidacion"/>
+
+                        <Button
+                            id="executeFilterButton"
+                            text="Go"
+                            type="Emphasized"
+                            press="onExecuteFilter"
+                            class="goButton"/>
+                    </HBox>
+
+             
+                    <Table
+                        id="consolidacionTable"
+                        items="{consolidacionModel>/reports}"
+                        mode="MultiSelect"
+                        selectionChange="onSelectionChange"
+                        includeItemInSelection="true"
+                        growing="true"
+                        growingScrollToLoad="true"
+                        class="consolidationTable">
+
+                        <columns>
+                            <Column id="columnMesDepartamento" width="28%">
+                                <Text
+                                    id="headerMesDepartamento"
+                                    text="Mes / Departamento"/>
+                            </Column>
+
+                            <Column id="columnConsolidacionID" width="18%">
+                                <Text
+                                    id="headerConsolidacionID"
+                                    text="Consolidación ID"/>
+                            </Column>
+
+                            <Column
+                                id="columnHeadcount"
+                                width="16%"
+                                hAlign="End">
+
+                                <Text
+                                    id="headerHeadcount"
+                                    text="Headcount"/>
+                            </Column>
+
+                            <Column
+                                id="columnTotalHoras"
+                                width="18%"
+                                hAlign="End">
+
+                                <Text
+                                    id="headerTotalHoras"
+                                    text="Total horas"/>
+                            </Column>
+
+                            <Column id="columnEstatusEnvio" width="20%">
+                                <Text
+                                    id="headerEstatusEnvio"
+                                    text="Estatus de envío"/>
+                            </Column>
+                        </columns>
+
+                        <items>
+                            <ColumnListItem
+                                id="templateFilaConsolidacion"
+                                vAlign="Middle">
+
+                                <cells>
+                                    <VBox id="cellMesDepartamento">
+                                        <Text
+                                            id="cellMesReporte"
+                                            text="{consolidacionModel>Month}"
+                                            class="reportMonth"/>
+
+                                        <Text
+                                            id="cellDepartamentoReporte"
+                                            text="{consolidacionModel>Department}"
+                                            class="reportDepartment"/>
+                                    </VBox>
+
+                                    <Text
+                                        id="cellConsolidacionID"
+                                        text="{consolidacionModel>ConsolidacionID}"/>
+
+                                    <Text
+                                        id="cellHeadcount"
+                                        text="{consolidacionModel>Headcount}"/>
+
+                                    <Text
+                                        id="cellTotalHoras"
+                                        text="{consolidacionModel>TotalHours}"
+                                        class="totalHorasText"/>
+
+                                    <ObjectStatus
+                                        id="cellEstatusEnvio"
+                                        text="{consolidacionModel>StatusText}"
+                                        state="{consolidacionModel>StatusState}"
+                                        inverted="true"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </VBox>
+
+                <!-- Barra inferior de acciones -->
+                <HBox
+                    id="bottomActionsConsolidacion"
+                    class="consolidationBottomBar"
+                    alignItems="Center">
+
+                    <Text
+                        id="selectedRowsText"
+                        text="Selecciona los reportes que deseas procesar."/>
+
+                    <ToolbarSpacer id="spacerAccionesInferiores"/>
+
+                    <Button
+                        id="btnEnviarAprobacion"
+                        text="Enviar a aprobación"
+                        type="Emphasized"
+                        icon="sap-icon://paper-plane"
+                        press="onSave"/>
+
+                    <Button
+                        id="btnGuardarBorrador"
+                        text="Guardar borrador"
+                        press="onSaveDraft"/>
+
+                    <Button
+                        id="btnCancelarConsolidacion"
+                        text="Cancelar"
+                        type="Transparent"
+                        press="onCancel"/>
+                </HBox>
+        </content>
+    </Page>
+</mvc:View>
