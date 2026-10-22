@@ -35,8 +35,8 @@
         </content>
         
         <buttons>
-            <Button text="Guardar" type="Emphasized" press=".onGuardarRequerimiento" />
-            <Button text="Cancelar" type="Transparent" press=".onCerrarDialogoReq" />
+            <Button text="Guardar" type="Emphasized" press=".onCerrarDialogProyecto" />
+            <Button text="Cancelar" type="Transparent" press=".onCerrarDialogProyecto" />
         </buttons>
     </Dialog>
 </core:FragmentDefinition>

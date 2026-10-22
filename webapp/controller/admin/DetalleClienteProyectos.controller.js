@@ -2,9 +2,10 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageToast",
-	"sap/m/MessageBox"
+	"sap/m/MessageBox",
+	"sap/ui/core/Fragment"
 ], function(
-	Controller, JSONModel, MessageToast, MessageBox
+	Controller, JSONModel, MessageToast, MessageBox, Fragment
 ) {
 	"use strict";
 
@@ -54,14 +55,86 @@ sap.ui.define([
 		// PROYECTOS Y REQUERMIENTOS -----------------------------------------
 		onDetalleProyecto: function (oEvent) {
 			// Lógica para abrir un diálogo llamdo DetalleProyecto (falta implementar)
+			let oContext = oEvent.getSource().getBindingContext("modeloClientes");
+			let oView = this.getView();
+
+			if (!this._oDialogDetalleProyecto) {
+				Fragment.load({
+					id: oView.getId(),
+					name: "ns.frontend.fragment.DetalleProyecto",
+					controller: this
+				}).then(function (oDialog) {
+					this._oDialogDetalleProyecto = oDialog;
+					oView.addDependent(this._oDialogDetalleProyecto);
+					this._oDialogDetalleProyecto.setBindingContext(oContext, "modeloClientes");
+					this._oDialogDetalleProyecto.open();
+				}.bind(this));
+			} else {
+				this._oDialogDetalleProyecto.setBindingContext(oContext, "modeloClientes");
+				this._oDialogDetalleProyecto.open();
+			}
+		},
+		onCerrarDetalleProyecto: function () {
+			if (this._oDialogDetalleProyecto) {
+				this._oDialogDetalleProyecto.close();
+			}
 		},
 
 		onNuevoProyecto: function(oEvent) {
 			// Lógica para abrir un diálogo llamdo DialogProyecto (falta implementar)
+
+			let oView = this.getView();
+			if (!this._oDialogProyecto) {
+				sap.ui.core.Fragment.load({
+					id: oView.getId(),
+					name: "ns.frontend.fragment.DialogProyecto", 
+					controller: this
+				}).then(function (oDialog) {
+					this._oDialogProyecto = oDialog;
+					oView.addDependent(this._oDialogProyecto);
+					this._oDialogProyecto.unbindElement("modeloClientes"); 
+					this._oDialogProyecto.open();
+				}.bind(this));
+			} else {
+				this._oDialogProyecto.unbindElement("modeloClientes");
+				this._oDialogProyecto.open();
+			}
 		},
 
 		onEditarProyecto: function(oEvent) {
 			// Lógica para abrir un diálogo llamdo DialogProyecto (falta implementar)	
+
+			let oContext = oEvent.getSource().getBindingContext("modeloClientes"); 
+			let oView = this.getView();
+
+			if (!this._oDialogProyecto) {
+				sap.ui.core.Fragment.load({
+					id: oView.getId(),
+					name: "ns.frontend.fragment.DialogProyecto",
+					controller: this
+				}).then(function (oDialog) {
+					this._oDialogProyecto = oDialog;
+					oView.addDependent(this._oDialogProyecto);
+					this._oDialogProyecto.setBindingContext(oContext, "modeloClientes");
+					this._oDialogProyecto.open();
+				}.bind(this));
+			} else {
+				this._oDialogProyecto.setBindingContext(oContext, "modeloClientes");
+				this._oDialogProyecto.open();
+			}
+		},
+
+		onCerrarDialogProyecto: function () {
+			if (this._oDialogProyecto) {
+				this._oDialogProyecto.close();
+			}
+		},
+
+		onGuardarProyectoMock: function () {
+			// Logica para guardar los datos del proyecto (falta implementar)
+
+			MessageToast.show("Simulación: Proyecto guardado exitosamente.");
+			this.onCerrarDialogProyecto();
 		},
 
 		onInactivarProyecto: function(oEvent) {
@@ -78,7 +151,7 @@ sap.ui.define([
 				onClose: function (sAction) {
 					if (sAction === MessageBox.Action.OK) {
 						//llogica para inactivar el cliente del modelo (falta implenetar)
-						MessageToast.show("Cliente removido exitosamente.");
+						MessageToast.show("Simulacion:Cliente removido exitosamente.");
 					}
 				}.bind(this)
 			});
@@ -96,7 +169,7 @@ sap.ui.define([
 		},
 
 
-		// ---------CONSULTORES ASIGANDOS--------------
+		// ASIGNACIÓN DE CONSULTORES--------------------------------------------------------
 		onInactivarConsultor: function(oEvent) {
 			let oContext = oEvent.getSource().getBindingContext("modeloClientes"); //dats del contexto
 			let oDatosFila = oContext.getObject(); 
@@ -112,10 +185,50 @@ sap.ui.define([
 				onClose: function (sAction) {
 					if (sAction === MessageBox.Action.OK) {
 						//llogica para inactivar el consultor del modelo (falta implenetar)
-						MessageToast.show("Consultor removido exitosamente.");
+						MessageToast.show("Simulación: Consultor removido exitosamente.");
 					}
 				}.bind(this)
 			});
+		},
+
+		onAsignarConsultor: function (oEvent) {
+			let oView = this.getView();
+
+			let oDatosNuevoConsultor = {
+				nombreConsultor: "",
+				proyectoAsignado: "",
+				rol: ""
+			};
+			let oDialogModel = new JSONModel(oDatosNuevoConsultor);
+
+			if (!this._oDialogConsultor) {
+				sap.ui.core.Fragment.load({
+					id: oView.getId(),
+					name: "ns.frontend.fragment.DialogConsultor", 
+					controller: this
+				}).then(function (oDialog) {
+					this._oDialogConsultor = oDialog;
+					oView.addDependent(this._oDialogConsultor);
+					this._oDialogConsultor.setModel(oDialogModel, "nuevoConsultor");
+					this._oDialogConsultor.open();
+				}.bind(this));
+			} else {
+				this._oDialogConsultor.setModel(oDialogModel, "nuevoConsultor");
+				this._oDialogConsultor.open();
+			}
+		},
+
+		onCerrarDialogConsultor: function () {
+			if (this._oDialogConsultor) {
+				this._oDialogConsultor.close();
+			}
+		},
+
+		onGuardarConsultorMock: function () {
+			// Logica para guardar los datos del consultor (falta implementar)
+			
+			sap.m.MessageToast.show("Simulación: Consultor asignado exitosamente al proyecto.");
+			this.onCerrarDialogConsultor();
 		}
 	});
 });

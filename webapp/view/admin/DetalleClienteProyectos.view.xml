@@ -86,7 +86,7 @@
                                 </columns>
 
                                 <items>
-                                    <ColumnListItem press=".onDetalleProyecto">
+                                    <ColumnListItem type="Active" press=".onDetalleProyecto">
                                         <cells>
                                             <Text text="{modeloClientes>idProyecto}" />
                                             <Text text="{modeloClientes>nombreProyecto}" />

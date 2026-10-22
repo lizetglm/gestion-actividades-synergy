@@ -1,5 +1,47 @@
-<c:FragmentDefinition
-	xmlns="sap.m"
-	xmlns:c="sap.ui.core"
->
-</c:FragmentDefinition>
+<core:FragmentDefinition 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core" 
+    xmlns:form="sap.ui.layout.form">
+    
+    <Dialog 
+        id="dialogVisorDetalleProyecto" 
+        title="Detalles del Proyecto" 
+        contentWidth="500px">
+        
+        <content>
+            <!-- Formulario de solo lectura (editable="false") -->
+            <form:SimpleForm 
+                editable="false" 
+                layout="ResponsiveGridLayout"
+                labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12"
+                emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
+                columnsXL="1" columnsL="1" columnsM="1">
+                
+                <form:content>
+                    <Label text="ID Proyecto" />
+                    <Text text="{modeloClientes>idProyecto}" />
+                    
+                    <Label text="Nombre" />
+                    <Text text="{modeloClientes>nombreProyecto}" />
+                    
+                    <Label text="Descripción" />
+                    <Text text="{modeloClientes>descripcion}" />
+                    
+                    <Label text="Fecha de Inicio" />
+                    <Text text="{modeloClientes>fechaInicio}" />
+                    
+                    <Label text="Fecha de Fin" />
+                    <Text text="{modeloClientes>fechaFin}" />
+                    
+                    <Label text="Estatus" />
+                    <ObjectStatus text="{modeloClientes>estatusProyecto}" state="{= ${modeloClientes>estatusProyecto} === 'En Progreso' ? 'Success' : (${modeloClientes>estatusProyecto} === 'Pendiente' ? 'Warning' : 'Information')}" />
+                </form:content>
+            </form:SimpleForm>
+        </content>
+        
+        <buttons>
+            <!-- Aquí vive el botón de cerrado -->
+            <Button text="Cerrar" type="Transparent" press=".onCerrarDetalleProyecto" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
