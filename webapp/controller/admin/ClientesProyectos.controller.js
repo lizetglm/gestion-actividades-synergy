@@ -3,9 +3,10 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "sap/m/MessageToast"
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
 ], function(
-	Controller, JSONModel, Filter, FilterOperator, MessageToast
+	Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox
 ) {
 	"use strict";
 
@@ -65,23 +66,79 @@ sap.ui.define([
         },
 
         onNuevoCliente: function () {
-            MessageToast.show("Abriendo formulario para nuevo cliente...");
+            // Logica para agregar clientes (falta implementar)
+
+            let oView = this.getView();
+
+            if (!this._oDialogCliente) {
+                sap.ui.core.Fragment.load({
+                    id: oView.getId(),
+                    name: "ns.frontend.fragment.DialogCliente", 
+                    controller: this
+                }).then(function (oDialog) {
+                    this._oDialogCliente = oDialog;
+                    oView.addDependent(this._oDialogCliente);
+                    this._oDialogCliente.unbindElement("modelo"); 
+                    this._oDialogCliente.open();
+                }.bind(this));
+            } else {
+                this._oDialogCliente.unbindElement("modelo");
+                this._oDialogCliente.open();
+            }
         },
 
         onEditarCliente: function (oEvent) {
-            var oItem = oEvent.getSource();
-            var oContext = oItem.getBindingContext("modelo");
-            var sClienteId = oContext.getProperty("idCliente");
-            
-            sap.m.MessageToast.show("Editando cliente con ID: " + sClienteId);
+            let oItem = oEvent.getSource();
+            let oContext = oItem.getBindingContext("modelo");
+            let oView = this.getView();
+
+            if (!this._oDialogCliente) {
+                sap.ui.core.Fragment.load({
+                    id: oView.getId(),
+                    name: "ns.frontend.fragment.DialogCliente",
+                    controller: this
+                }).then(function (oDialog) {
+                    this._oDialogCliente = oDialog;
+                    oView.addDependent(this._oDialogCliente);
+                    this._oDialogCliente.setBindingContext(oContext, "modelo");
+                    this._oDialogCliente.open();
+                }.bind(this));
+            } else {
+                this._oDialogCliente.setBindingContext(oContext, "modelo");
+                this._oDialogCliente.open();
+            }
+        },
+
+        onCerrarDialogCliente: function () {
+            if (this._oDialogCliente) {
+                this._oDialogCliente.close();
+            }
+        },
+
+        onGuardarClienteMock: function () {
+            MessageToast.show("Simulación: Cliente guardado exitosamente.");
+            this.onCerrarDialogCliente();
         },
 
         onInactivarCliente: function (oEvent) {
-            var oItem = oEvent.getSource();
-            var oContext = oItem.getBindingContext("modelo");
-            var sClienteId = oContext.getProperty("idCliente");
+            let oItem = oEvent.getSource();
+            let oContext = oItem.getBindingContext("modelo");
+            let oDatosFila = oContext.getObject();
             
-            sap.m.MessageToast.show("Inactivando cliente: " + sClienteId);
+            let sNombreCliente = oDatosFila.nombre;
+            let sMensaje = "¿Estás seguro de que deseas inactivar al cliente " + sNombreCliente + "?";
+
+            sap.m.MessageBox.confirm(sMensaje, {
+                title: "Confirmar Inactivación",
+                icon: sap.m.MessageBox.Icon.WARNING,
+                contentWidth: "400px",
+                onClose: function (sAction) {
+                    if (sAction === sap.m.MessageBox.Action.OK) {
+                        // Aquí irá la lógica futura para actualizar el modelo o llamar al backend
+                        MessageToast.show("Simulación: Cliente " + sNombreCliente + " inactivado exitosamente.");
+                    }
+                }.bind(this)
+            });
         }
 	});
 });
