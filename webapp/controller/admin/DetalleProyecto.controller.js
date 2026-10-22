@@ -4,11 +4,14 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/m/MessageBox",
 	"sap/ui/model/Filter",             
-    "sap/ui/model/FilterOperator"
+    "sap/ui/model/FilterOperator",
+	"sap/ui/export/Spreadsheet", 
+    "sap/ui/export/library"
 ], function(
-	Controller, JSONModel, MessageToast, MessageBox, Filter, FilterOperator
+	Controller, JSONModel, MessageToast, MessageBox, Filter, FilterOperator, Spreadsheet, exportLibrary
 ) {
 	"use strict";
+	const EdmType = exportLibrary.EdmType;
 
 	return Controller.extend("ns.frontend.controller.admin.DetalleProyecto", {
 		getResourceBundle: function () {
@@ -64,6 +67,49 @@ sap.ui.define([
 		onBack: function () {
             window.history.go(-1);
         },
+
+		onExportarRFExcel: function() {
+			let aCols = [
+				{ label: 'ID Requerimiento', property: 'idRequerimiento', type: EdmType.String },
+				{ label: 'Categoría', property: 'categoria', type: EdmType.String },
+				{ label: 'Descripción', property: 'descripcion', type: EdmType.String },
+				{ label: 'Estatus', property: 'estatus', type: EdmType.String }
+			];
+			
+			let oRowBinding = this.byId("tablaReqFuncionales").getBinding("items"); 
+
+			let oSettings = {
+				workbook: { columns: aCols },
+				dataSource: oRowBinding,
+				fileName: 'Requerimientos_Funcionales.xlsx',
+				worker: false
+			};
+
+			new Spreadsheet(oSettings).build().finally(function() {
+				this.destroy(); // Referencia implícita al destruirlo
+			});
+		},
+
+		onExportarRNFExcel: function() {
+			let aCols = [
+				{ label: 'ID Requerimiento', property: 'idRequerimiento', type: EdmType.String },
+				{ label: 'Categoría', property: 'categoria', type: EdmType.String },
+				{ label: 'Descripción', property: 'descripcion', type: EdmType.String },
+				{ label: 'Estatus', property: 'estatus', type: EdmType.String }
+			];
+
+			let oRowBinding = this.byId("tablaReqNoFuncionales").getBinding("items"); 
+
+			let oSettings = {
+				workbook: { columns: aCols },
+				dataSource: oRowBinding,
+				fileName: 'Requerimientos_No_Funcionales.xlsx',
+				worker: false
+			};
+
+			let oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(() => oSheet.destroy());
+		},
 
 
 		//  GESTIÓN DE REQUERIMIENTOS ---------

@@ -139,6 +139,12 @@
                     wrappingType="Hyphenated">
                 </Title>
                 <Table items="{modeloFiltrado>/}" alternateRowColors="true" >
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <ToolbarSpacer/>
+                            <Button text="Exportar a Excel" icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarExcel" type="Success"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
                     <columns>
                         <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                             <Text text="{i18n>tblHora}" />

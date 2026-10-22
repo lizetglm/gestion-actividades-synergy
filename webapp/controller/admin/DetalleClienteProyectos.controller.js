@@ -3,11 +3,14 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageToast",
 	"sap/m/MessageBox",
-	"sap/ui/core/Fragment"
+	"sap/ui/core/Fragment",
+	"sap/ui/export/Spreadsheet", 
+    "sap/ui/export/library"
 ], function(
-	Controller, JSONModel, MessageToast, MessageBox, Fragment
+	Controller, JSONModel, MessageToast, MessageBox, Fragment, Spreadsheet, exportLibrary
 ) {
 	"use strict";
+	const EdmType = exportLibrary.EdmType;
 
 	return Controller.extend("ns.frontend.controller.admin.DetalleClienteProyectos", {
 		getResourceBundle: function () {
@@ -49,6 +52,46 @@ sap.ui.define([
 
 		onBack: function() {
 			this.getOwnerComponent().getRouter().navTo("RouteClientesProyectos");
+		},
+
+		onExportarProyectosExcel: function() {
+			let aCols = [
+				{ label: 'ID Proyecto', property: 'idProyecto', type: EdmType.String },
+				{ label: 'Nombre del Proyecto', property: 'nombreProyecto', type: EdmType.String },
+				{ label: 'Descripción', property: 'descripcion', type: EdmType.String },
+				{ label: 'Estatus', property: 'estatusProyecto', type: EdmType.String }
+			];
+
+			let oRowBinding = this.byId("tablaProyectosDetalle").getBinding("items");
+
+			let oSettings = {
+				workbook: { columns: aCols },
+				dataSource: oRowBinding,
+				fileName: 'Portafolio_Proyectos.xlsx',
+				worker: false
+			};
+
+			let oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(() => oSheet.destroy());
+		},
+		onExportarConsultoresExcel: function() {
+			let aCols = [
+				{ label: 'Nombre del Consultor', property: 'nombreConsultor', type: EdmType.String },
+				{ label: 'Proyecto Asignado', property: 'proyectoAsignado', type: EdmType.String },
+				{ label: 'Rol', property: 'rol', type: EdmType.String }
+			];
+
+			let oRowBinding = this.byId("tablaConsultoresDetalle").getBinding("items");
+
+			let oSettings = {
+				workbook: { columns: aCols },
+				dataSource: oRowBinding,
+				fileName: 'Consultores_Asignados.xlsx',
+				worker: false
+			};
+
+			let oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(() => oSheet.destroy());
 		},
 
 

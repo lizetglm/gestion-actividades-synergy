@@ -4,11 +4,14 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
-    "sap/m/MessageBox"
+    "sap/m/MessageBox",
+    "sap/ui/export/Spreadsheet", 
+    "sap/ui/export/library"
 ], function(
-	Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox
+	Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox, Spreadsheet, exportLibrary
 ) {
 	"use strict";
+    const EdmType = exportLibrary.EdmType;
 
 	return Controller.extend("ns.frontend.controller.admin.ClientesProyectos", {
 		getResourceBundle: function () {
@@ -48,6 +51,27 @@ sap.ui.define([
             var oTable = this.byId("tablaClientes");
             var oBinding = oTable.getBinding("items");
             oBinding.filter(aFilters);
+        },
+
+        onExportarExcel: function() {
+            let aCols = [
+                { label: 'ID Cliente', property: 'idCliente', type: EdmType.String },
+                { label: 'Nombre de la Empresa', property: 'nombre', type: EdmType.String },
+                { label: 'Estatus', property: 'estatus', type: EdmType.String },
+                { label: 'Total Proyectos', property: 'totalProyectos', type: EdmType.Number }
+            ];
+
+            let oRowBinding = this.byId("tablaClientes").getBinding("items");
+
+            let oSettings = {
+                workbook: { columns: aCols, hierarchyLevel: 'Level' },
+                dataSource: oRowBinding,
+                fileName: 'Catalogo_Clientes.xlsx',
+                worker: false 
+            };
+
+            let oSheet = new Spreadsheet(oSettings);
+            oSheet.build().finally(() => oSheet.destroy());
         },
 
 

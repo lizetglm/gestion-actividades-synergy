@@ -3,11 +3,14 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
 	"sap/ui/core/Fragment",
 	"sap/m/MessageToast",
-	"sap/m/MessageBox"
+	"sap/m/MessageBox",
+	"sap/ui/export/Spreadsheet", 
+    "sap/ui/export/library"
 ], function(
-	Controller, JSONModel, Fragment, MessageToast, MessageBox
+	Controller, JSONModel, Fragment, MessageToast, MessageBox, Spreadsheet, exportLibrary
 ) {
 	"use strict";
+	const EdmType = exportLibrary.EdmType;
 
 	return Controller.extend("ns.frontend.controller.RegistrarActividad", {
 		getResourceBundle: function () {
@@ -229,7 +232,30 @@ sap.ui.define([
             if (this._oDialogoDetalle) {
                 this._oDialogoDetalle.close();
             }
-        }
+        },
+
+		onExportarExcel: function() {
+			let aCols = [
+				{ label: 'Fecha', property: 'fecha', type: EdmType.Date, format: 'yyyy-mm-dd' },
+				{ label: 'Hora', property: 'hora', type: EdmType.String },
+				{ label: 'Cliente', property: 'cliente', type: EdmType.String },
+				{ label: 'Requerimiento', property: 'requerimiento', type: EdmType.String },
+				{ label: 'Descripción', property: 'descripcion', type: EdmType.String },
+				{ label: 'Horas Registradas', property: 'horas', type: EdmType.Number }
+			];
+
+			let oRowBinding = this.byId("tablaActividades").getBinding("items");
+
+			let oSettings = {
+				workbook: { columns: aCols },
+				dataSource: oRowBinding,
+				fileName: 'Registro_Actividades.xlsx',
+				worker: false
+			};
+
+			let oSheet = new Spreadsheet(oSettings);
+			oSheet.build().finally(() => oSheet.destroy());
+		}
 
 	});
 });
