@@ -7,25 +7,44 @@
             "idProyecto": "PROJ-101",
             "nombreProyecto": "Implementación SAP BTP",
             "descripcion": "Migración de servicios cloud",
-            "estatusProyecto": "En Progreso"
+            "estatusProyecto": "En Progreso",
+            "requerimientos": [
+                { "idRequerimiento": "REQ-001", "descripcion": "Configuración de entornos", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-002", "descripcion": "Migración de datos", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-003", "descripcion": "Pruebas de integración", "estatus": "Activo" }
+            ]
         },
         {
             "idProyecto": "PROJ-102",
             "nombreProyecto": "Desarrollo de Aplicación Móvil",
             "descripcion": "Aplicación para gestión de inventarios",
-            "estatusProyecto": "Completado"
+            "estatusProyecto": "Completado",
+            "requerimientos": [
+                { "idRequerimiento": "REQ-004", "descripcion": "Diseño de interfaz", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-005", "descripcion": "Desarrollo de funcionalidades", "estatus": "Activo" }
+            ]
         },
         {
             "idProyecto": "PROJ-103",
             "nombreProyecto": "Integración de Sistemas",
             "descripcion": "Integración de sistemas internos con SAP",
-            "estatusProyecto": "En Progreso"
+            "estatusProyecto": "En Progreso",
+            "requerimientos": [
+                { "idRequerimiento": "REQ-007", "descripcion": "Análisis de sistemas existentes", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-008", "descripcion": "Desarrollo de conectores", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-009", "descripcion": "Pruebas de integración", "estatus": "Activo" }
+            ]
         },
         {
             "idProyecto": "PROJ-104",
             "nombreProyecto": "Optimización de Procesos",
             "descripcion": "Reingeniería de procesos internos",
-            "estatusProyecto": "Pendiente"
+            "estatusProyecto": "Pendiente",
+            "requerimientos": [
+                { "idRequerimiento": "REQ-010", "descripcion": "Análisis de procesos actuales", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-011", "descripcion": "Identificación de cuellos de botella", "estatus": "Activo" },
+                { "idRequerimiento": "REQ-012", "descripcion": "Implementación de mejoras", "estatus": "Activo" }
+            ]
         }
     ],
     "consultores": [

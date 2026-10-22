@@ -3,32 +3,93 @@
         {
             "idCliente": "CLI-001",
             "nombre": "Alpha S.A. de C.V.",
+            "estatus": "Activo",
             "totalProyectos": 4,
-            "estatus": "Activo"
+            "proyectos": [
+                {
+                    "idProyecto": "PROJ-101",
+                    "nombreProyecto": "Implementación SAP BTP",
+                    "descripcion": "Migración de servicios cloud",
+                    "fechaInicio": "2026-01-15",
+                    "fechaFin": "2026-11-30",
+                    "estatusProyecto": "En Progreso",
+                    "requerimientos": [
+                        { "idRequerimiento": "REQ-001", "nombre": "Configuración BTP", "descripcion": "Configuración de entornos", "estatus": "Activo", "tipo": "RF" },
+                        { "idRequerimiento": "REQ-002", "nombre": "Migración BD", "descripcion": "Migración de datos a HANA", "estatus": "Inactivo", "tipo": "RF" },
+                        { "idRequerimiento": "RNF-001", "nombre": "Disponibilidad", "descripcion": "SLA 99.9% uptime", "estatus": "Activo", "tipo": "RNF" }
+                    ]
+                },
+                {
+                    "idProyecto": "PROJ-102",
+                    "nombreProyecto": "Desarrollo de Aplicación Móvil",
+                    "descripcion": "Aplicación para gestión de inventarios",
+                    "fechaInicio": "2026-03-01",
+                    "fechaFin": "2026-08-15",
+                    "estatusProyecto": "Completado",
+                    "requerimientos": [
+                        { "idRequerimiento": "REQ-004", "nombre": "UI/UX", "descripcion": "Diseño de interfaz", "estatus": "Activo", "tipo": "RF" },
+                        { "idRequerimiento": "REQ-005", "nombre": "Lógica Offline", "descripcion": "Desarrollo de funcionalidades sin red", "estatus": "Activo", "tipo": "RF" }
+                    ]
+                }
+            ],
+            "consultores": [
+                { "nombreConsultor": "Lizet López", "proyectoAsignado": "PROJ-101", "rol": "Desarrolladora ABAP RAP / Fiori" },
+                { "nombreConsultor": "Chelsea Garcia Telles", "proyectoAsignado": "PROJ-101", "rol": "Desarrolladora ABAP RAP / Fiori" },
+                { "nombreConsultor": "Juan Pérez", "proyectoAsignado": "PROJ-102", "rol": "Desarrollador Mobile" },
+                { "nombreConsultor": "María González", "proyectoAsignado": "PROJ-102", "rol": "Diseñadora UI/UX" },
+                { "nombreConsultor": "Carlos Ramírez", "proyectoAsignado": "PROJ-101", "rol": "Arquitecto Cloud" },
+                { "nombreConsultor": "Ana Martínez", "proyectoAsignado": "PROJ-102", "rol": "QA Tester" },
+                { "nombreConsultor": "Luis Rodríguez", "proyectoAsignado": "PROJ-101", "rol": "Especialista en Integración" }
+            ]
         },
         {
             "idCliente": "CLI-002",
             "nombre": "Beta Tech Solutions",
+            "estatus": "Activo",
             "totalProyectos": 2,
-            "estatus": "Activo"
-        },
-        {
-            "idCliente": "CLI-003",
-            "nombre": "Gamma Industrial Group",
-            "totalProyectos": 1,
-            "estatus": "Inactivo"
-        },
-        {
-            "idCliente": "CLI-004",
-            "nombre": "Delta Consultores",
-            "totalProyectos": 5,
-            "estatus": "Activo"
-        },
-        {
-            "idCliente": "CLI-005",
-            "nombre": "Omega Logística Global",
-            "totalProyectos": 3,
-            "estatus": "Activo"
+            "proyectos": [
+                {
+                    "idProyecto": "PROJ-201",
+                    "nombreProyecto": "Integración de Sistemas",
+                    "descripcion": "Integración de sistemas internos con SAP",
+                    "fechaInicio": "2026-02-10",
+                    "fechaFin": "2026-09-20",
+                    "estatusProyecto": "En Progreso",
+                    "requerimientos": [
+                        { "idRequerimiento": "REQ-006", "nombre": "API Gateway", "descripcion": "Implementación de API Gateway", "estatus": "Activo", "tipo": "RF" },
+                        { "idRequerimiento": "RNF-002", "nombre": "Seguridad", "descripcion": "Cumplimiento de estándares de seguridad", "estatus": "Activo", "tipo": "RNF" }
+                    ]
+                },
+                {
+                    "idProyecto": "PROJ-202",
+                    "nombreProyecto": "Optimización de Procesos",
+                    "descripcion": "Automatización de procesos internos",
+                    "fechaInicio": "2026-04-05",
+                    "fechaFin": "2026-12-15",
+                    "estatusProyecto": "Planificado",
+                    "requerimientos": [
+                        { "idRequerimiento": "REQ-007", "nombre": "RPA Implementation", "descripcion": "Implementación de RPA para procesos repetitivos", "estatus": "Activo", "tipo": "RF" }
+                    ]
+                },
+                {
+                    "idProyecto": "PROJ-203",
+                    "nombreProyecto": "Actualización de Infraestructura",
+                    "descripcion": "Actualización de servidores y redes",
+                    "fechaInicio": "2026-05-01",
+                    "fechaFin": "2026-10-30",
+                    "estatusProyecto": "En Progreso",
+                    "requerimientos": [
+                        { "idRequerimiento": "REQ-008", "nombre": "Upgrade Servidores", "descripcion": "Actualización de hardware y software de servidores", "estatus": "Activo", "tipo": "RF" },
+                        { "idRequerimiento": "RNF-003", "nombre": "Redundancia", "descripcion": "Implementación de redundancia en la red", "estatus": "Activo", "tipo": "RNF" }
+                    ]
+                }
+            ],
+            "consultores": [
+                { "nombreConsultor": "Ana Martínez", "proyectoAsignado": "PROJ-201", "rol": "Consultora SAP PI/PO" },
+                { "nombreConsultor": "Carlos Gómez", "proyectoAsignado": "PROJ-202", "rol": "Especialista RPA" },
+                { "nombreConsultor": "María López", "proyectoAsignado": "PROJ-203", "rol": "Ingeniera de Redes" },
+                { "nombreConsultor": "Luis Rodríguez", "proyectoAsignado": "PROJ-201", "rol": "Especialista en Integración" }
+            ]
         }
     ]
 }

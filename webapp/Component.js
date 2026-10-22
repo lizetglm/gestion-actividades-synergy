@@ -29,6 +29,10 @@ sap.ui.define([
 
                 // set the device model
                 this.setModel(models.createDeviceModel(), "device");
+
+                // modelo solo de prueba para clientes y proyectos (eliminar despues)
+                var oModel = new sap.ui.model.json.JSONModel("model/clientes.json"); 
+                this.setModel(oModel, "modeloClientes");
             }
         });
     }

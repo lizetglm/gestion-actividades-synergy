@@ -142,10 +142,17 @@
           ]
         },
         {
-          "name": "RouteClienteProyectos/{clienteId}",
-          "pattern": "clienteProyectos/{clienteId}",
+          "name": "RouteDetalleCliente",
+          "pattern": "detalleCliente/{clienteId}",
           "target": [
             "TargetDetalleCliente"
+          ]
+        },
+        {
+          "name": "RouteDetalleProyecto",
+          "pattern": "proyecto/{idProyecto}",
+          "target": [
+            "TargetDetalleProyecto"
           ]
         },
         {
@@ -204,6 +211,12 @@
           "clearControlAggregation": false,
           "viewId": "Perfiles",
           "viewName": "admin.Perfiles"
+        },
+        "TargetDetalleProyecto": {
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "DetalleProyecto",
+          "viewName": "admin.DetalleProyecto"
         }
       }
     },

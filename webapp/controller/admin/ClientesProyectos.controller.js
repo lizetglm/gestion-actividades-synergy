@@ -26,7 +26,7 @@ sap.ui.define([
             this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
 
             // Modelos solo de prueba
-            var oModel = new JSONModel("model/clientes.json");
+            let oModel = this.getOwnerComponent().getModel("modeloClientes");
             this.getView().setModel(oModel, "modelo");
 		},
 
@@ -59,7 +59,7 @@ sap.ui.define([
             // Extraemos el ID del cliente seleccionado
             var sIdCliente = oContext.getProperty("idCliente");
         
-            this.getOwnerComponent().getRouter().navTo("RouteClienteProyectos/{clienteId}", {
+            this.getOwnerComponent().getRouter().navTo("RouteDetalleCliente", {
                 clienteId: sIdCliente
             });
         },
