@@ -1,0 +1,25 @@
+<core:FragmentDefinition 
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core">
+    
+    <Dialog 
+        id="dialogRechazarReporte" 
+        title="Rechazar Reporte de Horas" 
+        contentWidth="400px"
+        state="Warning">
+        
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Text text="Por favor, indica el motivo del rechazo. Esta información será enviada a los consultores seleccionados para que corrijan sus registros." class="sapUiSmallMarginBottom" />
+                
+                <Label text="Motivo del rechazo" required="true" />
+                <TextArea id="txtMotivoRechazo" width="100%" rows="4" placeholder="Ej. Faltan horas por registrar en el requerimiento REQ-002..." />
+            </VBox>
+        </content>
+        
+        <buttons>
+            <Button text="Confirmar Rechazo" type="Reject" press=".onConfirmarRechazo" />
+            <Button text="Cancelar" type="Transparent" press=".onCerrarDialogRechazo" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

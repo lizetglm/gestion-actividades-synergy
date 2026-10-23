@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View id="vistaCalendarioActividades"
 	controllerName="ns.frontend.controller.CalendarioActividades"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"

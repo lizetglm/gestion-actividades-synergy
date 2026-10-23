@@ -1,4 +1,5 @@
-<mvc:View xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form"
+<mvc:View id="vistaRegistrarActividad"
+    xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form"
 	controllerName="ns.frontend.controller.RegistrarActividad"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"

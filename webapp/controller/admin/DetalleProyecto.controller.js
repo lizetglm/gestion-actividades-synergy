@@ -64,6 +64,10 @@ sap.ui.define([
 			}
         },
 
+		onBack1: function () {
+			this.getOwnerComponent().getRouter().navTo("RouteClientesProyectos");
+		},
+
 		onBack: function () {
             window.history.go(-1);
         },

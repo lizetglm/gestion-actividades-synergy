@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View id="vistaDetalleClienteProyectos"
     controllerName="ns.frontend.controller.admin.DetalleClienteProyectos"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -63,7 +63,7 @@
                                     <OverflowToolbar>
                                         <Title text="{i18n>titleTableProyectos}" level="H3" />
                                         <ToolbarSpacer />
-                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarProyectosExcel" type="Success"/>
+                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarProyectosExcel"/>
                                         <Button text="{i18n>btnNuevoProyecto}" type="Emphasized" icon="sap-icon://add" press=".onNuevoProyecto" />
                                     </OverflowToolbar>
                                 </headerToolbar>
@@ -126,7 +126,7 @@
                                     <OverflowToolbar>
                                         <Title text="{i18n>titleTableConsultores}" level="H3" />
                                         <ToolbarSpacer />
-                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarConsultoresExcel" type="Success"/>
+                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarConsultoresExcel" />
                                         <Button text="{i18n>btnAsignarConsultor}" 
                                                 type="Emphasized" 
                                                 icon="sap-icon://add-employee" 

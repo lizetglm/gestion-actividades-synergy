@@ -1,16 +1,16 @@
-<mvc:View xmlns:layout="sap.ui.layout"
+<mvc:View id="vistaPanelCumplimiento"
+    xmlns:layout="sap.ui.layout"
 	controllerName="ns.frontend.controller.admin.PanelCumplimiento"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
 	xmlns:c="sap.ui.core"
-	displayBlock="true"
-	height="100%"
-	busyIndicatorDelay="0"
+	displayBlock="true" height="100%" busyIndicatorDelay="0"
     xmlns:f="sap.f"
+    xmlns:mc="sap.suite.ui.microchart"
 >
-    <f:DynamicPage id="pagePanel" headerExpanded="true" class="sapUiSizeCompact">
+    <f:DynamicPage id="pagePanel"  showFooter="true">
         <f:title>
-            <f:DynamicPageTitle>
+            <f:DynamicPageTitle id="idPanelCDynamicPageTitle">
                 <f:breadcrumbs >
                    <Breadcrumbs currentLocationText="{i18n>appAdmin1}"
                     class="sapUiSmallMarginTopBottom">
@@ -92,12 +92,18 @@
         </f:header>
 
         <f:content>
-            <!-- Detalles por consultor -->
-            <Table 
+            <!-- Tabla de detalles por consultor -->
+            <Table id="tablaCumplimiento"
                 headerText="{i18n>detallePorConsultor}" 
                 items="{modelo>/oModelo}"
                 class="tablaFondoColor sapUiMediumMarginBottom"
+                mode="MultiSelect"
             >
+                <headerToolbar>
+                    <Toolbar id="toolbarTablaCumplimiento">
+                        <Title id="tituloTablaCumplimiento" text="Revisión de Horas" level="H3"/>
+                    </Toolbar>
+                </headerToolbar>
                 <columns>
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="{i18n>consultant}" />
@@ -108,6 +114,7 @@
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="{i18n>filtro2}" />
                     </Column>
+                    <Column hAlign="Center"><Text text="Avance" /></Column>
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="{i18n>estatusReg}" />
                     </Column>
@@ -129,6 +136,9 @@
                             <Text text="{modelo>nombre}" />
                             <Text text="{modelo>cliente}" />
                             <Text text="{modelo>equipo}" />
+                            <mc:RadialMicroChart  size="S" 
+                                percentage="{modelo>porcentajeAvance}" 
+                                valueColor="{= ${modelo>porcentajeAvance} === 100 ? 'Good' : 'Critical'}" />
                             <ObjectStatus 
                                 text="{modelo>estatusReg}" 
                                 state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }" />
@@ -141,5 +151,12 @@
             </Table>
         </f:content>
         
+        <f:footer>
+            <OverflowToolbar id="footerPanelCumplimiento">
+                <ToolbarSpacer />
+                <Button id="btnConsolidarMasivo" text="Consolidar y Enviar" type="Emphasized" icon="sap-icon://paper-plane" press=".onConsolidarMasivo" />
+                <Button id="btnRechazarMasivo" text="Rechazar Seleccionados" type="Reject" icon="sap-icon://decline" press=".onRechazarMasivo" />
+            </OverflowToolbar>
+        </f:footer>
     </f:DynamicPage>
 </mvc:View>

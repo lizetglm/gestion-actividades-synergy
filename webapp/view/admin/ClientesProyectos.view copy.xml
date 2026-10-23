@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View id="vistaClientesProyectos1"
 	controllerName="ns.frontend.controller.admin.ClientesProyectos"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"

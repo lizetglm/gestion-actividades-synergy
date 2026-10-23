@@ -1,41 +1,41 @@
 {
     "oModelo": [
         { 
-            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado"
+            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado", "porcentajeAvance": 100
         },
         { 
-            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar"
+            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50
         },
         { 
-            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado"
+            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado", "porcentajeAvance": 100
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado"
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado", "porcentajeAvance": 75
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a"
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a", "porcentajeAvance": 0
         },{ 
-            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado"
+            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado", "porcentajeAvance": 100
         },
         { 
-            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar"
+            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50
         },
         { 
-            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado"
+            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado", "porcentajeAvance": 100
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado"
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado", "porcentajeAvance": 75
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a"
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a", "porcentajeAvance": 0
         },{ 
-            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado"
+            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado", "porcentajeAvance": 100
         },
         { 
-            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar"
+            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50
         },
         { 
-            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado"
+            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "Equipo 1", "estatusReg": "Activo", "estatusFirma": "Firmado", "porcentajeAvance": 100
         }
     ]
 }

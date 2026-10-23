@@ -1,4 +1,4 @@
-<mvc:View
+<mvc:View id="vistaDetalleProyecto"
     controllerName="ns.frontend.controller.admin.DetalleProyecto"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -23,6 +23,7 @@
         <uxap:headerContent>
             <VBox class="sapUiSmallMarginBottom">
                 <Breadcrumbs currentLocationText="{i18n>appAdmin2.2}" >
+                    <Link text="&lt; {i18n>appAdmin2}" press=".onBack1" />
                     <Link text="&lt; {i18n>appAdmin2.1}" press=".onBack" />
                 </Breadcrumbs>
             </VBox>
@@ -52,7 +53,7 @@
                                         <Title text="{i18n>tblReqFuncionales}" level="H3" />
                                         <ToolbarSpacer />
                                         <SearchField width="30%" search=".onBuscarRequerimiento" placeholder="Buscar RF..." app:tipoTabla="RF"/>
-                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarRFExcel" type="Success"/>
+                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarRFExcel" />
                                         <Button text="{i18n>btnNewReq}" type="Emphasized" icon="sap-icon://add" press=".onNuevoRequerimiento" app:tipoReq="RF" />
                                     </OverflowToolbar>
                                 </headerToolbar>
@@ -105,7 +106,7 @@
                                         <Title text="{i18n>tblReqNoFuncionales}" level="H3" />
                                         <ToolbarSpacer />
                                         <SearchField width="30%" search=".onBuscarRequerimiento" placeholder="Buscar RNF..." app:tipoTabla="RNF"/>
-                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarRNFExcel" type="Success"/>
+                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarRNFExcel" />
                                         <Button text="{i18n>btnNewReq}" type="Emphasized" icon="sap-icon://add" press=".onNuevoRequerimiento" app:tipoReq="RNF" />
                                     </OverflowToolbar>
                                 </headerToolbar>

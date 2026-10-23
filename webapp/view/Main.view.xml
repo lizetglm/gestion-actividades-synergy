@@ -1,4 +1,6 @@
-<mvc:View controllerName="ns.frontend.controller.Main"
+<mvc:View 
+    id="vistaMain"
+    controllerName="ns.frontend.controller.Main"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"

@@ -1,4 +1,5 @@
-<mvc:View xmlns:layout="sap.ui.layout"
+<mvc:View id="vistaPanelCumplimiento1"
+    xmlns:layout="sap.ui.layout"
 	controllerName="ns.frontend.controller.admin.PanelCumplimiento"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
