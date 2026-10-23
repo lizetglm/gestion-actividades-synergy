@@ -60,14 +60,14 @@ sap.ui.define([
                 aFilters.push(new Filter("equipo", FilterOperator.Contains, sEquipo));
             }
 
-            let oTable = this.byId("tablaDashboardCumplimiento");
+            let oTable = this.byId("tablaCumplimiento");
             let oBinding = oTable.getBinding("items");
             oBinding.filter(aFilters);  // filtros en la tabla
         },
 
         // KPIs DINÁMICOS ---
-        onCalcularKPIs: function () {
-            let oTable = this.byId("tablaCumplimiento");
+        onCalcularKPIs: function (oEvent) {
+            let oTable = oEvent.getSource();
             let oBinding = oTable.getBinding("items");
             
             // Si el binding aún no existe, salimos
