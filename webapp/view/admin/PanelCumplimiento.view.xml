@@ -29,8 +29,7 @@
 
                 <f:actions>
                     <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
-                    <Button text="{i18n>btnConsolidarReportes}" type="Accept" icon="sap-icon://copy" />
-                    <Button text="{i18n>btnExportarDetalle}" type="Neutral" icon="sap-icon://excel-attachment" />
+                    <Button  text="{i18n>btnImpDetalle}" tooltip="{i18n>btnImpDetalle}"  icon="sap-icon://print" press=".onImprimirPantalla" type="Emphasized"/>
                 </f:actions>
             </f:DynamicPageTitle>
         </f:title>
@@ -42,7 +41,7 @@
                 <FlexBox wrap="Wrap" class="gapPanelFiltros" >
                     <VBox class="sapUiMediumMarginEnd">
                         <Label text="{i18n>customer}" />
-                        <Select width="200px" selectedKey="Todos">
+                        <Select id="filtroCliente" width="200px" selectedKey="Todos" change=".onFiltrarDashboard" >
                             <c:Item key="Todos" text="Todos" />
                             <c:Item key="Alpha" text="Cliente Alpha S.A." />
                             <c:Item key="Beta" text="Cliente Beta" />
@@ -50,7 +49,7 @@
                     </VBox>
                     <VBox>
                         <Label text="{i18n>filtro2}" />
-                        <Select width="200px" selectedKey="Todos">
+                        <Select id="filtroEquipo" width="200px" selectedKey="Todos" change=".onFiltrarDashboard">
                             <c:Item key="Todos" text="Todos" />
                             <c:Item key="SAP" text="Consultoría SAP" />
                             <c:Item key="BTP" text="Integración BTP" />
@@ -94,14 +93,15 @@
         <f:content>
             <!-- Tabla de detalles por consultor -->
             <Table id="tablaCumplimiento"
-                headerText="{i18n>detallePorConsultor}" 
                 items="{modelo>/oModelo}"
                 class="tablaFondoColor sapUiMediumMarginBottom"
-                mode="MultiSelect"
+                updateFinished=".onCalcularKPIs"
             >
                 <headerToolbar>
                     <Toolbar id="toolbarTablaCumplimiento">
-                        <Title id="tituloTablaCumplimiento" text="Revisión de Horas" level="H3"/>
+                        <Title id="tituloTablaCumplimiento" text="{i18n>detallePorConsultor}" level="H3"/>
+                        <ToolbarSpacer />
+                        <Button tooltip="{i18n>btnExportarExcel}" icon="sap-icon://excel-attachment" press=".onExportarExcel"/>
                     </Toolbar>
                 </headerToolbar>
                 <columns>
@@ -114,13 +114,13 @@
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="{i18n>filtro2}" />
                     </Column>
-                    <Column hAlign="Center"><Text text="Avance" /></Column>
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="{i18n>estatusReg}" />
                     </Column>
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="{i18n>estatusFirma}" />
                     </Column>
+                    <Column width="6rem" ><Text text="{i18n>avance}" /></Column>
                 </columns>
 
                 <items>
@@ -136,27 +136,21 @@
                             <Text text="{modelo>nombre}" />
                             <Text text="{modelo>cliente}" />
                             <Text text="{modelo>equipo}" />
-                            <mc:RadialMicroChart  size="S" 
-                                percentage="{modelo>porcentajeAvance}" 
-                                valueColor="{= ${modelo>porcentajeAvance} === 100 ? 'Good' : 'Critical'}" />
                             <ObjectStatus 
                                 text="{modelo>estatusReg}" 
                                 state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }" />
                             <ObjectStatus 
                                 text="{modelo>estatusFirma}" 
                                 state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : 'None') }" />
+                            <mc:RadialMicroChart  size="S" 
+                                percentage="{modelo>porcentajeAvance}" 
+                                valueColor="{= ${modelo>porcentajeAvance} === 100 ? 'Good' : 'Critical'}" 
+                            />
                         </cells>
                     </ColumnListItem>
                 </items>
             </Table>
         </f:content>
-        
-        <f:footer>
-            <OverflowToolbar id="footerPanelCumplimiento">
-                <ToolbarSpacer />
-                <Button id="btnConsolidarMasivo" text="Consolidar y Enviar" type="Emphasized" icon="sap-icon://paper-plane" press=".onConsolidarMasivo" />
-                <Button id="btnRechazarMasivo" text="Rechazar Seleccionados" type="Reject" icon="sap-icon://decline" press=".onRechazarMasivo" />
-            </OverflowToolbar>
-        </f:footer>
+
     </f:DynamicPage>
 </mvc:View>

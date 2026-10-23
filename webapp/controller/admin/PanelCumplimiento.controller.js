@@ -1,13 +1,19 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+    "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-    "sap/ui/core/Fragment"
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/ui/export/Spreadsheet",
+    "sap/ui/export/library",
+    "ns/frontend/util/ExportHelper"
 ], function(
-	Controller, JSONModel, MessageBox, MessageToast, Fragment
+    Controller, JSONModel, MessageBox, MessageToast, Filter, FilterOperator, Spreadsheet, exportLibrary,
+    ExportHelper
 ) {
 	"use strict";
+    const EdmType = exportLibrary.EdmType;
 
 	return Controller.extend("ns.frontend.controller.admin.PanelCumplimiento", {
         getResourceBundle: function () {
@@ -40,72 +46,83 @@ sap.ui.define([
 			this.getOwnerComponent().getRouter().navTo("RouteMain");
 		},
 
-        onConsolidarMasivo: function () {
-            let oTable = this.byId("tablaCumplimiento");
-            // Obtenemos un arreglo con todas las filas que el usuario palomeó
-            let aContexts = oTable.getSelectedContexts(); 
+        // FILTROS ---
+        onFiltrarDashboard: function () {
+            let sCliente = this.byId("filtroCliente").getSelectedKey();
+            let sEquipo = this.byId("filtroEquipo").getSelectedKey();
+            let aFilters = [];
 
-            if (aContexts.length === 0) {
-                MessageBox.warning("Por favor, selecciona al menos un consultor para consolidar.");
-                return;
+            //filtardo de los datos 
+            if (sCliente && sCliente !== "Todos") {
+                aFilters.push(new Filter("cliente", FilterOperator.Contains, sCliente));
+            }
+            if (sEquipo && sEquipo !== "Todos") {
+                aFilters.push(new Filter("equipo", FilterOperator.Contains, sEquipo));
             }
 
-            MessageBox.confirm("¿Estás seguro de consolidar y enviar el reporte de los " + aContexts.length + " consultores seleccionados?", {
-                title: "Confirmar Consolidación",
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        MessageToast.show("Simulación: Reportes consolidados y enviados exitosamente.");
-                        oTable.removeSelections(); // Limpiar las palomitas
-                    }
-                }
-            });
+            let oTable = this.byId("tablaDashboardCumplimiento");
+            let oBinding = oTable.getBinding("items");
+            oBinding.filter(aFilters);  // filtros en la tabla
         },
 
-        onRechazarMasivo: function () {
+        // KPIs DINÁMICOS ---
+        onCalcularKPIs: function () {
             let oTable = this.byId("tablaCumplimiento");
-            let aContexts = oTable.getSelectedContexts();
-
-            if (aContexts.length === 0) {
-                MessageBox.warning("Por favor, selecciona al menos un consultor para rechazar.");
-                return;
-            }
-
-            let oView = this.getView();
-
-            if (!this._oDialogRechazo) {
-                Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogRechazo",
-                    controller: this
-                }).then(function (oDialog) {
-                    this._oDialogRechazo = oDialog;
-                    oView.addDependent(this._oDialogRechazo);
-                    this._oDialogRechazo.open();
-                }.bind(this));
-            } else {
-                this.byId("txtMotivoRechazo").setValue(""); 
-                this._oDialogRechazo.open();
-            }
-        },
-
-        onConfirmarRechazo: function () {
-            let sMotivo = this.byId("txtMotivoRechazo").getValue();
+            let oBinding = oTable.getBinding("items");
             
-            // Validación del campo obligatorio (RF-14)
-            if (!sMotivo || sMotivo.trim() === "") {
-                MessageBox.error("El motivo de rechazo es obligatorio.");
-                return;
-            }
+            // Si el binding aún no existe, salimos
+            if (!oBinding) return;
 
-            MessageToast.show("Simulación: Reportes rechazados. Se ha notificado a los consultores.");
-            this.byId("tablaCumplimiento").removeSelections();
-            this.onCerrarDialogRechazo();
+            // getCurrentContexts() nos da solo las filas visibles (respetando los filtros)
+            let aContexts = oBinding.getCurrentContexts();
+
+            let iActivos = aContexts.length;
+            let iCompletos = 0;
+            let iPendientes = 0;
+            let iSinFirmar = 0;
+
+            // conteno de lp estatus iterando sobre las filas visibles
+            aContexts.forEach(function (oContext) {
+                let oFila = oContext.getObject();
+                if (oFila.estatusReg === "Completo") iCompletos++;
+                if (oFila.estatusReg === "Pendiente") iPendientes++;
+                if (oFila.estatusFirma === "Sin firmar") iSinFirmar++;
+            });
+
+            // Actualizacion del modelo visual
+            let oUiModel = this.getView().getModel("uiPantalla");
+            oUiModel.setProperty("/kpis/activos", iActivos);
+            oUiModel.setProperty("/kpis/completos", iCompletos);
+            oUiModel.setProperty("/kpis/pendientes", iPendientes);
+            oUiModel.setProperty("/kpis/sinFirmar", iSinFirmar);
         },
 
-        onCerrarDialogRechazo: function () {
-            if (this._oDialogRechazo) {
-                this._oDialogRechazo.close();
-            }
-        }
+        // EXPORTACIÓN Y REPORTE ---
+        onExportarExcel: function () {
+            let aCols = [
+                { label: 'Consultor', property: 'nombre', type: EdmType.String },
+                { label: 'Cliente', property: 'cliente', type: EdmType.String },
+                { label: 'Equipo/Área', property: 'equipo', type: EdmType.String },
+                { label: 'Estatus de Registro', property: 'estatusReg', type: EdmType.String },
+                { label: 'Estatus de Firma', property: 'estatusFirma', type: EdmType.String },
+                { label: 'Avance (%)', property: 'porcentajeAvance', type: EdmType.Number }
+            ];
+
+            let oRowBinding = this.byId("tablaCumplimiento").getBinding("items");
+            let sNombreArchivo = ExportHelper.generarNombreArchivoConFecha("Dashboard_Cumplimiento");
+            let oSettings = {
+                workbook: { columns: aCols },
+                dataSource: oRowBinding,
+                fileName: sNombreArchivo, 
+                worker: false
+            };
+
+            let oSheet = new Spreadsheet(oSettings);
+            oSheet.build().finally(() => oSheet.destroy());
+        },
+
+        onImprimirPantalla: function () {
+            window.print();
+        },
 	});
 });
