@@ -1,157 +1,143 @@
 <mvc:View id="viewConsolidacion"
 	controllerName="ns.frontend.controller.Consolidacion"
-	displayBlock="true" height="100%" busyIndicatorDelay="0"
-    xmlns:mvc="sap.ui.core.mvc"
+	xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout" 
+	xmlns:form="sap.ui.layout.form"
     xmlns="sap.m"
+    busyIndicatorDelay="0"
+    height="100%"
+    displayBlock="true"
 >
     <Page
         id="pageConsolidacion"
         showHeader="false"
+        backgroundDesign="Transparent"
+        class="sapUiResponsiveContentPadding"
+        
         enableScrolling="true"
-        class="consolidationPage">
-
+>
         <content>
-            <HBox
-                id="monthHeaderProf1"
-                class="monthHeader"
-                justifyContent="SpaceBetween"
-                alignItems="Center">
-                <VBox id="vboxTitu1loPerfiles">
-                    <Text
-                        id="textPr1of"
-                        text="Mis Aplicaciones > {i18n>consolidacionTitle}"
-                        class="sapUiTinyMarginBottom" /> 
-                </VBox>
+
+            <VBox id="idBanner" class="sapUiSmallMargin gapBody">
+                <Breadcrumbs id="idActualDireccion" currentLocationText="{i18n>consolidacionTitle}">
+                    <Link id="idRegreso" text="{i18n>title}" press=".onBack" />
+                </Breadcrumbs>
+
+                <FlexBox id="idFlexBox" justifyContent="SpaceBetween" alignItems="End" >
+                    <Title
+                        id="idTitulo"
+                        level="H4" titleStyle="H4"
+                        text="Consolidación Mensual de Reportes"
+                        wrapping="true"
+                        wrappingType="Hyphenated">
+                    </Title>
+                    <Button 
+                        id="btnConfiguracionConsolidacion"
+                        text="Configuración" 
+                        icon="sap-icon://action-settings" 
+                        type="Transparent"
+                        press=".onSettings"    
+                    />
+                </FlexBox>
+
+                <!-- Filtros de búsqueda de paquetes-->
+                
+<!-- Filtros de búsqueda de paquetes -->
+<HBox
+    id="filtersConsolidacion"
+    class="filters sapUiResponsiveContentPadding"
+    alignItems="Center"
+    wrap="Wrap">
+
+    <!-- Filtro de periodo -->
+    <HBox
+        id="filterFieldPeriodo"
+        class="filterField"
+        alignItems="Center">
+
+        <Label
+            id="labelPeriodo"
+            text="Periodo"
+            labelFor="periodComboBox"/>
+
+        <ComboBox
+            id="periodComboBox"
+            selectedKey="{filterModel>/period}"
+            width="10rem">
+
+            <core:Item id="items213" key="All" text="Todos"/>
+            <core:Item id="items7" key="Aug2026" text="Agosto 2026"/>
+            <core:Item id="items8"  key="Sep2026" text="Septiembre 2026"/>
+
+        </ComboBox>
+    </HBox>
+
+    <!-- Filtro de estatus -->
+    <HBox
+        id="filterFieldEstatus"
+        class="filterField"
+        alignItems="Center">
+
+        <Label
+            id="labelEstatusConsolidacion"
+            text="Estatus de consolidación"
+            labelFor="statusComboBox"/>
+
+        <ComboBox
+            id="statusComboBox"
+            selectedKey="{filterModel>/status}"
+            width="12rem">
+
+            <core:Item id="items4" key="All" text="Todos"/>
+            <core:Item id="items5" key="Ready" text="Listo para aprobación"/>
+            <core:Item id="items6" key="Draft" text="Borrador"/>
+
+        </ComboBox>
+    </HBox>
+
+    <!-- Filtro de agrupación -->
+    <HBox
+        id="filterFieldAgrupacion"
+        class="filterField"
+        alignItems="Center">
+
+        <Label
+            id="labelAgruparPor"
+            text="Agrupar por"
+            labelFor="groupByComboBox"/>
+
+        <ComboBox
+            id="groupByComboBox"
+            selectedKey="{filterModel>/groupBy}"
+            width="10rem">
+
+            <core:Item id="items1" key="Department" text="Departamento"/>
+            <core:Item id="items2" key="Month" text="Mes"/>
+            <core:Item id="items3" key="Status" text="Estatus"/>
+
+        </ComboBox>
+    </HBox>
+
+    <!-- Botón de búsqueda -->
+    <Button
+        id="executeFilterButton"
+        text="Go"
+        type="Emphasized"
+        press="onExecuteFilter"
+        class="goButton"/>
+
+</HBox>
 
 
-                <Button
-                                id="btnConfiguracionConsolidacion"
-                                text="Configuración"
-                                icon="sap-icon://action-settings"
-                                type="Transparent"
-                                press="onSettings"/>
-            </HBox>
+            
             
             
             <VBox
                 id="consolidationLayout"
                 class="consolidationLayout">
 
-              
-                    <HBox
-                        id="filtersConsolidacion"
-                        class="consolidationFilters"
-                        alignItems="End"
-                        wrap="Wrap">
-
-                        <!-- Filtro de periodo -->
-                        <VBox
-                            id="filterFieldPeriodo"
-                            class="filterField">
-
-                            <Label
-                                id="labelPeriodo"
-                                text="Periodo"
-                                labelFor="periodComboBox"/>
-
-                            <ComboBox
-                                id="periodComboBox"
-                                selectedKey="{filterModel>/period}"
-                                width="100%">
-
-                                <core:Item
-                                    id="itemPeriodoTodos"
-                                    key="All"
-                                    text="Todos"/>
-
-                                <core:Item
-                                    id="itemPeriodoAgosto2026"
-                                    key="Aug2026"
-                                    text="Agosto 2026"/>
-
-                                <core:Item
-                                    id="itemPeriodoSeptiembre2026"
-                                    key="Sep2026"
-                                    text="Septiembre 2026"/>
-                            </ComboBox>
-                        </VBox>
-
-                        <!-- Filtro de estatus -->
-                        <VBox
-                            id="filterFieldEstatus"
-                            class="filterField">
-
-                            <Label
-                                id="labelEstatusConsolidacion"
-                                text="Estatus de consolidación"
-                                labelFor="statusComboBox"/>
-
-                            <ComboBox
-                                id="statusComboBox"
-                                selectedKey="{filterModel>/status}"
-                                width="100%">
-
-                                <core:Item
-                                    id="itemEstatusTodos"
-                                    key="All"
-                                    text="Todos"/>
-
-                                <core:Item
-                                    id="itemEstatusReady"
-                                    key="Ready"
-                                    text="Listo para aprobación"/>
-
-                                <core:Item
-                                    id="itemEstatusDraft"
-                                    key="Draft"
-                                    text="Borrador"/>
-                            </ComboBox>
-                        </VBox>
-
-                        <!-- Filtro de agrupación -->
-                        <VBox
-                            id="filterFieldAgrupacion"
-                            class="filterField">
-
-                            <Label
-                                id="labelAgruparPor"
-                                text="Agrupar por"
-                                labelFor="groupByComboBox"/>
-
-                            <ComboBox
-                                id="groupByComboBox"
-                                selectedKey="{filterModel>/groupBy}"
-                                width="100%">
-
-                                <core:Item
-                                    id="itemAgruparDepartamento"
-                                    key="Department"
-                                    text="Departamento"/>
-
-                                <core:Item
-                                    id="itemAgruparMes"
-                                    key="Month"
-                                    text="Mes"/>
-
-                                <core:Item
-                                    id="itemAgruparEstatus"
-                                    key="Status"
-                                    text="Estatus"/>
-                            </ComboBox>
-                        </VBox>
-
-                        <ToolbarSpacer id="spacerFiltrosConsolidacion"/>
-
-                        <Button
-                            id="executeFilterButton"
-                            text="Go"
-                            type="Emphasized"
-                            press="onExecuteFilter"
-                            class="goButton"/>
-                    </HBox>
-
-             
+            
                     <Table
                         id="consolidacionTable"
                         items="{consolidacionModel>/reports}"
@@ -160,7 +146,7 @@
                         includeItemInSelection="true"
                         growing="true"
                         growingScrollToLoad="true"
-                        class="consolidationTable">
+                        class="">
 
                         <columns>
                             <Column id="columnMesDepartamento" width="28%">
@@ -247,11 +233,12 @@
                 <!-- Barra inferior de acciones -->
                 <HBox
                     id="bottomActionsConsolidacion"
-                    class="consolidationBottomBar"
+                    class="borde bottomBar textAcciones"
                     alignItems="Center">
 
                     <Text
                         id="selectedRowsText"
+                        class="textAcciones"
                         text="Selecciona los reportes que deseas procesar."/>
 
                     <ToolbarSpacer id="spacerAccionesInferiores"/>
@@ -261,19 +248,26 @@
                         text="Enviar a aprobación"
                         type="Emphasized"
                         icon="sap-icon://paper-plane"
-                        press="onSave"/>
+                        press="onSave"
+                        />
 
                     <Button
                         id="btnGuardarBorrador"
                         text="Guardar borrador"
-                        press="onSaveDraft"/>
+                        press="onSaveDraft"
+                        class="btnGuardar"/>
 
                     <Button
                         id="btnCancelarConsolidacion"
                         text="Cancelar"
-                        type="Transparent"
-                        press="onCancel"/>
+                        type="Reject"
+                        press="onCancel"
+                        class="btnCancelar"/>
+                                    
+                        
                 </HBox>
+
+                </VBox>
         </content>
     </Page>
 </mvc:View>

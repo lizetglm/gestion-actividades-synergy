@@ -1,16 +1,21 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller",
+    "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageToast"
-], function(
-	Controller, JSONModel, Filter, FilterOperator, MessageToast
+], function (
+    Controller,
+    JSONModel,
+    Filter,
+    FilterOperator,
+    MessageToast
 ) {
-	"use strict";
+    "use strict";
 
-	return Controller.extend("ns.frontend.controller.Consolidacion", {
-            onInit: function () {
+	return Controller.extend("ns.frontend.controller.Consolidacion", 
+    {
+         onInit: function () {
                 var oData = {
                     reports: [
                         {
@@ -19,7 +24,7 @@ sap.ui.define([
                             ConsolidacionID: "ID-M-FIN-09",
                             Headcount: "145 empleados",
                             TotalHours: "23,200 hrs",
-                            StatusText: "Ready for Approval",
+                            StatusText: "Listo para aprobación",
                             StatusState: "Success"
                         },
                         {
@@ -28,7 +33,7 @@ sap.ui.define([
                             ConsolidacionID: "ID-M-FIN-08",
                             Headcount: "142 empleados",
                             TotalHours: "22,720 hrs",
-                            StatusText: "Ready for Approval",
+                            StatusText: "Listo para aprobación",
                             StatusState: "Success"
                         },
                         {
@@ -37,7 +42,7 @@ sap.ui.define([
                             ConsolidacionID: "ID-M-FIN-07",
                             Headcount: "145 empleados",
                             TotalHours: "23,200 hrs",
-                            StatusText: "Draft",
+                            StatusText: "Borrador",
                             StatusState: "None"
                         },
                         {
@@ -46,7 +51,7 @@ sap.ui.define([
                             ConsolidacionID: "ID-M-SAL-09",
                             Headcount: "138 empleados",
                             TotalHours: "22,080 hrs",
-                            StatusText: "Ready for Approval",
+                            StatusText: "Listo para aprobación",
                             StatusState: "Success"
                         },
                         {
@@ -55,7 +60,7 @@ sap.ui.define([
                             ConsolidacionID: "ID-M-SAL-08",
                             Headcount: "135 empleados",
                             TotalHours: "21,600 hrs",
-                            StatusText: "Draft",
+                            StatusText: "Borrador",
                             StatusState: "None"
                         }
                     ]
@@ -106,8 +111,8 @@ sap.ui.define([
 
                 if (sStatus !== "All") {
                     var sStatusText = sStatus === "Ready"
-                        ? "Ready for Approval"
-                        : "Draft";
+                        ? "Listo para aprobación"
+                        : "Borrador";
 
                     aFilters.push(
                         new Filter(

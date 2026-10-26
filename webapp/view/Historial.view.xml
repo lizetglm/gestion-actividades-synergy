@@ -1,0 +1,413 @@
+<mvc:View id="viewHistorial"
+	controllerName="ns.frontend.controller.Historial"
+	xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    xmlns="sap.m"
+    busyIndicatorDelay="0"
+    height="100%"
+    displayBlock="true"
+>
+    <Page
+        id="pageHistorial"
+        showHeader="false"
+        enableScrolling="true"
+        backgroundDesign="Transparent"
+        class="sapUiResponsiveContentPadding"
+        >
+        <content>
+            <VBox id="idBannerHs" class="sapUiSmallMargin gapBody">
+                <Breadcrumbs id="idActualDireccionHs" currentLocationText="{i18n>historialTitle}">
+                    <Link id="idRegresoHs" text="{i18n>title}" press=".onBack" />
+                </Breadcrumbs>
+
+                <FlexBox id="idFlexBoxHs" justifyContent="SpaceBetween" alignItems="End" >
+                    <Title
+                        id="idTituloHs"
+                        level="H4" titleStyle="H4"
+                        text="Historial de Reportes Mensuales"
+                        wrapping="true"
+                        wrappingType="Hyphenated">
+                    </Title>
+                    <Button 
+                        id="btnConfiguracionConsolidacionHs"
+                        text="Configuración" 
+                        icon="sap-icon://action-settings" 
+                        type="Transparent"
+                        press=".onSettings"    
+                    />
+                </FlexBox>
+
+                    
+                    <HBox
+                        id="filtersHistorial"
+                        class="filters sapUiResponsiveContentPadding"
+                        alignItems="Center"
+                        wrap="Wrap">
+
+                        <HBox
+                                                id="filtroClienteContainer"
+                                                class="filtersField" alignItems="Center">
+
+                                                <Label
+                                                    id="labelFiltroCliente"
+                                                    text="Cliente"
+                                                    labelFor="filtroCliente"/>
+
+                                                <ComboBox
+                                                    id="filtroCliente"
+                                                    width="10rem"
+                                                    selectedKey="TODOS">
+                                                    <items>
+                                                        <core:Item id="t9odos" key="TODOS" text="Todos"/>
+                                                        <core:Item id="todos1" key="ALPHA" text="Cliente Alpha"/>
+                                                        <core:Item id="todos32" key="BETA" text="Cliente Beta"/>
+                                                        <core:Item id="todos213" key="GAMMA" text="Cliente Gamma"/>
+                                                        <core:Item id="todos2" key="DELTA" text="Cliente Delta"/>
+                                                        <core:Item id="todos22" key="INTERNA" text="Consultora Interna"/>
+                                                    </items>
+                                                </ComboBox>
+                                                
+                                            </HBox>
+
+                        
+                        <HBox id="filtroAnioContainer" class="filtersField" alignItems="Center">
+                                                <Label
+                                                    id="labelFiltroAnio"
+                                                    text="Año"
+                                                    labelFor="filtroAnio"/>
+
+                                                <ComboBox
+                                                    id="filtroAnio"
+                                                    width="10rem"
+                                                    selectedKey="2026">
+                                                    <items>
+                                                        <core:Item id="todos11" key="2026" text="2026"/>
+                                                        <core:Item id="todos3123" key="2025" text="2025"/>
+                                                        <core:Item id="todo1s" key="2024" text="2024"/>
+                                                    </items>
+                                                </ComboBox>
+                                            </HBox>
+
+                        <Button
+                            id="executeFilterButtosn"
+                            text="Go"
+                            type="Emphasized"
+                            press="onExecuteFilter"
+                            class="goButton"/>
+
+                    </HBox>
+
+
+
+            
+                <Table
+                    id="tablaHistorialReportes"
+                    width="100%"
+                    inset="false"
+                    growing="true"
+                    growingScrollToLoad="false"
+                    growingThreshold="10"
+                    alternateRowColors="false"
+                    showSeparators="All"
+                    class="">
+
+                    <columns>
+                        <Column
+                            id="colPeriodo"
+                            width="10rem"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text id="to23dos" text="Periodo (Mes/Año)"/>
+                        </Column>
+
+                        <Column
+                            id="colClientePrincipal"
+                            width="12rem"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text id="to34356dos" text="Cliente Principal"/>
+                        </Column>
+
+                        <Column
+                            id="colTotalHoras"
+                            width="11rem"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text id="to919dos" text="Total Horas"/>
+                        </Column>
+
+                        <Column
+                            id="colEstatusAprobacion"
+                            width="19rem"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text id="to134dos" text="Estatus de Aprobación"/>
+                        </Column>
+
+                        <Column
+                            id="colAccionesDescargar"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text id="to120dos" text="Acciones / Descargar"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+
+                        <ColumnListItem id="reporteAgosto2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id1" text="Agosto 2026"/>
+                                <Text id="id2" text="Cliente Alpha S.A."/>
+                                <Text id="id3" text="168.0 h"/>
+
+                                <ObjectStatus
+                                    id="id31"
+                                    text="Generado, pendiente de firma"
+                                    state="Warning"
+                                    icon="sap-icon://alert"/>
+
+                                <HBox id="id41" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id51"
+                                        text="Ver Reporte"
+                                        icon="sap-icon://search"
+                                        type="Transparent"
+                                        tooltip="Ver reporte"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteJulio2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id4" text="Julio 2026"/>
+                                <Text id="id5" text="Cliente Beta Ltd."/>
+                                <Text id="id6" text="172.5 h"/>
+
+                                <ObjectStatus
+                                    id="id32"
+                                    text="Enviado a RR.HH."
+                                    state="Information"
+                                    icon="sap-icon://message-information"/>
+
+                                <HBox id="id42" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id52"
+                                        text="Ver Reporte"
+                                        icon="sap-icon://search"
+                                        type="Transparent"
+                                        tooltip="Ver reporte"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteJunio2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id7" text="Junio 2026"/>
+                                <Text id="id8" text="Cliente Gamma Inc."/>
+                                <Text id="id9" text="155.0 h"/>
+
+                                <ObjectStatus
+                                    id="id33"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id43" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id53"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteMayo2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id10" text="Mayo 2026"/>
+                                <Text id="id11" text="Cliente Alpha S.A."/>
+                                <Text id="id12" text="160.0 h"/>
+
+                                <ObjectStatus
+                                    id="id34"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id44" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id54"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteAbril2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id13" text="Abril 2026"/>
+                                <Text id="id14" text="Consultora Interna"/>
+                                <Text id="id15" text="40.0 h (Capacitación)"/>
+
+                                <ObjectStatus
+                                    id="id35"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id45" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id55"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteMarzo2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id16" text="Marzo 2026"/>
+                                <Text id="id17" text="Cliente Delta Corp."/>
+                                <Text id="id18" text="180.0 h"/>
+
+                                <ObjectStatus
+                                    id="id36"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id46" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id56"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteFebrero2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id19" text="Febrero 2026"/>
+                                <Text id="id20" text="Cliente Alpha S.A."/>
+                                <Text id="id21" text="165.5 h"/>
+
+                                <ObjectStatus
+                                    id="id37"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id47" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id57"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteEnero2026" vAlign="Middle">
+                            <cells>
+                                <Text id="id22" text="Enero 2026"/>
+                                <Text id="id23" text="Cliente Beta Ltd."/>
+                                <Text id="id24" text="176.0 h"/>
+
+                                <ObjectStatus
+                                    id="id38"
+                                    text="Rechazado por Cliente"
+                                    state="Error"
+                                    icon="sap-icon://status-negative"/>
+
+                                <HBox id="id48" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id58"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+
+                                    <Button
+                                        id="id59"
+                                        text="Ver Detalle de Rechazo"
+                                        icon="sap-icon://comment"
+                                        type="Transparent"
+                                        tooltip="Ver detalle de rechazo"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteDiciembre2025" vAlign="Middle">
+                            <cells>
+                                <Text id="id25" text="Diciembre 2025"/>
+                                <Text id="id26" text="Cliente Gamma Inc."/>
+                                <Text id="id27" text="148.0 h"/>
+
+                                <ObjectStatus
+                                    id="id39"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id49" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id60"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                        <ColumnListItem id="reporteNoviembre2025" vAlign="Middle">
+                            <cells>
+                                <Text id="id28" text="Noviembre 2025"/>
+                                <Text id="id29" text="Cliente Alpha S.A."/>
+                                <Text id="id30" text="163.0 h"/>
+
+                                <ObjectStatus
+                                    id="id40"
+                                    text="Aprobado por Cliente"
+                                    state="Success"
+                                    icon="sap-icon://status-positive"/>
+
+                                <HBox id="id50" alignItems="Center" wrap="Wrap">
+                                    <Button
+                                        id="id61"
+                                        text="Descargar PDF"
+                                        icon="sap-icon://download"
+                                        type="Transparent"
+                                        tooltip="Descargar PDF"
+                                        class="accionHistorial"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+
+                    </items>
+                </Table>
+            </VBox>
+              
+        </content>
+    </Page>
+</mvc:View>

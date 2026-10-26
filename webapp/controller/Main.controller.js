@@ -47,7 +47,7 @@ function (Controller, JSONModel) {
                     titulo: this.getResourceBundle().getText("app5"),
                     descripcion: this.getResourceBundle().getText("desc5"),
                     icono: "sap-icon://customer-history",
-                    ruta: "RouteMain"
+                    ruta: "RouteHistorial"
                 },
                 {
                     titulo: this.getResourceBundle().getText("app6"),
@@ -80,13 +80,13 @@ function (Controller, JSONModel) {
                     titulo: this.getResourceBundle().getText("appAdmin4"),
                     descripcion: this.getResourceBundle().getText("descAdmin4"),
                     icono: "sap-icon://customize",
-                    ruta: "RouteMain"
+                    ruta: "RouteConfiguracion"
                 },
                 {
                     titulo: this.getResourceBundle().getText("appAdmin5"),
                     descripcion: this.getResourceBundle().getText("descAdmin5"),
                     icono: "sap-icon://complete",
-                    ruta: "RouteMain"
+                    ruta: "RouteConsolidacion"
                 }
             ];
 
