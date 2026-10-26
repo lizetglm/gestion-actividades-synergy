@@ -1,31 +1,48 @@
 <mvc:View
+    id="viewReporteMensual"
     controllerName="com.cg.actividades.vistacalendarioactividades.controller.ReporteMensual"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    busyIndicatorDelay="0"
+    height="100%"
     displayBlock="true">
+
     <Page 
         id="reportPage" 
-        title="{i18n>repTitle}"
-        class="sapUiContentPadding">
+        showHeader="false"
+        enableScrolling="true"
+        backgroundDesign="Transparent"
+        class="sapUiResponsiveContentPadding"
+        
+        >
+        
         <content>
-        <HBox
-                id="monthHeade1r"
-                class="monthHeader"
-                justifyContent="SpaceBetween"
-                alignItems="Center">
-            <VBox id="vboxTituloRepor1te">
-                <Text
-                    id="text1111"
-                    text="Mis Aplicaciones > {i18n>repTitle}"
-                    class="sapUiSmallMarginBottom" /> 
-                <Title id="reportTitle" text="Reporte de Actividades — Agosto 2026" level="H3" />
-            </VBox>
-                <HBox id="statusBox" alignItems="Center">
-                    <Label id="lblStatusText" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
-                    <ObjectStatus id="objStatus" text="Generado, pendiente de firma" state="Warning" />
+        <VBox
+                id="idBannerRM"
+                class="sapUiSmallMargin gapBody"
+                >
+            <Breadcrumbs id="idActualDireccionRM" currentLocationText="{i18n>repTitle}">
+                    <Link id="idRegresoRM" text="{i18n>title}" press=".onBack" />
+                </Breadcrumbs>
+
+                <FlexBox id="idFlexBoxRM" justifyContent="SpaceBetween" alignItems="End" >
+                    <Title
+                        id="idTituloRM"
+                        level="H4" titleStyle="H4"
+                        text="Mi Reporte Mensual"
+                        wrapping="true"
+                        wrappingType="Hyphenated">
+                    </Title>
+                    <HBox id="statusBox1" alignItems="Center">
+                    <Label id="lblStatusTe1xt" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
+                    <ObjectStatus id="objS1tatus" text="Generado, pendiente de firma" state="Warning" />
                 </HBox>
-        </HBox>
+                </FlexBox>
+
+            
         <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap" >
             <VBox id="leftColumn" width="69%">
                 <Panel id="panelReporte" backgroundDesign="Solid" headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA" accessibleRole="Region" class="borde">
@@ -109,6 +126,7 @@
                     </Panel>
                 </VBox>
             </HBox>
+            </VBox>
         </content>
     </Page>
 </mvc:View>

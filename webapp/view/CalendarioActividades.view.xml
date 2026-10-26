@@ -1,39 +1,46 @@
 <mvc:View
+    id="viewCalendarioActividades"
     controllerName="com.cg.actividades.vistacalendarioactividades.controller.CalendarioActividades"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    displayBlock="true">
+    displayBlock="true"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form">
 
     <Page
-        id="page"
-        title="{i18n>title}"
-        class="calendarPage">
+        id="pageCalendarioActividades"
+        showHeader="false"
+        enableScrolling="true"
+        backgroundDesign="Transparent"
+        class="sapUiResponsiveContentPadding">
 
-        <content>
-            <HBox
-                id="topHeader"
-                class="calendarHeader"
-                justifyContent="SpaceBetween"
-                alignItems="Center">
+    <content>
+        <VBox
+            id="idBannerCA"
+            class="sapUiSmallMargin gapBody">
+            <Breadcrumbs id="idActualDireccionCA" currentLocationText="{i18n>calendarTitle}">
+                <Link id="idRegresoCA" text="{i18n>title}" press=".onBack" />
+            </Breadcrumbs>
+            <FlexBox id="idFlexBoxCA" justifyContent="SpaceBetween" alignItems="End" >
                 <Title
-                    id="pageTitle"
-                    level="H2"/>
-            </HBox>
+                    id="idTituloCA"
+                    level="H4" titleStyle="H4"
+                    text="Mis Actividades"
+                    wrapping="true"
+                    wrappingType="Hyphenated">
+                </Title>
+            </FlexBox>
+            
             <HBox
                 id="monthHeader"
-                class="monthHeader"
                 justifyContent="SpaceBetween"
                 alignItems="Center">
-                <VBox id="vboxTituloReporte">
-                    <Text
-                        id="text11"
-                        text="Mis Aplicaciones > {i18n>title}"
-                        class="sapUiSmallMarginBottom" /> 
+
+                <VBox id="vboxMonth">
                     <Title
                         id="monthTitle"
                         text="Septiembre 2026"
-                        class="month"
                         level="H3"/>
                 </VBox>
                 <Button
@@ -42,119 +49,236 @@
                     icon="sap-icon://excel-attachment"
                     press="onExportExcel"/>
             </HBox>
+            
+            <!-- Contenedores de KPI -->
             <HBox
                 id="kpiContainer"
                 class="kpiContainer"
-                justifyContent="SpaceBetween">
+                justifyContent="SpaceBetween"
+                backgroundDesign="Transparent">
                 <VBox
-                    id="kpi1"
+                    id="kpiHrs"
                     class="kpiCard kpiBlue">
                     <Title
-                        id="title1"
+                        id="titleHrs"
                         text="62.5 h"
                         level="H2"
-                        class="kpiazul" />
+                        class="kpiTitleBlue"/>
                     <Text
-                        id="text1"
+                        id="textHrs"
                         text="Horas registradas en el mes"/>
                 </VBox>
                 <VBox
-                    id="kpi2"
+                    id="kpiDays"
                     class="kpiCard kpiBlue">
                     <Title
-                        id="title2"
+                        id="titleDays"
                         text="8 / 11"
                         level="H2"
-                        class="kpiazul" />
+                        class="kpiTitleBlue" />
                     <Text
-                        id="text2"
+                        id="textDays"
                         text="Días completos"/>
                 </VBox>
                 <VBox
-                    id="kpi3"
+                    id="kpiPnd"
                     class="kpiCard kpiOrange">
                     <Title
-                        id="title3"
+                        id="titlePnd"
                         text="3"
                         level="H2"
-                        class="kpinaranja" />
+                        class="kpiTitleOrange" />
                     <Text
-                        id="text3"
+                        id="textPnd"
                         text="Días pendientes"/>
                 </VBox>
                 <VBox
-                    id="kpi4"
+                    id="kpiSts"
                     class="kpiCard kpiRed">
                     <Title
-                        id="title4"
+                        id="titleSts"
                         text="Pendiente"
                         level="H2"
-                        class="pendiente" />
+                        class="kpiTitleRed" />
                     <Text
-                        id="text4"
+                        id="textSts"
                         text="Estatus del reporte mensual"/>
                 </VBox>
             </HBox>
+
+            <!-- Filtros -->
             <HBox
-                id="weekHeader"
-                class="weekHeader">
-                <Text
-                    id="dayMonday"
-                    text="Lun"/>
-                <Text
-                    id="dayTuesday"
-                    text="Mar"/>
-                <Text
-                    id="dayWednesday"
-                    text="Mié"/>
-                <Text
-                    id="dayThursday"
-                    text="Jue"/>
-                <Text
-                    id="dayFriday"
-                    text="Vie"/>
-                <Text
-                    id="daySaturday"
-                    text="Sáb"/>
-                <Text
-                    id="daySunday"
-                    text="Dom"/>
+                id="filtersCalendar"
+                class="filters sapUiResponsiveContentPadding"
+                alignItems="Center"
+                wrap="Wrap">
+
+                <HBox
+                    id="filterFieldClient"
+                    class="filterField"
+                    alignItems="Center">
+                    <Label
+                        id="labelClients"
+                        text="Clientes"
+                        labelFor="periodComboBox"/>
+                    <ComboBox
+                        id="comboClients"
+                        selectedKey="{filterModel>/period}"
+                        width="10rem">
+                        <core:Item id="itemClient" key="All" text="Todos"/>
+                        <core:Item id="item1Client" key="Aug2026" text="Cliente A"/>
+                        <core:Item id="item2Client"  key="Sep2026" text="Cliente B"/>
+                    </ComboBox>
+                </HBox>
+
+                <HBox
+                    id="filterFieldProjects"
+                    class="filterField"
+                    alignItems="Center">
+                    <Label
+                        id="labelProjects"
+                        text="Proyectos"
+                        labelFor="statusComboBox"/>
+                    <ComboBox
+                        id="comboProjects"
+                        selectedKey="{filterModel>/status}"
+                        width="12rem">
+                        <core:Item id="itemProjects" key="All" text="Todos"/>
+                        <core:Item id="item1Projects" key="Ready" text="Proyecto 1"/>
+                        <core:Item id="item2Projects" key="Draft" text="Proyecto 2"/>
+                    </ComboBox>
+                </HBox>
+
+                <Button
+                    id="executeFilterBtnCalendar"
+                    text="Go"
+                    type="Emphasized"
+                    press="onExecuteFilter"
+                    class="goButton"/>
             </HBox>
-            <VBox
-                id="calendarGrid"
-                class="calendarGrid"/>
+
+            <!-- Calendario -->
+            <HBox
+                id="calendarFunctions"
+                width="100%"
+                alignItems="Start"
+                renderType="Bare">
+                <VBox
+                    id="calendarContent"
+                    width="{= ${calendarModel>/showDetails} ? '67%' : '100%' }"
+                    renderType="Bare">
+                    <HBox
+                        id="weekHeader"
+                        class="weekHeader">
+                        <Text id="dayMonday" text="Lun" />
+                        <Text id="dayTuesday" text="Mar" />
+                        <Text id="dayWednesday" text="Mié" />
+                        <Text id="dayThursday" text="Jue" />
+                        <Text id="dayFriday" text="Vie" />
+                        <Text id="daySaturday" text="Sáb" />
+                        <Text id="daySunday" text="Dom" />
+                    </HBox>
+
+                <!-- Detalle de las actividades del día seleccionado -->        
+                <VBox
+                    id="calendarGrid"
+                    class="calendarGrid" />
+                </VBox>
+
+                <VBox
+                    id="detailActivities"
+                    width="32%"
+                    visible="{calendarModel>/showDetails}"
+                    class="activityDetailPanel sapUiSmallMarginBegin"
+                    renderType="Bare">
+
+                    <HBox id="activitiesContainer"
+                        alignItems="Start"
+                        width="100%"
+                        justifyContent="SpaceBetween"
+                        class="sapUiSmallMarginBottom">
+                        <Title
+                            id="detailDateTitle"
+                            text="{calendarModel>/selectedDateTitle}"
+                            level="H4"
+                            wrapping="true"
+                            width="100%" 
+                            class="detailDateTitle"/>
+                        <Button
+                            id="btnCloseDetail"
+                            icon="sap-icon://decline"
+                            type="Transparent"
+                            tooltip="Cerrar panel"
+                            press=".onCerrarDetalle" />
+                    </HBox>    
+                    
+                    <List
+                        id="activitiesDayList"
+                        items="{calendarModel>/selectedActivities}"
+                        noDataText="No hay actividades registradas para este día">
+
+                        <CustomListItem id="cstmDetails">
+                            <VBox id="vboxDetails"
+                                class="sapUiSmallMargin"
+                                renderType="Bare">
+                                <Title id="titleProjects"
+                                    text="{calendarModel>proyecto}"
+                                    level="H5" />
+                                <Text id="textClient"
+                                    text="{calendarModel>cliente}" />
+                                <Text id="textDescription"
+                                    text="{calendarModel>descripcion}" />
+                                <Text id="textCountHrs"
+                                    text="{= ${calendarModel>horas} + ' horas' }"
+                                    class="sapUiTinyMarginTop" />
+                            </VBox>
+                        </CustomListItem>
+                    </List>
+
+                    <Toolbar id="totalHrs" class="sapUiSmallMarginTop">
+                        <ToolbarSpacer id="totalCountHrs" />
+                        <Title id="titleTotalHrs"
+                            text="{= 'Total: ' + ${calendarModel>/selectedDateTotal} + ' h' }"
+                            level="H5" />
+                    </Toolbar>
+                </VBox>
+            </HBox>
+
             <HBox
                 id="legendContainer"
                 class="legendContainer"
                 justifyContent="Center">
-                <HBox id="legend"
+                <HBox id="legendFull"
                     class="legendItem"
                     alignItems="Center">
                     <core:Icon id="iconFullDay"
                         src="sap-icon://circle-task-2"
-                        color="#cfd8cf"/>
+                        class="completeDayIcon"/>
                     <Text id="textFullDay"
                         text="Día completo"/>
                 </HBox>
-                <HBox id="legend1"
+                <HBox id="legendPartial"
                     class="legendItem"
                     alignItems="Center">
                     <core:Icon id="iconPartialDay"
                         src="sap-icon://circle-task-2"
-                        color="#0070f2"/>
+                        
+                        class="partialDayIcon"
+                        />
                     <Text id="textPartialDay" 
                         text="Día actual"/>
                 </HBox>
-                <HBox id="legend2"
+                <HBox id="legendNoRcrd"
                     class="legendItem"
                     alignItems="Center">
                     <core:Icon id="iconNoRecord"
                         src="sap-icon://circle-task-2"
-                        color="#cccccc"/>
+                        class="noRcdDayIcon"/>
                     <Text id="textNoRecord"
                         text="Sin registrar"/>
                 </HBox>
             </HBox>
-        </content>
+        </VBox>
+    </content>
     </Page>
 </mvc:View>

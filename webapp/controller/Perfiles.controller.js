@@ -58,6 +58,63 @@ sap.ui.define([
                             }
                         ]
                     },
+                    {
+                        fullName: "Martha Ruiz",
+                        userId: "MRUIZ",
+                        email: "carlos.ruiz@empresa.com",
+                        department: "Consultoría",
+                        location: "Irapuato, Guanajuato",
+                        creationDate: "12/03/2024",
+                        status: "Activo",
+                        roles: [
+                           {
+                                name: "Consultor Nivel 1",
+                                description: "Consultor Nivel 1",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            },
+                           {
+                                name: "Gestor de Proyectos",
+                                description: "Gestor de Proyectos",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            },
+                           {
+                                name: "Finanzas - Reportes",
+                                description: "Finanzas - Reportes",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            },{
+                                name: "Finanzas - Reportes",
+                                description: "Finanzas - Reportes",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            },{
+                                name: "Finanzas - Reportes",
+                                description: "Finanzas - Reportes",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            },{
+                                name: "Finanzas - Reportes",
+                                description: "Finanzas - Reportes",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            },
+                           {
+                                name: "TI - Soporte",
+                                description: "TI - Soporte",
+                                source: "SAP",
+                                validFrom: "",
+                                validTo: ""
+                            }
+                        ]
+                    },
                    {
                         fullName: "Maria García",
                         userId: "MGARCIA",

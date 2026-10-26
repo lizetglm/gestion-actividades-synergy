@@ -50,7 +50,8 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.ui.unified": {}
+        "sap.ui.unified": {},
+        "sap.ui.export": {}
       }
     },
     "contentDensities": {
@@ -107,6 +108,13 @@
           "TargetPerfiles"
         ]
       },
+      {
+        "name": "RouteHistorial",
+        "pattern": "historial",
+        "target": [
+          "TargetHistorial"
+        ]
+      },
         {
           "name": "RouteReporteMensual",
           "pattern": "reporte",
@@ -137,7 +145,14 @@
         "viewId": "Perfiles",
         "viewName": "Perfiles"
       },      
-      "TargetConsolidacion": {
+      "TargetHistorial": {
+        "viewType": "XML",
+        "transition": "slide",
+        "clearControlAggregation": false,
+        "viewId": "Historial",
+        "viewName": "Historial"
+      }
+      ,"TargetConsolidacion": {
         "viewType": "XML",
         "transition": "slide",
         "clearControlAggregation": false,
