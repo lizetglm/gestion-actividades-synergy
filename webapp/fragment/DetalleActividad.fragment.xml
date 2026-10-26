@@ -16,25 +16,25 @@
             >
                 <form:content>
                     <Label text="Fecha" />
-                    <Text text="{modelo>fecha}" />
+                    <Text text="{modeloFiltrado>fecha}" />
 
                     <Label text="Tipo de actividad" />
-                    <Text text="{modelo>tipoActividad}" />
+                    <Text text="{modeloFiltrado>tipoActividad}" />
 
                     <Label text="Hora" />
-                    <Text text="{modelo>hora}" />
+                    <Text text="{modeloFiltrado>hora}" />
 
                     <Label text="Cliente y Proyecto" />
-                    <Text text="{modelo>cliente} - {modelo>proyecto}" />
+                    <Text text="{modeloFiltrado>cliente} - {modeloFiltrado>proyecto}" />
 
                     <Label text="Requerimiento" />
-                    <Text text="{modelo>requerimiento}" />
+                    <Text text="{modeloFiltrado>requerimiento}" />
 
                     <Label text="Horas invertidas" />
-                    <ObjectStatus text="{modelo>horas} hrs" state="Information" />
+                    <ObjectStatus text="{modeloFiltrado>horas} hrs" state="Information" />
 
                     <Label text="Descripción completa" />
-                    <Text text="{modelo>descripcion}" />
+                    <Text text="{modeloFiltrado>descripcion}" />
                 </form:content>
             </form:SimpleForm>
         </content>

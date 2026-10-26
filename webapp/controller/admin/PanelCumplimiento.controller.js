@@ -40,6 +40,8 @@ sap.ui.define([
             // Modelos solo de prueba
             var oModel = new JSONModel("model/panelCumplimiento.json");
             this.getView().setModel(oModel, "modelo");
+
+            console.log("Modelo de cumplimiento cargado:", oModel.getData());
         },
 
         onBack: function() {

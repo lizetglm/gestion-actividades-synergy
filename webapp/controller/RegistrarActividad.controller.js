@@ -5,9 +5,10 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/m/MessageBox",
 	"sap/ui/export/Spreadsheet", 
-    "sap/ui/export/library"
+    "sap/ui/export/library",
+	"ns/frontend/util/ExportHelper"
 ], function(
-	Controller, JSONModel, Fragment, MessageToast, MessageBox, Spreadsheet, exportLibrary
+	Controller, JSONModel, Fragment, MessageToast, MessageBox, Spreadsheet, exportLibrary, ExportHelper
 ) {
 	"use strict";
 	const EdmType = exportLibrary.EdmType;
@@ -35,7 +36,7 @@ sap.ui.define([
 				requerimiento: "",
 				descripcion: "",
 
-				saludo: this.getResourceBundle().getText("saludoRegistroActividad") ,
+				saludo: this.getResourceBundle().getText("saludoRegistro") ,
 				tableTitle: this.getResourceBundle().getText("tableActividadesHoy") + " (" + new Date().toLocaleDateString("es-MX") + ")"
 			};
 			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
@@ -185,8 +186,8 @@ sap.ui.define([
 				fecha: sFechaCaptura,
 				tipoActividad: formData.esCapacitacion ? "Capacitación Interna" : sTipoActividad,
 				hora: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }),
-				cliente: formData.esCapacitacion ? "Capacitación Interna" : sCliente,
-				proyecto: formData.esCapacitacion ? "bench" : sProyecto,
+				cliente: sCliente,
+				proyecto: formData.esCapacitacion ? "Capacitación Interna" : sProyecto,
 				requerimiento: formData.esCapacitacion ? "bench" : sRequerimiento,
 				descripcion: formData.descripcion,
 				horas: formData.horasInvertidas
@@ -198,12 +199,93 @@ sap.ui.define([
             // Actualizar vista filtrada de la tabla y recalcular totales visuales
             this._actualizarTablaYTotales(sFechaCaptura);
 
-            // Limpiar formulario
             this._limpiarFormulario();
 		},
 
+		onEliminarActividad: function (oEvent) {
+            let oButton = oEvent.getSource();
+            let oContext = oButton.getBindingContext("modeloFiltrado");
+            let oActividadAEliminar = oContext.getObject();
+
+            MessageBox.confirm("¿Estás seguro de que deseas eliminar este registro?", {
+                title: "Confirmar eliminación",
+				icon: MessageBox.Icon.WARNING,
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        let aTodas = this.getView().getModel("modelo").getData();
+                        
+						let iIndex = aTodas.findIndex(act => 
+                            act.hora === oActividadAEliminar.hora && 
+                            act.descripcion === oActividadAEliminar.descripcion
+                        );
+
+                        if (iIndex !== -1) {
+                            aTodas.splice(iIndex, 1); // Elimina el elemento del arreglo
+                            this.getView().getModel("modelo").setData(aTodas);
+                            
+                            // Recalcular la tabla filtrada y los totales
+                            this._actualizarTablaYTotales(oActividadAEliminar.fecha);
+                            MessageToast.show("Actividad eliminada correctamente.");
+                        }
+                    }
+                }.bind(this)
+            });
+        },
+
+        onEditarActividad: function (oEvent) {
+            let oButton = oEvent.getSource();
+            let oContext = oButton.getBindingContext("modeloFiltrado");
+            
+            let oActividadClonada = Object.assign({}, oContext.getObject()); 
+            
+            // modelo para el dialogo de edición
+            this.getView().setModel(new JSONModel(oActividadClonada), "modeloEdicion");
+
+            if (!this._oDialogoEdicion) {
+                Fragment.load({
+                    id: this.getView().getId(),
+                    name: "ns.frontend.fragment.DialogEditarActividad",
+                    controller: this
+                }).then(function (oDialog) {
+                    this._oDialogoEdicion = oDialog;
+                    this.getView().addDependent(this._oDialogoEdicion);
+                    this._oDialogoEdicion.open();
+                }.bind(this));
+            } else {
+                this._oDialogoEdicion.open();
+            }
+        },
+
+        onCerrarDialogoEdicion: function () {
+            if (this._oDialogoEdicion) {
+                this._oDialogoEdicion.close();
+            }
+        },
+
+        onGuardarEdicionSimulada: function () {
+            let oDatosEditados = this.getView().getModel("modeloEdicion").getData();
+            let aActividades = this.getView().getModel("modelo").getData();
+            
+            // (Cuando conectes el backend, aquí solo harás un request al endpoint OData con el ID real)
+            let iIndex = aActividades.findIndex(act => act.hora === oDatosEditados.hora && act.fecha === oDatosEditados.fecha);
+            
+            if (iIndex !== -1) {
+                aActividades[iIndex].horas = oDatosEditados.horas;
+                aActividades[iIndex].requerimiento = oDatosEditados.requerimiento;
+                aActividades[iIndex].descripcion = oDatosEditados.descripcion;
+                
+                // Refrescamos la tabla
+                this.getView().getModel("modelo").setData(aActividades);
+                this._actualizarTablaYTotales(oDatosEditados.fecha);
+                
+                MessageToast.show("Actividad actualizada (Modo Simulación).");
+            }
+            
+            this.onCerrarDialogoEdicion();
+        },
+
 		onFilaClickeada: function (oEvent) {
-			var oContext = oEvent.getSource().getBindingContext("modelo");
+			var oContext = oEvent.getSource().getBindingContext("modeloFiltrado");
 			var oView = this.getView();
 
 			if (!this._oDialogoDetalle) {
@@ -218,11 +300,10 @@ sap.ui.define([
                     oView.addDependent(this._oDialogoDetalle);
                     
                     // Pasar el contexto de la fila clickeada y abrirlo
-                    this._oDialogoDetalle.setBindingContext(oContext, "modelo");
+                    this._oDialogoDetalle.setBindingContext(oContext, "modeloFiltrado");
                     this._oDialogoDetalle.open();
                 }.bind(this));
             } else {
-                // Si ya existía de un clic anterior, solo actualizamos los datos y lo abrimos
                 this._oDialogoDetalle.setBindingContext(oContext, "modelo");
                 this._oDialogoDetalle.open();
             }
@@ -245,17 +326,19 @@ sap.ui.define([
 			];
 
 			let oRowBinding = this.byId("tablaActividades").getBinding("items");
-
-			let oSettings = {
-				workbook: { columns: aCols },
-				dataSource: oRowBinding,
-				fileName: 'Registro_Actividades.xlsx',
-				worker: false
-			};
+			let sNombreArchivo = ExportHelper.generarNombreArchivoConFecha("Registro_Actividades");
+            let oSettings = {
+                workbook: { columns: aCols },
+                dataSource: oRowBinding,
+                fileName: sNombreArchivo, 
+                worker: false
+            };
 
 			let oSheet = new Spreadsheet(oSettings);
 			oSheet.build().finally(() => oSheet.destroy());
 		}
+
+
 
 	});
 });

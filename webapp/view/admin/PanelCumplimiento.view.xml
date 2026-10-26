@@ -28,7 +28,6 @@
                 </f:heading>
 
                 <f:actions>
-                    <Button text="{i18n>btnEnviarRecordatorio}" type="Emphasized" icon="sap-icon://email" />
                     <Button  text="{i18n>btnImpDetalle}" tooltip="{i18n>btnImpDetalle}"  icon="sap-icon://print" press=".onImprimirPantalla" type="Emphasized"/>
                 </f:actions>
             </f:DynamicPageTitle>

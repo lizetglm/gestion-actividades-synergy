@@ -1,0 +1,20 @@
+{
+    "actividades": [
+        {
+            "fecha": "2024-06-01",
+            "hora": "09:00",
+            "cliente": "Cliente Alpha S.A.",
+            "requerimiento": "REQ-00231",
+            "descripcion": "Desarrollo",
+            "horas": 3.5
+        },
+        {
+            "fecha": "2024-06-01",
+            "hora": "13:00",
+            "cliente": "Capacitación Interna",
+            "requerimiento": "SAP BTP / RAP",
+            "descripcion": "Curso Fiori",
+            "horas": 2.0
+        }
+    ]
+}

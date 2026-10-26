@@ -1,0 +1,31 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout">
+    
+    <Dialog title="Editar Actividad" contentWidth="450px" class="sapUiContentPadding">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Label text="{i18n>formFecha}" />
+                <Text text="{modeloEdicion>/fecha} - {modeloEdicion>/hora}" class="sapUiTinyMarginBottom textoAzul" />
+
+                <Label text="{i18n>customer}" />
+                <Text text="{modeloEdicion>/cliente}" class="sapUiTinyMarginBottom" />
+
+                <Label text="{i18n>formHInvertidas}" required="true" class="sapUiSmallMarginTop" />
+                <Input type="Number" value="{modeloEdicion>/horas}" width="100%" class="sapUiTinyMarginBottom"/>
+
+                <Label text="{i18n>formRequerimiento}" visible="{= ${modeloEdicion>/tipoActividad} !== 'Capacitación Interna' }" />
+                <Input value="{modeloEdicion>/requerimiento}" visible="{= ${modeloEdicion>/tipoActividad} !== 'Capacitación Interna' }" width="100%" class="sapUiTinyMarginBottom"/>
+
+                <Label text="{i18n>formDescripcion}" required="true" />
+                <TextArea value="{modeloEdicion>/descripcion}" rows="4" width="100%" />
+                
+            </VBox>
+        </content>
+        <buttons>
+            <Button text="Actualizar" type="Emphasized" icon="sap-icon://save" press=".onGuardarEdicionSimulada" />
+            <Button text="Cancelar" type="Transparent" press=".onCerrarDialogoEdicion" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
