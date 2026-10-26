@@ -28,7 +28,6 @@ sap.ui.define([
 				maximoHoras: 8,
 				
 				fechaCaptura: sFechaHoy,
-				tipoActividad: "",
 				horasInvertidas: "",
 				esCapacitacion: false,
 				cliente: "",
@@ -84,9 +83,8 @@ sap.ui.define([
 
 		_limpiarFormulario: function() {
 			let oModelUI = this.getView().getModel("uiPantalla");
-			oModelUI.setProperty("/descripcion", "");
 			oModelUI.setProperty("/horasInvertidas", "");
-			oModelUI.setProperty("/tipoActividad", "");
+			oModelUI.setProperty("/descripcion", "");
 			oModelUI.setProperty("/requerimiento", "");
 			oModelUI.setProperty("/hora", "");
 		},
@@ -96,13 +94,13 @@ sap.ui.define([
 			let formData = oModelUI.getData();
 			let oClienteSelect = this.byId("clienteSelect");
     		let oProyectoSelect = this.byId("proyectoSelect");
+			let oReq = this.byId("requerimientoSelect");
 
 			// SANITIZAR DATOS
             let sFechaCaptura = (formData.fechaCaptura || "").trim();
-			let sTipoActividad = (formData.tipoActividad || "").trim();
 			let sCliente = oClienteSelect ? (oClienteSelect.getSelectedKey() || "").trim() : "";
     		let sProyecto = oProyectoSelect ? (oProyectoSelect.getSelectedKey() || "").trim() : "";
-			let sRequerimiento = (formData.requerimiento || "").trim();
+			let sRequerimiento = oReq ? (oReq.getSelectedKey() || "").trim() : "";
             let sDescripcion = (formData.descripcion || "").trim();
             let sHoras = parseFloat(formData.horasInvertidas);
 
@@ -118,6 +116,14 @@ sap.ui.define([
 				});
                 return; 
             }
+			if (!formData.esCapacitacion && sRequerimiento === "") {
+                if (sRequerimiento === "") {
+                    MessageBox.error("Por favor, ingresa el Requerimiento.", {
+                        onClose: function () { oReq.focus(); }
+                    });
+                    return;
+                }
+            }
 			if (sFechaCaptura === "") {
 				MessageBox.error("Por favor, ingresa la Fecha de captura.");
 				return;
@@ -128,25 +134,6 @@ sap.ui.define([
 					onClose: function () { iH.focus(); }
 				});
                 return;
-            }
-			//quitar este if si no es asi el fuljo o campos especificos para capacitacion
-			if (!formData.esCapacitacion) {
-                // if (sTipoActividad === "") {
-                //     let iTipoActividad = this.byId("tipoActividadInput");
-				// 	// iTipoActividad.setValueState("Error");
-				// 	// iTipoActividad.setValueStateText("El Tipo de actividad es obligatorio.");
-                //     MessageBox.error("Por favor, selecciona el Tipo de actividad.", {
-                //         onClose: function () { iTipoActividad.focus(); }
-                //     });
-                //     return;
-                // }
-                if (sRequerimiento === "") {
-                    let iR = this.byId("requerimientoInput");
-                    MessageBox.error("Por favor, ingresa el Requerimiento.", {
-                        onClose: function () { iR.focus(); }
-                    });
-                    return;
-                }
             }
 			if (sDescripcion === "") {
 				let iD = this.byId("descripcionInput");
@@ -174,23 +161,23 @@ sap.ui.define([
             }
 
             this._guardarDatosModelo(
-				sFechaCaptura, sTipoActividad, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData
+				sFechaCaptura, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData
 			);
         },
         
-        _guardarDatosModelo: function(sFechaCaptura, sTipoActividad, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData) {
+        _guardarDatosModelo: function(sFechaCaptura, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData) {
             let actividadesRegistradas = this.getView().getModel("modelo").getData();
 
 			// Agregar actividad al modelo
 			actividadesRegistradas.push({
 				fecha: sFechaCaptura,
-				tipoActividad: formData.esCapacitacion ? "Capacitación Interna" : sTipoActividad,
 				hora: new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }),
 				cliente: sCliente,
 				proyecto: formData.esCapacitacion ? "Capacitación Interna" : sProyecto,
 				requerimiento: formData.esCapacitacion ? "bench" : sRequerimiento,
 				descripcion: formData.descripcion,
-				horas: formData.horasInvertidas
+				horas: formData.horasInvertidas,
+				esCapacitacion: formData.esCapacitacion
 			});
 
             this.getView().getModel("modelo").setData(actividadesRegistradas);
@@ -265,20 +252,23 @@ sap.ui.define([
         onGuardarEdicionSimulada: function () {
             let oDatosEditados = this.getView().getModel("modeloEdicion").getData();
             let aActividades = this.getView().getModel("modelo").getData();
-            
-            // (Cuando conectes el backend, aquí solo harás un request al endpoint OData con el ID real)
             let iIndex = aActividades.findIndex(act => act.hora === oDatosEditados.hora && act.fecha === oDatosEditados.fecha);
             
             if (iIndex !== -1) {
+                aActividades[iIndex].cliente = oDatosEditados.cliente;
                 aActividades[iIndex].horas = oDatosEditados.horas;
-                aActividades[iIndex].requerimiento = oDatosEditados.requerimiento;
                 aActividades[iIndex].descripcion = oDatosEditados.descripcion;
                 
-                // Refrescamos la tabla
-                this.getView().getModel("modelo").setData(aActividades);
-                this._actualizarTablaYTotales(oDatosEditados.fecha);
+                if (!aActividades[iIndex].esCapacitacion) {
+                    aActividades[iIndex].proyecto = oDatosEditados.proyecto;
+                    aActividades[iIndex].requerimiento = oDatosEditados.requerimiento;
+                }
                 
-                MessageToast.show("Actividad actualizada (Modo Simulación).");
+                this.getView().getModel("modelo").setData(aActividades);
+            
+                this._actualizarTablaYTotales(oDatosEditados.fecha); 
+                
+                MessageToast.show("Actividad actualizada correctamente.");
             }
             
             this.onCerrarDialogoEdicion();
@@ -304,7 +294,7 @@ sap.ui.define([
                     this._oDialogoDetalle.open();
                 }.bind(this));
             } else {
-                this._oDialogoDetalle.setBindingContext(oContext, "modelo");
+                this._oDialogoDetalle.setBindingContext(oContext, "modeloFiltrado");
                 this._oDialogoDetalle.open();
             }
 		},

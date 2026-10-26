@@ -5,22 +5,45 @@
     
     <Dialog title="Editar Actividad" contentWidth="450px" class="sapUiContentPadding">
         <content>
-            <VBox class="sapUiSmallMargin">
+            <VBox class="sapUiTinyMargin">
                 <Label text="{i18n>formFecha}" />
-                <Text text="{modeloEdicion>/fecha} - {modeloEdicion>/hora}" class="sapUiTinyMarginBottom textoAzul" />
+                <Text text="{modeloEdicion>/fecha} - {modeloEdicion>/hora}" class="sapUiTinyMarginBottom" />
 
-                <Label text="{i18n>customer}" />
-                <Text text="{modeloEdicion>/cliente}" class="sapUiTinyMarginBottom" />
+                <Label text="{i18n>customer}" required="true"/>
+                <Select selectedKey="{modeloEdicion>/cliente}" width="100%" class="sapUiTinyMarginBottom">
+                    <items>
+                        <core:Item key="" text="-- Seleccione un cliente --" />
+                        <core:Item key="cliente1" text="Cliente Alpha S.A." />
+                        <core:Item key="cliente2" text="Cliente Beta S.A." />
+                        <core:Item key="cliente3" text="Cliente Gamma S.A." />
+                    </items>
+                </Select>
 
-                <Label text="{i18n>formHInvertidas}" required="true" class="sapUiSmallMarginTop" />
+                <Label text="{i18n>project}" required="true" visible="{= !${modeloEdicion>/esCapacitacion} }" />
+                <Select selectedKey="{modeloEdicion>/proyecto}" width="100%" class="sapUiTinyMarginBottom" visible="{= !${modeloEdicion>/esCapacitacion} }">
+                    <items>
+                        <core:Item key="" text="-- Seleccione un proyecto --" />
+                        <core:Item key="Implementación RAP" text="Implementación RAP" />
+                        <core:Item key="Desarrollo Fiori" text="Desarrollo Fiori" />
+                        <core:Item key="Integración BTP" text="Integración BTP" />
+                    </items>
+                </Select>
+
+                <Label text="{i18n>formRequerimiento}" required="true" visible="{= !${modeloEdicion>/esCapacitacion} }" />
+                <Select selectedKey="{modeloEdicion>/requerimiento}" width="100%" class="sapUiTinyMarginBottom" visible="{= !${modeloEdicion>/esCapacitacion} }">
+                    <items>
+                        <core:Item key="" text="-- Seleccione un requerimiento --" />
+                        <core:Item key="REQ-001" text="Implementación RAP" />
+                        <core:Item key="REQ-002" text="Desarrollo Fiori" />
+                        <core:Item key="REQ-003" text="Integración BTP" />
+                    </items>
+                </Select>
+
+                <Label text="{i18n>formHInvertidas}" required="true" />
                 <Input type="Number" value="{modeloEdicion>/horas}" width="100%" class="sapUiTinyMarginBottom"/>
-
-                <Label text="{i18n>formRequerimiento}" visible="{= ${modeloEdicion>/tipoActividad} !== 'Capacitación Interna' }" />
-                <Input value="{modeloEdicion>/requerimiento}" visible="{= ${modeloEdicion>/tipoActividad} !== 'Capacitación Interna' }" width="100%" class="sapUiTinyMarginBottom"/>
 
                 <Label text="{i18n>formDescripcion}" required="true" />
                 <TextArea value="{modeloEdicion>/descripcion}" rows="4" width="100%" />
-                
             </VBox>
         </content>
         <buttons>

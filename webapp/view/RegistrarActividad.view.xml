@@ -67,7 +67,14 @@
 
                                 <VBox class="sapUiTinyMarginBottom" >
                                     <Label text="{i18n>formRequerimiento}" required="true" />
-                                    <Input placeholder="Ej. REQ-00231" value="{uiPantalla>/requerimiento}" id="requerimientoInput" width="100%" enabled="{= !${uiPantalla>/esCapacitacion} }"/>
+                                    <Select id="requerimientoSelect" width="100%" wrapItemsText="true" enabled="{= !${uiPantalla>/esCapacitacion} }" selectedKey="{uiPantalla>/requerimiento}">
+                                        <items>
+                                            <c:Item key="" text="-- Seleccione un requerimiento --" />
+                                            <c:Item key="REQ-001" text="Implementación RAP" />
+                                            <c:Item key="REQ-002" text="Desarrollo Fiori" />
+                                            <c:Item key="REQ-003" text="Integración BTP" />
+                                        </items>
+                                    </Select>
                                 </VBox>
                             </VBox>
 
@@ -135,7 +142,7 @@
                         </Column>
                     </columns>
                     <items>
-                        <ColumnListItem type="Active" press=".onFilaClickeada" >
+                        <ColumnListItem type="Active" press=".onFilaClickeada" highlight="{= ${modeloFiltrado>esCapacitacion} ? 'Success' : 'None' }">
                             <cells>
                                 <Text text="{modeloFiltrado>fecha}" />
                                 <Text text="{modeloFiltrado>cliente}" />
