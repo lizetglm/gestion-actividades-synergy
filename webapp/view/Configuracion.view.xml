@@ -1,0 +1,288 @@
+
+<mvc:View
+    controllerName="com.cg.actividades.vistacalendarioactividades.controller.Configuracion"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+    height="100%">
+
+    <Page
+        id="pageConfiguracion"
+        showHeader="false"
+        enableScrolling="true"
+        class="settingsPage">
+
+        <content>
+            <VBox id="fit" class="settingsRoot" fitContainer="true">
+
+                 <Toolbar id="more" class="settingsHeader">
+                    <Button
+                    id="more1"
+                        icon="sap-icon://nav-back"
+                        type="Transparent"
+                        tooltip="Regresar"
+                        press=".onBack"/>
+
+                    <Text id="more32" text="SAP" class="sapLogoText"/>
+
+                    <Text id="m23ore"
+                        text="System Settings &amp; Configuration"
+                        class="headerTitle"/>
+
+                    <ToolbarSpacer id="mo121re"/>
+
+                    <Button id="morasde"
+                        icon="sap-icon://search"
+                        type="Transparent"
+                        tooltip="Buscar"/>
+
+                    <Button id="mo12re"
+                        icon="sap-icon://bell"
+                        type="Transparent"
+                        tooltip="Notificaciones"/>
+
+                    <Avatar id="more1212"
+                        initials="CG"
+                        displaySize="XS"
+                        backgroundColor="Accent6"/>
+                </Toolbar>
+
+                <VBox id="mordase" class="settingsTitleArea">
+                    <HBox id="mowqwre" class="breadcrumb">
+                        <Link id="mor121e" text="Home" press=".onHome"/>
+                        <Text id="moraedae" text="/"/>
+                        <Text id="moreqewqw" text="Administration"/>
+                    </HBox>
+
+                    <Title
+                    id="mo123re"
+                        text="System Settings &amp; Configuration"
+                        level="H1"
+                        class="pageTitle"/>
+                </VBox>
+
+                <ScrollContainer id="moewqwre"
+                    vertical="true"
+                    horizontal="false"
+                    height="100%"
+                    class="settingsScroll">
+
+                    <VBox id="morasdae" class="settingsContent">
+
+                        <HBox id="masasore"
+                            wrap="Wrap"
+                            alignItems="Start"
+                            class="settingsColumns">
+
+                            <VBox id="moresada" class="settingsColumn">
+
+                                <Panel id="morsade"
+                                    headerText="Work Hours Configuration"
+                                    expandable="false"
+                                    class="settingsPanel">
+
+                                    <content>
+                                        <VBox id="madore" class="panelFields">
+
+                                            <Label id="mwqwore"
+                                                text="Daily Hour Limit"
+                                                labelFor="dailyHourLimit"/>
+
+                                            <HBox id="moradsfe"
+                                                alignItems="Center"
+                                                class="unitField">
+                                                <Input
+                                                    id="dailyHourLimit"
+                                                    value="{settings>/dailyHourLimit}"
+                                                    type="Number"
+                                                    width="100%"
+                                                    class="fieldInput"/>
+                                                <Text id="modawsre" text="hrs" class="unitText"/>
+                                            </HBox>
+
+                                            <Label id="morasdfae"
+                                                text="Weekly Overtime Threshold"
+                                                labelFor="weeklyOvertime"/>
+ 
+                                            <HBox id="morewqe"
+                                                alignItems="Center"
+                                                class="unitField">
+                                                <Input
+                                                    id="weeklyOvertime"
+                                                    value="{settings>/weeklyOvertime}"
+                                                    type="Number"
+                                                    width="100%"
+                                                    class="fieldInput"/>
+                                                <Text id="movfgre" text="hrs" class="unitText"/>
+                                            </HBox>
+
+                                            <Label id="moreddd"
+                                                text="Submission Threshold"
+                                                labelFor="submissionThreshold"/>
+
+                                            <HBox id="morasdase"
+                                                alignItems="Center"
+                                                class="unitField">
+                                                <Input
+                                                    id="submissionThreshold"
+                                                    value="{settings>/submissionThreshold}"
+                                                    type="Number"
+                                                    width="100%"
+                                                    class="fieldInput"/>
+                                                <Text id="moreasl-kjmas" text="hours" class="unitText"/>
+                                            </HBox>
+
+                                        </VBox>
+                                    </content>
+                                </Panel>
+
+                                 <Panel id="mfsdore"
+                                    headerText="Alerts &amp; Notifications"
+                                    expandable="false"
+                                    class="settingsPanel alertsPanel">
+
+                                    <content>
+                                        <VBox id="morfse" class="notificationFields">
+
+                                            <HBox id="morasdaswe"
+                                                alignItems="Center"
+                                                justifyContent="SpaceBetween"
+                                                class="notificationRow">
+
+                                                <Label id="mofsdre" text="Email Notifications"/>
+                                                <Switch id="mosdre"
+                                                    state="{settings>/emailNotifications}"
+                                                    customTextOn="On"
+                                                    customTextOff="Off"
+                                                    type="Default"/>
+                                            </HBox>
+
+                                            <HBox id="morqwqe"
+                                                alignItems="Center"
+                                                justifyContent="SpaceBetween"
+                                                class="notificationRow">
+
+                                                <Label id="morwqeqe" text="Direct Manager Escalations"/>
+                                                <Switch id="m22ore"
+                                                    state="{settings>/managerEscalations}"
+                                                    customTextOn="On"
+                                                    customTextOff="Off"
+                                                    type="Default"/>
+                                            </HBox>
+
+                                            <HBox id="morrrre"
+                                                alignItems="Center"
+                                                justifyContent="SpaceBetween"
+                                                class="notificationRow">
+
+                                                <Label id="morfffe" text="Weekly Summary Reports"/>
+                                                <Switch id="mor22e"
+                                                    state="{settings>/weeklyReports}"
+                                                    customTextOn="On"
+                                                    customTextOff="Off"
+                                                    type="Default"/>
+                                            </HBox>
+
+                                        </VBox>
+                                    </content>
+                                </Panel>
+
+                            </VBox>
+<VBox id="morepp" class="settingsColumn">
+
+                                <Panel id="morffe"
+                                    headerText="Scheduling &amp; Grace Periods"
+                                    expandable="false"
+                                    class="settingsPanel">
+
+                                    <content>
+                                        <VBox id="morep1p1" class="panelFields">
+
+                                            <Label id="m121ore"
+                                                text="Closing Day"
+                                                labelFor="closingDay"/>
+
+                                            <Select
+                                                id="closingDay"
+                                                selectedKey="{settings>/closingDay}"
+                                                width="100%"
+                                                class="closingDaySelect">
+
+                                                <core:Item id="more11" key="Monday" text="Monday"/>
+                                                <core:Item id="more111" key="Tuesday" text="Tuesday"/>
+                                                <core:Item id="more1111" key="Wednesday" text="Wednesday"/>
+                                                <core:Item id="more11111" key="Thursday" text="Thursday"/>
+                                                <core:Item id="more111111" key="Friday" text="Friday"/>
+                                                <core:Item id="more1111111" key="Saturday" text="Saturday"/>
+                                                <core:Item id="more11111111" key="Sunday" text="Sunday"/>
+                                            </Select>
+
+                                            <Label id="lwo"
+                                                text="Submission Deadline Grace Period"
+                                                labelFor="gracePeriod"/>
+
+                                            <HBox id="lwo1"
+                                                alignItems="Center"
+                                                class="unitField">
+                                                <Input
+                                                    id="gracePeriod"
+                                                    value="{settings>/gracePeriod}"
+                                                    type="Number"
+                                                    width="100%"
+                                                    class="fieldInput"/>
+                                                <Text id="lw3o" text="days" class="unitText"/>
+                                            </HBox>
+
+                                            <Label id="lw1o"
+                                                text="Approval Turnaround Limit"
+                                                labelFor="approvalLimit"/>
+
+                                            <HBox id="lw11o"
+                                                alignItems="Center"
+                                                class="approvalField">
+
+                                                <Input
+                                                    id="approvalLimit"
+                                                    value="{settings>/approvalLimit}"
+                                                    type="Number"
+                                                    width="100%"
+                                                    class="fieldInput"/>
+
+                                                <Text id="lwwwwo" text="days" class="unitText"/>
+                                            </HBox>
+
+                                        </VBox>
+                                    </content>
+                                </Panel>
+
+                            </VBox>
+
+                        </HBox>
+                    </VBox>
+                </ScrollContainer>
+
+                <Toolbar id="lwo23" class="settingsFooter">
+                    <Text id="lwo1212" text="Save" class="footerCaption"/>
+                    <ToolbarSpacer id="lwo111"/>
+
+                    <Button id="lwo1111"
+                        text="Save"
+                        type="Emphasized"
+                        press=".onSave"/>
+
+                    <Button id="lw22o"
+                        text="Cancel"
+                        type="Default"
+                        press=".onCancel"/>
+
+                    <Button id="lwdsdeo"
+                        text="Reset"
+                        type="Default"
+                        press=".onReset"/>
+                </Toolbar>
+
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

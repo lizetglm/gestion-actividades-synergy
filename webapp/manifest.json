@@ -102,19 +102,26 @@
           ]
         },
         {
-        "name": "RoutePerfiles",
-        "pattern": "perfiles",
-        "target": [
-          "TargetPerfiles"
-        ]
-      },
-      {
-        "name": "RouteHistorial",
-        "pattern": "historial",
-        "target": [
-          "TargetHistorial"
-        ]
-      },
+          "name": "RoutePerfiles",
+          "pattern": "perfiles",
+          "target": [
+            "TargetPerfiles"
+          ]
+        },
+        {
+          "name": "RouteConfiguracion",
+          "pattern": "configuracion",
+          "target": [
+            "TargetConfiguracion"
+          ]
+        },
+        {
+          "name": "RouteHistorial",
+          "pattern": "historial",
+          "target": [
+            "TargetHistorial"
+          ]
+        },
         {
           "name": "RouteReporteMensual",
           "pattern": "reporte",
@@ -137,35 +144,41 @@
           "clearControlAggregation": false,
           "viewId": "CalendarioActividades",
           "viewName": "CalendarioActividades"
-        },      
-      "TargetPerfiles": {
-        "viewType": "XML",
-        "transition": "slide",
-        "clearControlAggregation": false,
-        "viewId": "Perfiles",
-        "viewName": "Perfiles"
-      },      
-      "TargetHistorial": {
-        "viewType": "XML",
-        "transition": "slide",
-        "clearControlAggregation": false,
-        "viewId": "Historial",
-        "viewName": "Historial"
-      }
-      ,"TargetConsolidacion": {
-        "viewType": "XML",
-        "transition": "slide",
-        "clearControlAggregation": false,
-        "viewId": "Consolidacion",
-        "viewName": "Consolidacion"
-      }
-      ,
+        },
+        "TargetPerfiles": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Perfiles",
+          "viewName": "Perfiles"
+        },
+        "TargetConfiguracion": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Configuracion",
+          "viewName": "Configuracion"
+        },
+        "TargetHistorial": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Historial",
+          "viewName": "Historial"
+        },
         "TargetReporteMensual": {
           "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "ReporteMensual",
           "viewName": "ReporteMensual"
+        },
+        "TargetConsolidacion": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Consolidacion",
+          "viewName": "Consolidacion"
         }
       }
     },
