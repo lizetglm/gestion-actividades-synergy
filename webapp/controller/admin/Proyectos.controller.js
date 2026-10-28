@@ -72,6 +72,8 @@ sap.ui.define([
                 idProyecto: "", 
                 nombreProyecto: "", 
                 descripcion: "", 
+                fechaInicio: "",
+                fechaFin: "",
                 estatusProyecto: "En Progreso", 
                 requerimientos: []
             };

@@ -41,7 +41,7 @@
                 class="sapUiMediumMarginBottom">
                 <headerToolbar>
                     <OverflowToolbar>
-                        <Title text="Clientes registrados" level="H2" />
+                        <Title text="Clientes" level="H2" />
                         <ToolbarSpacer />
                         <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarExcel"/>
                         <Button text="Nuevo Cliente" type="Emphasized" icon="sap-icon://add" press=".onAddCliente" />

@@ -24,6 +24,18 @@
                     <Label text="{i18n>description}" required="true" />
                     <TextArea value="{nuevoReq>/descripcion}" placeholder="Detalles del proyecto..." rows="4" />
 
+                    <HBox wrap="Wrap" justifyContent="SpaceBetween" alignItems="Center" class="sapUiTinyMarginTop">
+                        <VBox width="49%">
+                            <Label text="Fecha Inicio" />
+                            <DatePicker value="{nuevoReq>/fechaInicio}" />
+                        </VBox>
+                        <VBox width="49%">
+                            <Label text="Fecha Fin" />
+                            <DatePicker value="{nuevoReq>/fechaFin}" />
+                        </VBox>
+                    </HBox>
+                    
+
                     <Label text="{i18n>estatus}"></Label>
                     <Select selectedKey="{nuevoReq>/estatus}">
                         <core:Item key="Pendiente" text="Pendiente" />

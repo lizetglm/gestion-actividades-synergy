@@ -34,14 +34,13 @@
         </uxap:headerContent>
 
         <uxap:sections>
-            <uxap:ObjectPageSection title="Proyectos Asociados" class="sapUiSmallMarginTopBottom" titleUppercase="false">
+            <uxap:ObjectPageSection title="{i18n>titleTableProyectos}" class="sapUiSmallMarginTopBottom" titleUppercase="false">
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table id="tablaProyectosDetalle" items="{mock>proyectos}" alternateRowColors="true">
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="{i18n>titleTableProyectos}" level="H3" />
                                         <ToolbarSpacer />
                                         <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarProyectosExcel"/>
                                         <Button text="Nuevo Proyecto" type="Emphasized" icon="sap-icon://add" press=".onAddProyecto" />
