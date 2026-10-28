@@ -40,7 +40,7 @@ sap.ui.define([
                 { label: 'Descripción', property: 'descripcion', type: EdmType.String }
             ];
             
-            let oRowBinding = this.byId("tablaReqFuncionales").getBinding("items");
+            let oRowBinding = this.byId("tablaRequerimientos").getBinding("items");
 			let sNombreArchivo = ExportHelper.generarNombreArchivoConFecha("Requerimientos_Proyecto");
             let oSettings = {
                 workbook: { columns: aCols },
