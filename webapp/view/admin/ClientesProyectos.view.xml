@@ -1,101 +1,16 @@
 <mvc:View id="vistaClientesProyectos"
 	controllerName="ns.frontend.controller.admin.ClientesProyectos"
 	xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m"
-	xmlns:f="sap.f"
+	xmlns="sap.f"
     xmlns:core="sap.ui.core"
     xmlns:layout="sap.ui.layout"
 	displayBlock="true"
 	height="100%"
 	busyIndicatorDelay="0"
 >	
-	<f:DynamicPage id="pageClientes"  class="sapUiSizeCompact">
-        <f:title>
-            <f:DynamicPageTitle>
-				<f:breadcrumbs >
-                   <Breadcrumbs currentLocationText="{i18n>appAdmin2}"
-                    class="sapUiSmallMarginTopBottom">
-                        <Link text="{i18n>tituloGrupo1}" press=".onBack" />
-                    </Breadcrumbs>
-                </f:breadcrumbs>
-				
-                <f:heading>
-                    <Title text="{uiPantalla>/tituloHeader}" level="H1" />
-                </f:heading>
-            </f:DynamicPageTitle>
-        </f:title>
+	<FlexibleColumnLayout
+        id="fcl"
+        layout="{fclModel>/layout}"
+        backgroundDesign="Solid"/>
 
-        <f:header>
-            <f:DynamicPageHeader pinnable="true">
-                <layout:HorizontalLayout allowWrapping="true">
-                    <layout:VerticalLayout class="sapUiMediumMarginEnd">
-                        <Label text="Buscar Cliente" />
-                        <SearchField placeholder="Nombre del cliente..." width="300px" search=".onSearchCliente" />
-                    </layout:VerticalLayout>
-                    
-                    <layout:VerticalLayout>
-                        <Label text="Estatus" />
-                        <Select width="200px" selectedKey="Todos">
-                            <core:Item key="Todos" text="Todos" />
-                            <core:Item key="Activo" text="Activos" />
-                            <core:Item key="Inactivo" text="Inactivos" />
-                        </Select>
-                    </layout:VerticalLayout>
-                </layout:HorizontalLayout>
-            </f:DynamicPageHeader>
-        </f:header>
-
-        <f:content>
-            <Table 
-                id="tablaClientes"
-                items="{modelo>/clientes}" 
-                alternateRowColors="true"
-                class="sapUiMediumMarginBottom">
-                
-                <headerToolbar>
-                    <OverflowToolbar>
-                        <Title text="Clientes registrados" level="H2" />
-                        <ToolbarSpacer />
-                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarExcel"/>
-                        <Button text="Nuevo Cliente" type="Emphasized" icon="sap-icon://add" press=".onNuevoCliente" />
-                    </OverflowToolbar>
-                </headerToolbar>
-
-                <columns>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="ID Cliente" design="Bold" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="Nombre del Cliente" design="Bold" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="Proyectos Asignados" design="Bold" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="Estatus" design="Bold" />
-                    </Column>
-                    <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
-                        <Text text="Acciones" design="Bold" />
-                    </Column>
-                </columns>
-
-                <items>
-                    <ColumnListItem type="Navigation" press=".onNavToProyectos">
-                        <cells>
-                            <Text text="{modelo>idCliente}" />
-                            <Text text="{modelo>nombre}" />
-                            <Text text="{modelo>totalProyectos}" />
-                            <ObjectStatus text="{modelo>estatus}" 
-                                state="{= ${modelo>estatus} === 'Activo' ? 'Success' : 'Error' }" />
-                            <HBox justifyContent="End" gap="0.6rem">
-                                <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditarCliente" />
-                                <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
-                            </HBox>
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
-        </f:content>
-        
-    </f:DynamicPage>
 </mvc:View>

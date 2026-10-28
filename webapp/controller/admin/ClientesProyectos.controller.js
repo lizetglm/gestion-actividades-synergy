@@ -14,155 +14,109 @@ sap.ui.define([
     const EdmType = exportLibrary.EdmType;
 
 	return Controller.extend("ns.frontend.controller.admin.ClientesProyectos", {
-		getResourceBundle: function () {
-            return this.getOwnerComponent().getModel("i18n").getResourceBundle();
-        },
-
-        onInit: function () {
-            let  uiEstado = {
-                tituloHeader: this.getResourceBundle().getText("titleClientesProyectos"),
-                saludo: this.getResourceBundle().getText("saludoPanelCumplimiento") + " " + new Date().toLocaleDateString("es-MX", {
-                    month: "long",
-                    year: "numeric"
-                })
-            };
-
-            this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
-
-            // Modelos solo de prueba
-            let oModel = this.getOwnerComponent().getModel("modeloClientes");
-            this.getView().setModel(oModel, "modelo");
-		},
-
-		onBack: function() {
-			this.getOwnerComponent().getRouter().navTo("RouteMain");
-		},
-
-        onSearchCliente: function (oEvent) {
-            var sQuery = oEvent.getParameter("query");
-            var aFilters = [];
-        
-            if (sQuery && sQuery.length > 0) {
-                var oFilter = new Filter("nombre", FilterOperator.Contains, sQuery);
-                aFilters.push(oFilter);
-            }
-
-            // Aplicamos el filtro a nuestra tabla
-            var oTable = this.byId("tablaClientes");
-            var oBinding = oTable.getBinding("items");
-            oBinding.filter(aFilters);
-        },
-
-        onExportarExcel: function() {
-            let aCols = [
-                { label: 'ID Cliente', property: 'idCliente', type: EdmType.String },
-                { label: 'Nombre de la Empresa', property: 'nombre', type: EdmType.String },
-                { label: 'Estatus', property: 'estatus', type: EdmType.String },
-                { label: 'Total Proyectos', property: 'totalProyectos', type: EdmType.Number }
-            ];
-
-            let oRowBinding = this.byId("tablaClientes").getBinding("items");
-
-            let oSettings = {
-                workbook: { columns: aCols, hierarchyLevel: 'Level' },
-                dataSource: oRowBinding,
-                fileName: 'Catalogo_Clientes.xlsx',
-                worker: false 
-            };
-
-            let oSheet = new Spreadsheet(oSettings);
-            oSheet.build().finally(() => oSheet.destroy());
-        },
-
-
-        onNavToProyectos: function (oEvent) {
-            // fila a la que el usuario le dio clic
-            var oItem = oEvent.getSource();
-            // Obtenemos el contexto (los datos) de esa fila
-            var oContext = oItem.getBindingContext("modelo");
-            
-            // Extraemos el ID del cliente seleccionado
-            var sIdCliente = oContext.getProperty("idCliente");
-        
-            this.getOwnerComponent().getRouter().navTo("RouteDetalleCliente", {
-                clienteId: sIdCliente
+		onInit: function () {
+            // Inicializa el modelo local para controlar las 3 columnas
+            var oViewModel = new JSONModel({ 
+                layout: "OneColumn" 
             });
-        },
+            this.getView().setModel(oViewModel, "fclModel");
 
-        onNuevoCliente: function () {
-            // Logica para agregar clientes (falta implementar)
-
-            let oView = this.getView();
-
-            if (!this._oDialogCliente) {
-                sap.ui.core.Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogCliente", 
-                    controller: this
-                }).then(function (oDialog) {
-                    this._oDialogCliente = oDialog;
-                    oView.addDependent(this._oDialogCliente);
-                    this._oDialogCliente.unbindElement("modelo"); 
-                    this._oDialogCliente.open();
-                }.bind(this));
-            } else {
-                this._oDialogCliente.unbindElement("modelo");
-                this._oDialogCliente.open();
-            }
-        },
-
-        onEditarCliente: function (oEvent) {
-            let oItem = oEvent.getSource();
-            let oContext = oItem.getBindingContext("modelo");
-            let oView = this.getView();
-
-            if (!this._oDialogCliente) {
-                sap.ui.core.Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogCliente",
-                    controller: this
-                }).then(function (oDialog) {
-                    this._oDialogCliente = oDialog;
-                    oView.addDependent(this._oDialogCliente);
-                    this._oDialogCliente.setBindingContext(oContext, "modelo");
-                    this._oDialogCliente.open();
-                }.bind(this));
-            } else {
-                this._oDialogCliente.setBindingContext(oContext, "modelo");
-                this._oDialogCliente.open();
-            }
-        },
-
-        onCerrarDialogCliente: function () {
-            if (this._oDialogCliente) {
-                this._oDialogCliente.close();
-            }
-        },
-
-        onGuardarClienteMock: function () {
-            MessageToast.show("Simulación: Cliente guardado exitosamente.");
-            this.onCerrarDialogCliente();
-        },
-
-        onInactivarCliente: function (oEvent) {
-            let oItem = oEvent.getSource();
-            let oContext = oItem.getBindingContext("modelo");
-            let oDatosFila = oContext.getObject();
-            
-            let sNombreCliente = oDatosFila.nombre;
-            let sMensaje = "¿Estás seguro de que deseas inactivar al cliente " + sNombreCliente + "?";
-
-            sap.m.MessageBox.confirm(sMensaje, {
-                title: "Confirmar Inactivación",
-                icon: sap.m.MessageBox.Icon.WARNING,
-                contentWidth: "400px",
-                onClose: function (sAction) {
-                    if (sAction === sap.m.MessageBox.Action.OK) {
-                        // Aquí irá la lógica futura para actualizar el modelo o llamar al backend
-                        MessageToast.show("Simulación: Cliente " + sNombreCliente + " inactivado exitosamente.");
+            // INYECTAR MOCK DATA DIRECTAMENTE (Para saltarse el manifest)
+            var oMockData = {
+                "clientes": [
+                    {
+                        "idCliente": "CLI-001",
+                        "nombre": "Alpha S.A. de C.V.",
+                        "estatus": "Activo",
+                        "totalProyectos": 4,
+                        "proyectos": [
+                            {
+                                "idProyecto": "PROJ-101",
+                                "nombreProyecto": "Implementación SAP BTP",
+                                "descripcion": "Migración de servicios cloud",
+                                "fechaInicio": "2026-01-15",
+                                "fechaFin": "2026-11-30",
+                                "estatusProyecto": "En Progreso",
+                                "requerimientos": [
+                                    { "idRequerimiento": "REQ-001", "nombre": "Configuración BTP", "descripcion": "Configuración de entornos", "estatus": "Activo", "tipo": "RF" },
+                                    { "idRequerimiento": "REQ-002", "nombre": "Migración BD", "descripcion": "Migración de datos a HANA", "estatus": "Inactivo", "tipo": "RF" }
+                                ],
+                                "consultores": [
+                                    { "nombreConsultor": "Juan Pérez", "rol": "Arquitecto Cloud" },
+                                    { "nombreConsultor": "María González", "rol": "Desarrolladora ABAP RAP / Fiori" },
+                                    { "nombreConsultor": "Carlos Ramírez", "rol": "Especialista en Integración" }
+                                ]
+                            },
+                            {
+                                "idProyecto": "PROJ-102",
+                                "nombreProyecto": "Desarrollo de Aplicación Móvil",
+                                "descripcion": "Aplicación para gestión de inventarios",
+                                "fechaInicio": "2026-03-01",
+                                "fechaFin": "2026-08-15",
+                                "estatusProyecto": "Completado",
+                                "requerimientos": [
+                                    { "idRequerimiento": "REQ-004", "nombre": "UI/UX", "descripcion": "Diseño de interfaz", "estatus": "Activo", "tipo": "RF" }
+                                ],
+                                "consultores": [
+                                    { "nombreConsultor": "Lizet López", "rol": "Desarrolladora ABAP RAP / Fiori" },
+                                    { "nombreConsultor": "Chelsea Garcia Telles", "rol": "Desarrolladora ABAP RAP / Fiori" },
+                                    { "nombreConsultor": "Juan Pérez", "rol": "Desarrollador Mobile" },
+                                    { "nombreConsultor": "María González", "rol": "Diseñadora UI/UX" },
+                                    { "nombreConsultor": "Carlos Ramírez", "rol": "Arquitecto Cloud" },
+                                    { "nombreConsultor": "Ana Martínez", "rol": "QA Tester" },
+                                    { "nombreConsultor": "Luis Rodríguez", "rol": "Especialista en Integración" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "idCliente": "CLI-002",
+                        "nombre": "Beta Tech Solutions",
+                        "estatus": "Activo",
+                        "totalProyectos": 2,
+                        "proyectos": [
+                            {
+                                "idProyecto": "PROJ-201",
+                                "nombreProyecto": "Integración de Sistemas",
+                                "descripcion": "Integración de sistemas internos con SAP",
+                                "fechaInicio": "2026-02-10",
+                                "fechaFin": "2026-09-20",
+                                "estatusProyecto": "En Progreso",
+                                "requerimientos": [
+                                    { "idRequerimiento": "REQ-006", "nombre": "API Gateway", "descripcion": "Implementación de API Gateway", "estatus": "Activo", "tipo": "RF" }
+                                ],
+                                "consultores": [
+                                    { "nombreConsultor": "Ana Martínez", "rol": "QA Tester" },
+                                    { "nombreConsultor": "Luis Rodríguez", "rol": "Especialista en Integración" }
+                                ]
+                            }
+                        ]
                     }
-                }.bind(this)
-            });
+                ]
+            };
+            var oMockModel = new JSONModel(oMockData);
+            // Al setearlo con el nombre "mock" en la vista principal, las 3 columnas lo pueden usar
+            this.getView().setModel(oMockModel, "mock");
+            
+            // 3. Inicializar el Router
+            var oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("RouteClientesProyectos").attachMatched(this._onRouteMatched, this);
+            oRouter.getRoute("RouteProyectos").attachMatched(this._onRouteMatched, this);
+            oRouter.getRoute("RouteRequerimientos").attachMatched(this._onRouteMatched, this);
+        },
+        
+        _onRouteMatched: function (oEvent) {
+            var sRouteName = oEvent.getParameter("name");
+            var oModel = this.getView().getModel("fclModel");
+            
+            // Cambia dinámicamente el layout dependiendo de la ruta en la que estemos
+            if (sRouteName === "RouteClientesProyectos") {
+                oModel.setProperty("/layout", "OneColumn");
+            } else if (sRouteName === "RouteProyectos") {
+                oModel.setProperty("/layout", "TwoColumnsBeginExpanded");
+            } else if (sRouteName === "RouteRequerimientos") {
+                oModel.setProperty("/layout", "ThreeColumnsMidExpanded");
+            }
         }
 	});
 });

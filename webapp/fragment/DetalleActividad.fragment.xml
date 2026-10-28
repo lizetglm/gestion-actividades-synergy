@@ -18,9 +18,6 @@
                     <Label text="Fecha" />
                     <Text text="{modeloFiltrado>fecha}" />
 
-                    <Label text="Tipo de actividad" />
-                    <Text text="{modeloFiltrado>tipoActividad}" />
-
                     <Label text="Hora" />
                     <Text text="{modeloFiltrado>hora}" />
 

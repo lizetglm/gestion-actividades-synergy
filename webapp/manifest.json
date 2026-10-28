@@ -90,7 +90,7 @@
     },
     "routing": {
       "config": {
-        "routerClass": "sap.m.routing.Router",
+        "routerClass": "sap.f.routing.Router",
         "viewType": "XML",
         "async": true,
         "viewPath": "ns.frontend.view",
@@ -149,26 +149,20 @@
           ]
         },
         {
-          "name": "RouteClientesProyectos",
-          "pattern": "clientesProyectos",
-          "target": [
-            "TargetClientesProyectos"
-          ]
-        },
-        {
-          "name": "RouteDetalleCliente",
-          "pattern": "detalleCliente/{clienteId}",
-          "target": [
-            "TargetDetalleCliente"
-          ]
-        },
-        {
-          "name": "RouteDetalleProyecto",
-          "pattern": "proyecto/{idProyecto}",
-          "target": [
-            "TargetDetalleProyecto"
-          ]
-        },
+    "name": "RouteClientesProyectos",
+      "pattern": "clientesProyectos",
+      "target": ["TargetClientesProyectos", "TargetClientesMaster"]
+    },
+    {
+      "name": "RouteProyectos",
+      "pattern": "clientesProyectos/cliente/{clientIndex}",
+      "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle"]
+    },
+    {
+      "name": "RouteRequerimientos",
+      "pattern": "clientesProyectos/cliente/{clientIndex}/proyecto/{projectIndex}",
+      "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle", "TargetRequerimientosDetalle"]
+    },
         {
           "name": "RoutePerfiles",
           "pattern": "perfiles",
@@ -228,24 +222,33 @@
           "viewId": "PanelCumplimiento",
           "viewName": "admin.PanelCumplimiento"
         },
-        "TargetClientesProyectos": {
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "ClientesProyectos",
-          "viewName": "admin.ClientesProyectos"
-        },
-        "TargetDetalleCliente": {
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "DetalleCliente",
-          "viewName": "admin.DetalleClienteProyectos"
-        },
-        "TargetDetalleProyecto": {
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "DetalleProyecto",
-          "viewName": "admin.DetalleProyecto"
-        },
+      "TargetClientesProyectos": {
+        "viewType": "XML",
+        "transition": "slide",
+        "viewId": "ClientesProyectos",
+        "viewName": "admin.ClientesProyectos" 
+      },
+      "TargetClientesMaster": {
+        "parent": "TargetClientesProyectos",
+        "controlId": "fcl",
+        "controlAggregation": "beginColumnPages",
+        "viewId": "Clientes",
+        "viewName": "admin.Clientes" 
+      },
+      "TargetProyectosDetalle": {
+        "parent": "TargetClientesProyectos",
+        "controlId": "fcl",
+        "controlAggregation": "midColumnPages",
+        "viewId": "Proyectos",
+        "viewName": "admin.Proyectos" 
+      },
+      "TargetRequerimientosDetalle": {
+        "parent": "TargetClientesProyectos",
+        "controlId": "fcl",
+        "controlAggregation": "endColumnPages",
+        "viewId": "Requerimientos",
+        "viewName": "admin.Requerimientos" 
+      },
         "TargetPerfiles": {
           "transition": "slide",
           "clearControlAggregation": false,

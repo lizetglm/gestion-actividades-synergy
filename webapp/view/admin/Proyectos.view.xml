@@ -1,0 +1,90 @@
+<mvc:View id="idProyectosView"
+    controllerName="ns.frontend.controller.admin.Proyectos" 
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" 
+    xmlns:layout="sap.ui.layout" 
+    xmlns:uxap="sap.uxap">
+    
+    <uxap:ObjectPageLayout id="idDetalleObjectPageLayout" showTitleInHeaderContent="true">
+        <uxap:headerTitle>
+            <uxap:ObjectPageDynamicHeaderTitle>
+                <uxap:expandedHeading>
+                    <Title text="Cliente: {mock>nombre}" wrapping="true"/>
+                </uxap:expandedHeading>
+                <uxap:snappedHeading>
+                    <FlexBox fitContainer="true" alignItems="Center">
+                        <Avatar src="sap-icon://factory" backgroundColor="Random" class="sapUiTinyMarginEnd"/>
+                        <Title text="Cliente: {mock>nombre}" wrapping="true" />
+                    </FlexBox>
+                </uxap:snappedHeading>
+                <uxap:actions>
+                    <Button icon="sap-icon://decline" type="Transparent" press=".onCloseColumn" tooltip="Cerrar Columna" />
+                </uxap:actions>
+            </uxap:ObjectPageDynamicHeaderTitle>
+        </uxap:headerTitle>
+
+        <uxap:headerContent>
+            <FlexBox wrap="Wrap">
+                <Avatar src="sap-icon://factory" backgroundColor="Random" displaySize="M" class="sapUiTinyMarginEnd"/>
+                <layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
+                    <ObjectStatus title="{i18n>numTelefono}" text="1-844-726-7733"/>
+					<ObjectStatus title="{i18n>email}" text="email@address.com"/>
+                </layout:VerticalLayout>
+            </FlexBox>
+        </uxap:headerContent>
+
+        <uxap:sections>
+            <uxap:ObjectPageSection title="Proyectos Asociados" class="sapUiSmallMarginTopBottom" titleUppercase="false">
+                <uxap:subSections>
+                    <uxap:ObjectPageSubSection>
+                        <uxap:blocks>
+                            <Table id="tablaProyectosDetalle" items="{mock>proyectos}" alternateRowColors="true">
+                                <headerToolbar>
+                                    <OverflowToolbar>
+                                        <Title text="{i18n>titleTableProyectos}" level="H3" />
+                                        <ToolbarSpacer />
+                                        <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarProyectosExcel"/>
+                                        <Button text="Nuevo Proyecto" type="Emphasized" icon="sap-icon://add" press=".onAddProyecto" />
+                                    </OverflowToolbar>
+                                </headerToolbar>
+
+                                <columns>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="100px">
+                                        <Text text="{i18n>id}" />
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                        <Text text="{i18n>nameProject}" />
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                                        <Text text="{i18n>description}" />
+                                    </Column>
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="100px">
+                                        <Text text="{i18n>estatus}" />
+                                    </Column>
+                                    <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
+                                        <Text text="{i18n>actions}"/>
+                                    </Column>
+                                </columns>
+
+                                <items>
+                                    <ColumnListItem type="Navigation" press=".onSelectProyecto">
+                                        <cells>
+                                            <Text text="{mock>idProyecto}" />
+                                            <Text text="{mock>nombreProyecto}" />
+                                            <Text text="{mock>descripcion}" />
+                                            <ObjectStatus text="{mock>estatusProyecto}" state="Information" />
+                                            <HBox justifyContent="End" gap="0.5rem">
+                                                <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditProyecto" />
+                                                <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarProyecto" />
+                                            </HBox>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </uxap:blocks>
+                    </uxap:ObjectPageSubSection>
+                </uxap:subSections>
+            </uxap:ObjectPageSection>
+        </uxap:sections>
+    </uxap:ObjectPageLayout>
+</mvc:View>
