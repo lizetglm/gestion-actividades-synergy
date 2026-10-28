@@ -32,17 +32,16 @@
 
         <uxap:sections>
             <!-- REQUERIMIENTOS -->
-            <uxap:ObjectPageSection title="Requerimientos Técnicos" titleUppercase="false">
+            <uxap:ObjectPageSection title="{i18n>tblReq}" titleUppercase="false">
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table id="tablaRequerimientos" items="{mock>requerimientos}" alternateRowColors="true">
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="{i18n>tblReq}" level="H3" />
                                         <ToolbarSpacer />
                                         <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarReqExcel" />
-                                        <Button text="{i18n>btnNewReq}" type="Emphasized" icon="sap-icon://add" press=".onAddRequerimiento" app:tipoReq="RF" />
+                                        <Button text="{i18n>btnNewReq}" type="Emphasized" icon="sap-icon://add" press=".onAddRequerimiento" />
                                     </OverflowToolbar>
                                 </headerToolbar>
                                 <columns>
@@ -75,14 +74,13 @@
             </uxap:ObjectPageSection>
             
             <!-- CONSULTORES ASIGNADOS -->
-            <uxap:ObjectPageSection title="Consultores Asignados" titleUppercase="false" class="sapUiSmallMarginTopBottom sapUiMediumMarginBottom">
+            <uxap:ObjectPageSection title="{i18n>titleTableConsultores}" titleUppercase="false" class="sapUiSmallMarginTopBottom sapUiMediumMarginBottom">
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table id="tablaConsultoresDetalle" items="{mock>consultores}" alternateRowColors="true">
                                 <headerToolbar>
                                     <OverflowToolbar>
-                                        <Title text="{i18n>titleTableConsultores}" level="H3" />
                                         <ToolbarSpacer />
                                         <Button icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarConsultoresExcel" />
                                         <Button text="{i18n>btnAsignarConsultor}" 

@@ -19,9 +19,6 @@
                     <Label text="ID Requerimiento" required="true" />
                     <Input value="{nuevoReq>/idRequerimiento}" placeholder="Ej. REQ-001" />
                     
-                    <Label text="{i18n>name}" required="true" />
-                    <Input value="{nuevoReq>/nombre}" placeholder="Ej. Configuración BTP" />
-                    
                     <Label text="{i18n>description}" required="true" />
                     <TextArea value="{nuevoReq>/descripcion}" placeholder="Detalles del requerimiento..." rows="4" />
 

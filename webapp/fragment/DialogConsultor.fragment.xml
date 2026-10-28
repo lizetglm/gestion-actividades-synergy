@@ -5,8 +5,8 @@
     
     <Dialog 
         id="dialogAsignarConsultor" 
-        title="Asignar Consultor a Proyecto" 
-        contentWidth="450px">
+        title="Asignar Consultor" 
+        contentWidth="400px">
         
         <content>
             <form:SimpleForm 
@@ -17,19 +17,24 @@
                 columnsXL="1" columnsL="1" columnsM="1">
                 
                 <form:content>
-                    <Label text="Nombre del Consultor" required="true" />
-                    <Input value="{nuevoConsultor>/nombreConsultor}" placeholder="Ej. Lizet López" />
+                    <Label text="Consultor" required="true" />
+                    <!-- Se selecciona de una lista estandarizada -->
+                    <Select selectedKey="{nuevoConsultor>/nombreConsultor}" forceSelection="false">
+                        <core:Item key="Lizet López" text="Lizet López" />
+                        <core:Item key="Jesús Rosiles" text="Jesús Rosiles" />
+                        <core:Item key="Juan Pérez" text="Juan Pérez" />
+                        <core:Item key="María González" text="María González" />
+                        <core:Item key="Carlos Ramírez" text="Carlos Ramírez" />
+                    </Select>
                     
-                    <Label text="Proyecto" required="true" />
-                    <ComboBox 
-                        items="{modeloClientes>proyectos}" 
-                        selectedKey="{nuevoConsultor>/proyectoAsignado}"
-                        placeholder="Selecciona el proyecto">
-                        <core:Item key="{modeloClientes>idProyecto}" text="{modeloClientes>nombreProyecto}" />
+                    <Label text="Rol en el Proyecto" required="true" />
+                    <!-- ComboBox permite seleccionar de la lista o escribir uno nuevo si no existe -->
+                    <ComboBox selectedKey="{nuevoConsultor>/rol}">
+                        <core:Item key="Desarrollador ABAP RAP" text="Desarrollador ABAP RAP" />
+                        <core:Item key="Desarrollador Fiori" text="Desarrollador Fiori" />
+                        <core:Item key="Arquitecto Cloud" text="Arquitecto Cloud" />
+                        <core:Item key="QA Tester" text="QA Tester" />
                     </ComboBox>
-                    
-                    <Label text="Rol" required="true" />
-                    <Input value="{nuevoConsultor>/rol}" placeholder="Ej. Desarrolladora ABAP RAP" />
                 </form:content>
             </form:SimpleForm>
         </content>

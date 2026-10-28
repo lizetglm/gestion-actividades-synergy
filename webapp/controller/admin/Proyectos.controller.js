@@ -69,7 +69,11 @@ sap.ui.define([
         onAddProyecto: function () {
             this._bEsEdicion = false;
             let oDatosNuevos = {
-                idProyecto: "", nombreProyecto: "", descripcion: "", estatusProyecto: "En Progreso", requerimientos: []
+                idProyecto: "", 
+                nombreProyecto: "", 
+                descripcion: "", 
+                estatusProyecto: "En Progreso", 
+                requerimientos: []
             };
             this._abrirDialogoProyecto(oDatosNuevos);
         },
