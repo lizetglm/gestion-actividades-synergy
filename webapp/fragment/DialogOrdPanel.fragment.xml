@@ -1,0 +1,10 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <ViewSettingsDialog confirm=".onConfirmarOrdenamiento">
+        <sortItems>
+            <ViewSettingsItem text="Consultor" key="nombre" />
+            <ViewSettingsItem text="Cliente" key="cliente" selected="true"/>
+            <ViewSettingsItem text="Estatus de Registro" key="estatusReg" />
+            <ViewSettingsItem text="Estatus de Firma" key="estatusFirma" />
+        </sortItems>
+    </ViewSettingsDialog>
+</core:FragmentDefinition>

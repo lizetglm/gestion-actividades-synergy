@@ -32,6 +32,7 @@
 .bordeVerde { border-left: 6px solid #2b7c2b; }
 .bordeNaranja { border-left: 6px solid #e9730c; }
 .bordeRojo { border-left: 6px solid #bb0000; }
+.bordeGris { border-left: 6px solid #687582; }
 
 .textoAzul span { color: #0070f2 !important; }
 .textoVerde span { color: #2b7c2b !important; }

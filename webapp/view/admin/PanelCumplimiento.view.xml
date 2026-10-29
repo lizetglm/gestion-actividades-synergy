@@ -28,16 +28,22 @@
                 </f:heading>
 
                 <f:actions>
-                    <Button  text="{i18n>btnImpDetalle}" tooltip="{i18n>btnImpDetalle}"  icon="sap-icon://print" press=".onImprimirPantalla" type="Emphasized"/>
+                    <Button  tooltip="{i18n>btnImpDetalle}"  icon="sap-icon://print" press=".onImprimirPantalla" />    
                 </f:actions>
             </f:DynamicPageTitle>
         </f:title>
 
-        <!-- CABECERA COLAPSABLE (Filtros y KPIs) -->
         <f:header>
-            <f:DynamicPageHeader pinnable="true">
+            <f:DynamicPageHeader>
                 <!-- Filtors -->
                 <FlexBox wrap="Wrap" class="gapPanelFiltros" >
+                    <VBox class="sapUiMediumMarginEnd">
+                        <Label text="Periodo" />
+                        <Select id="filtroPeriodo" width="200px" selectedKey="Oct2026" change=".onFiltroGlobalChange" >
+                            <c:Item key="Sep2026" text="Septiembre 2026" />
+                            <c:Item key="Oct2026" text="Octubre 2026" />
+                        </Select>
+                    </VBox>
                     <VBox class="sapUiMediumMarginEnd">
                         <Label text="{i18n>customer}" />
                         <Select id="filtroCliente" width="200px" selectedKey="Todos" change=".onFiltrarDashboard" >
@@ -57,29 +63,29 @@
                 </FlexBox>
 
                 <!-- Indicadores (KPI Tiles) -->
-                <layout:Grid class="noPadding sapUiSmallMarginTop">
-                    <VBox class="tarjetaKpi bordeAzul">
+                <layout:Grid class="noPadding sapUiSmallMarginTop" >
+                    <VBox id="kpiActivos" class="tarjetaKpi bordeAzul sapMPointer">
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel1}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/activos}" class="textoAzul" />
                         </FlexBox>
                     </VBox>
 
-                    <VBox class="tarjetaKpi bordeVerde">
+                    <VBox id="kpiCompletos" class="tarjetaKpi bordeVerde sapMPointer">
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel2}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/completos}" class="textoVerde" />
                         </FlexBox>
                     </VBox>
 
-                    <VBox class="tarjetaKpi bordeNaranja">
+                    <VBox id="kpiPendientes" class="tarjetaKpi bordeNaranja sapMPointer" >
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel3}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/pendientes}" class="textoNaranja" />
                         </FlexBox>
                     </VBox>
 
-                    <VBox class="tarjetaKpi bordeRojo">
+                    <VBox id="kpiSinFirmar" class="tarjetaKpi bordeRojo sapMPointer" >
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel4}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/sinFirmar}" class="textoRojo" />
@@ -92,14 +98,21 @@
         <f:content>
             <!-- Tabla de detalles por consultor -->
             <Table id="tablaCumplimiento"
-                items="{modelo>/oModelo}"
+                items="{
+                    path: 'modelo>/oModelo',
+                    sorter: [
+                        { path: 'cliente', descending: false },
+                        { path: 'estatusReg', descending: false }
+                    ]
+                }"
                 class="tablaFondoColor sapUiMediumMarginBottom"
                 updateFinished=".onCalcularKPIs"
             >
                 <headerToolbar>
                     <Toolbar id="toolbarTablaCumplimiento">
-                        <Title id="tituloTablaCumplimiento" text="{i18n>detallePorConsultor}" level="H3"/>
+                        <Title id="tituloTablaCumplimiento" text="{uiPantalla>/tituloTabla}" level="H3"/>
                         <ToolbarSpacer />
+                        <Button icon="sap-icon://sort" tooltip="Ordenar" press=".onAbrirOrdenamiento" />
                         <Button tooltip="{i18n>btnExportarExcel}" icon="sap-icon://excel-attachment" press=".onExportarExcel"/>
                     </Toolbar>
                 </headerToolbar>
@@ -140,8 +153,9 @@
                                 state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }" />
                             <ObjectStatus 
                                 text="{modelo>estatusFirma}" 
-                                state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : 'None') }" />
-                            <mc:RadialMicroChart  size="S" 
+                                state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : 'None') }" 
+                            />
+                            <mc:RadialMicroChart  size="XS" 
                                 percentage="{modelo>porcentajeAvance}" 
                                 valueColor="{= ${modelo>porcentajeAvance} === 100 ? 'Good' : 'Critical'}" 
                             />
@@ -150,6 +164,26 @@
                 </items>
             </Table>
         </f:content>
+
+        <f:footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Recordatorio Masivo" 
+                    icon="sap-icon://email" 
+                    type="Neutral" 
+                    press=".onRecordatorioMasivo" 
+                    tooltip="Enviar alerta a pendientes" 
+                    class="sapUiTinyMarginEnd" 
+                />
+                <Button text="Consolidar Reportes" 
+                    icon="sap-icon://complete" 
+                    type="Accept" 
+                    press=".onConsolidar" 
+                    tooltip="Navegar a consolidar reportes" 
+                    class="sapUiTinyMarginEnd" 
+                />
+            </OverflowToolbar>
+        </f:footer>
 
     </f:DynamicPage>
 </mvc:View>

@@ -1,3 +1,4 @@
+
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
@@ -7,10 +8,11 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "sap/ui/export/Spreadsheet",
     "sap/ui/export/library",
-    "ns/frontend/util/ExportHelper"
+    "ns/frontend/util/ExportHelper",
+    "sap/ui/model/Sorter"
 ], function(
     Controller, JSONModel, MessageBox, MessageToast, Filter, FilterOperator, Spreadsheet, exportLibrary,
-    ExportHelper
+    ExportHelper, Sorter
 ) {
 	"use strict";
     const EdmType = exportLibrary.EdmType;
@@ -23,6 +25,7 @@ sap.ui.define([
         onInit: function () {
             let  uiEstado = {
                 tituloHeader: this.getResourceBundle().getText("titlePanelCumplimiento"),
+                tituloTabla: this.getResourceBundle().getText("detallePorConsultor"),
                 saludo: this.getResourceBundle().getText("saludoPanelCumplimiento") + " " + new Date().toLocaleDateString("es-MX", {
                     month: "long",
                     year: "numeric"
@@ -34,70 +37,67 @@ sap.ui.define([
                     sinFirmar: 0
                 }
             };
-
             this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
+
+            this._sKpiActivo = "Todos";
             
             // Modelos solo de prueba
             var oModel = new JSONModel("model/panelCumplimiento.json");
-            this.getView().setModel(oModel, "modelo");
 
-            console.log("Modelo de cumplimiento cargado:", oModel.getData());
+            //calcular KPIs al cargar el modelo
+            oModel.attachRequestCompleted(function() {
+                this._calcularKpisYFiltrar();
+            }.bind(this));
+
+            this.getView().setModel(oModel, "modelo"); // Modelos solo de prueba
+
+            // ASIGNACIÓN DE EVENTOS CLIC A LOS VBOX 
+            let aKpis = [
+                { id: "kpiActivos", type: "Activos" },
+                { id: "kpiCompletos", type: "Completos" },
+                { id: "kpiPendientes", type: "Pendientes" },
+                { id: "kpiSinFirmar", type: "SinFirmar" },
+            ];
+
+            aKpis.forEach(function(kpi) {
+                let oVBox = this.byId(kpi.id);
+                if(oVBox) {
+                    oVBox.addEventDelegate({
+                        onclick: function() { this.onKpiPress(kpi.type); }.bind(this)
+                    });
+                }
+            }.bind(this));
         },
 
         onBack: function() {
 			this.getOwnerComponent().getRouter().navTo("RouteMain");
 		},
+        
 
-        // FILTROS ---
-        onFiltrarDashboard: function () {
-            let sCliente = this.byId("filtroCliente").getSelectedKey();
-            let sEquipo = this.byId("filtroEquipo").getSelectedKey();
-            let aFilters = [];
-
-            //filtardo de los datos 
-            if (sCliente && sCliente !== "Todos") {
-                aFilters.push(new Filter("cliente", FilterOperator.Contains, sCliente));
+        // ORDENAMIENTO DE TABLA 
+        onAbrirOrdenamiento: function (oEvent) {
+            var oView = this.getView();
+            if (!this._pDialogOrdenamiento) {
+                this._pDialogOrdenamiento = sap.ui.core.Fragment.load({
+                    id: oView.getId(),
+                    name: "ns.frontend.fragment.DialogOrdPanel", 
+                    controller: this
+                }).then(function (oDialog) {
+                    oView.addDependent(oDialog);
+                    return oDialog;
+                });
             }
-            if (sEquipo && sEquipo !== "Todos") {
-                aFilters.push(new Filter("equipo", FilterOperator.Contains, sEquipo));
-            }
-
-            let oTable = this.byId("tablaCumplimiento");
-            let oBinding = oTable.getBinding("items");
-            oBinding.filter(aFilters);  // filtros en la tabla
-        },
-
-        // KPIs DINÁMICOS ---
-        onCalcularKPIs: function (oEvent) {
-            let oTable = oEvent.getSource();
-            let oBinding = oTable.getBinding("items");
-            
-            // Si el binding aún no existe, salimos
-            if (!oBinding) return;
-
-            // getCurrentContexts() nos da solo las filas visibles (respetando los filtros)
-            let aContexts = oBinding.getCurrentContexts();
-
-            let iActivos = aContexts.length;
-            let iCompletos = 0;
-            let iPendientes = 0;
-            let iSinFirmar = 0;
-
-            // conteno de lp estatus iterando sobre las filas visibles
-            aContexts.forEach(function (oContext) {
-                let oFila = oContext.getObject();
-                if (oFila.estatusReg === "Completo") iCompletos++;
-                if (oFila.estatusReg === "Pendiente") iPendientes++;
-                if (oFila.estatusFirma === "Sin firmar") iSinFirmar++;
+            this._pDialogOrdenamiento.then(function (oDialog) {
+                oDialog.open();
             });
-
-            // Actualizacion del modelo visual
-            let oUiModel = this.getView().getModel("uiPantalla");
-            oUiModel.setProperty("/kpis/activos", iActivos);
-            oUiModel.setProperty("/kpis/completos", iCompletos);
-            oUiModel.setProperty("/kpis/pendientes", iPendientes);
-            oUiModel.setProperty("/kpis/sinFirmar", iSinFirmar);
         },
+
+        onConfirmarOrdenamiento: function (oEvent) {
+            var oBinding = this.byId("tablaCumplimiento").getBinding("items");
+            var mParams = oEvent.getParameters();
+            oBinding.sort(new sap.ui.model.Sorter(mParams.sortItem.getKey(), mParams.sortDescending));
+        },
+        
 
         // EXPORTACIÓN Y REPORTE ---
         onExportarExcel: function () {
@@ -126,5 +126,124 @@ sap.ui.define([
         onImprimirPantalla: function () {
             window.print();
         },
+
+
+    
+        // KPIs DINÁMICOS ---
+        onKpiPress: function (sKpiType) {
+            this._sKpiActivo = sKpiType;
+            let sTitulo = "Detalle por consultor";
+            
+            switch(sKpiType) {
+                case 'Activos': sTitulo = "Todos los consultores activos"; break;
+                case 'Completos': sTitulo = "Consultores con registro al 100%"; break;
+                case 'Pendientes': sTitulo = "Consultores con días atrasados"; break;
+                case 'SinFirmar': sTitulo = "Consultores con firma pendiente"; break;
+            }
+            this.getView().getModel("uiPantalla").setProperty("/tituloTabla", sTitulo);
+            this._calcularKpisYFiltrar();
+        },
+
+        _calcularKpisYFiltrar: function () {
+            let sPeriodo = this.byId("filtroPeriodo").getSelectedKey();
+            
+            // Calculamos los KPIs SOLO basados en el periodo
+            let aTodaLaData = this.getView().getModel("modelo").getProperty("/oModelo") || [];
+            let iActivos = 0, iCompletos = 0, iPendientes = 0, iSinFirmar = 0;
+
+            aTodaLaData.forEach(oFila => {
+                if (sPeriodo === "Todos" || oFila.periodo === sPeriodo) {
+                    iActivos++;
+                    if (oFila.estatusReg === "Completo") iCompletos++;
+                    if (oFila.estatusReg === "Pendiente") iPendientes++;
+                    if (oFila.estatusFirma === "Sin firmar") iSinFirmar++;
+                }
+            });
+
+            let oUiModel = this.getView().getModel("uiPantalla");
+            oUiModel.setProperty("/kpis/activos", iActivos);
+            oUiModel.setProperty("/kpis/completos", iCompletos);
+            oUiModel.setProperty("/kpis/pendientes", iPendientes);
+            oUiModel.setProperty("/kpis/sinFirmar", iSinFirmar);
+
+            this._aplicarFiltrosTabla();
+        },
+
+        // Aplica el conjunto completo de filtros (Periodo + Cliente + Equipo + KPI Activo) a la tabla
+        _aplicarFiltrosTabla: function() {
+            let sPeriodo = this.byId("filtroPeriodo").getSelectedKey();
+            let sCliente = this.byId("filtroCliente").getSelectedKey();
+            let sEquipo = this.byId("filtroEquipo").getSelectedKey();
+            
+            let aFiltros = [];
+            
+            if (sPeriodo && sPeriodo !== "Todos") aFiltros.push(new Filter("periodo", FilterOperator.EQ, sPeriodo));
+            if (sCliente && sCliente !== "Todos") aFiltros.push(new Filter("cliente", FilterOperator.Contains, sCliente));
+            if (sEquipo && sEquipo !== "Todos") aFiltros.push(new Filter("equipo", FilterOperator.Contains, sEquipo));
+            
+            if (this._sKpiActivo === 'Completos') aFiltros.push(new Filter("estatusReg", FilterOperator.EQ, "Completo"));
+            if (this._sKpiActivo === 'Pendientes') aFiltros.push(new Filter("estatusReg", FilterOperator.EQ, "Pendiente"));
+            if (this._sKpiActivo === 'SinFirmar') aFiltros.push(new Filter("estatusFirma", FilterOperator.EQ, "Sin firmar"));
+
+            let oBinding = this.byId("tablaCumplimiento").getBinding("items");
+            if (oBinding) {
+                oBinding.filter(aFiltros);
+            }
+        },
+
+
+        // FILTROS ---
+
+        onFiltroGlobalChange: function (oEvent) {
+            this._sKpiActivo = "Todos";
+            
+            // Actualizar el título ("saludo") con el texto seleccionado del ComboBox
+            let sTextoMes = this.byId("filtroPeriodo").getSelectedItem().getText();
+            this.getView().getModel("uiPantalla").setProperty("/saludo", "Periodo: " + sTextoMes);
+            this.getView().getModel("uiPantalla").setProperty("/tituloTabla", this.getResourceBundle().getText("detallePorConsultor"));
+            
+            // Recalcula KPIs (basado solo en periodo)
+            this._calcularKpisYFiltrar();
+        },
+        onFiltrarDashboard: function () {
+            this._sKpiActivo = "Todos";
+            this.getView().getModel("uiPantalla").setProperty("/tituloTabla", "Resultados Filtrados");
+            this._aplicarFiltrosTabla();
+        },
+
+        // FOOTER
+         onRecordatorioMasivo: function () {
+            let oTable = this.byId("tablaCumplimiento");
+            let aContexts = oTable.getBinding("items").getCurrentContexts();
+            let iAtrapados = 0;
+
+            // Recorremos la tabla filtrada en pantalla para buscar infractores
+            aContexts.forEach(function(oContext) {
+                let oFila = oContext.getObject();
+                if (oFila.estatusReg === "Pendiente" || oFila.estatusFirma === "Sin firmar") {
+                    iAtrapados++;
+                }
+            });
+
+            if (iAtrapados === 0) {
+                MessageBox.information("Todos los consultores visibles ya están al 100%. No hay recordatorios que enviar.");
+                return;
+            }
+
+            MessageBox.confirm(`Se enviarán notificaciones push y correos a los ${iAtrapados} consultores que presentan atrasos o firmas pendientes. ¿Deseas continuar?`, {
+                title: "Confirmar Notificación Masiva",
+                onClose: function (sAction) {
+                    if (sAction === MessageBox.Action.OK) {
+                        MessageToast.show(`Notificaciones enviadas a ${iAtrapados} consultores.`);
+                    }
+                }
+            });
+        },
+
+        onConsolidar: function () {
+            this.getOwnerComponent().getRouter().navTo("RouteConsolidacion");
+        },
+
+        
 	});
 });

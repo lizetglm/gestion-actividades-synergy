@@ -1,273 +1,144 @@
 <mvc:View id="viewConsolidacion"
-	controllerName="ns.frontend.controller.Consolidacion"
-	xmlns:mvc="sap.ui.core.mvc"
+    controllerName="ns.frontend.controller.Consolidacion"
+    xmlns:mvc="sap.ui.core.mvc"
     xmlns:core="sap.ui.core"
     xmlns:layout="sap.ui.layout" 
-	xmlns:form="sap.ui.layout.form"
+    xmlns:f="sap.f"
     xmlns="sap.m"
     busyIndicatorDelay="0"
     height="100%"
     displayBlock="true"
 >
-    <Page
-        id="pageConsolidacion"
-        showHeader="false"
-        backgroundDesign="Transparent"
-        class="sapUiResponsiveContentPadding"
+    <!-- DynamicPage es el estándar actual para Fiori 3 Worklists -->
+    <f:DynamicPage id="pageConsolidacion" class="sapUiSizeCompact" showFooter="true">
         
-        enableScrolling="true"
->
-        <content>
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:breadcrumbs >
+                   <Breadcrumbs currentLocationText="{i18n>appAdmin5}"
+                    class="sapUiSmallMarginTopBottom">
+                        <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+                <f:heading>
+                    <Title text="Consolidación Mensual de Reportes" level="H2" />
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
 
-            <VBox id="idBanner" class="sapUiSmallMargin gapBody">
-                <Breadcrumbs id="idActualDireccion" currentLocationText="{i18n>consolidacionTitle}">
-                    <Link id="idRegreso" text="{i18n>title}" press=".onBack" />
-                </Breadcrumbs>
+        <f:header>
+            <f:DynamicPageHeader>
+                <layout:HorizontalLayout allowWrapping="true">
+                    <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                        <Label text="Periodo" labelFor="periodComboBox"/>
+                        <ComboBox id="periodComboBox" selectedKey="{filterModel>/period}" width="150px">
+                            <core:Item key="All" text="Todos"/>
+                            <core:Item key="Sep2026" text="Septiembre 2026"/>
+                            <core:Item key="Oct2026" text="Octubre 2026"/>
+                        </ComboBox>
+                    </layout:VerticalLayout>
 
-                <FlexBox id="idFlexBox" justifyContent="SpaceBetween" alignItems="End" >
-                    <Title
-                        id="idTitulo"
-                        level="H4" titleStyle="H4"
-                        text="Consolidación Mensual de Reportes"
-                        wrapping="true"
-                        wrappingType="Hyphenated">
-                    </Title>
-                    <Button 
-                        id="btnConfiguracionConsolidacion"
-                        text="Configuración" 
-                        icon="sap-icon://action-settings" 
-                        type="Transparent"
-                        press=".onSettings"    
-                    />
-                </FlexBox>
+                    <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                        <Label text="Estatus de Consolidación" labelFor="statusComboBox"/>
+                        <ComboBox id="statusComboBox" selectedKey="{filterModel>/status}" width="180px">
+                            <core:Item key="All" text="Todos"/>
+                            <core:Item key="Ready" text="Listo para envío"/>
+                            <core:Item key="Draft" text="Pendiente firmas"/>
+                        </ComboBox>
+                    </layout:VerticalLayout>
 
-                <!-- Filtros de búsqueda de paquetes-->
+                    <layout:VerticalLayout class="sapUiMediumMarginEnd">
+                        <Label text="Cliente / Área" labelFor="areaComboBox"/>
+                        <ComboBox id="areaComboBox" selectedKey="{filterModel>/period}" width="150px">
+                            <core:Item key="All" text="Todos"/>
+                            <core:Item key="Alpha" text="Alpha S.A. de C.V."/>
+                            <core:Item key="Beta" text="Beta Tech Solutions"/>
+                            <core:Item key="Gamma" text="Gamma Logistics"/>
+                        </ComboBox>
+                    </layout:VerticalLayout>
+
+                    <layout:VerticalLayout class="sapUiSmallMarginBegin">
+                        <Label text="" /> 
+                        <Button text="Ir" type="Emphasized" press=".onExecuteFilter"/>
+                    </layout:VerticalLayout>
+                </layout:HorizontalLayout>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+            <Table id="consolidacionTable"
+                items="{
+                    path: 'consolidacionModel>/reports',
+                    sorter: [
+                        { path: 'Month' },
+                        { path: 'StatusState', descending: false },
+                        { path: 'Cliente', descending: false }
+                    ]
+                }"
+                mode="MultiSelect"
+                selectionChange=".onSelectionChange"
+                alternateRowColors="true"
+                class="sapUiSmallMarginBottom">
                 
-<!-- Filtros de búsqueda de paquetes -->
-<HBox
-    id="filtersConsolidacion"
-    class="filters sapUiResponsiveContentPadding"
-    alignItems="Center"
-    wrap="Wrap">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <ToolbarSpacer/>
+                        <Button icon="sap-icon://sort" tooltip="Ordenar" press=".onAbrirOrdenamiento" />
+                        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>btnExportarExcel}" press=".onExportarExcel" />
+                    </OverflowToolbar>
+                </headerToolbar>
 
-    <!-- Filtro de periodo -->
-    <HBox
-        id="filterFieldPeriodo"
-        class="filterField"
-        alignItems="Center">
+                <columns>
+                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Cliente / Proyecto"/>
+                    </Column>
+                    <Column width="10rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Periodo" />
+                    </Column>
+                    <Column hAlign="Center" width="10rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Headcount" tooltip="Consultores"/>
+                    </Column>
+                    <Column hAlign="Center" width="10rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Total Horas" />
+                    </Column>
+                    <Column hAlign="Center" width="15rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                        <Text text="Estatus de Envío"/>
+                    </Column>
+                </columns>
 
-        <Label
-            id="labelPeriodo"
-            text="Periodo"
-            labelFor="periodComboBox"/>
+                <items>
+                    <ColumnListItem vAlign="Middle" type="Navigation" press=".onVerDetallePaquete">
+                        <cells>
+                            <VBox>
+                                <Text text="{consolidacionModel>Cliente}" class="sapUiTinyMarginBottom"/>
+                                <Text text="{consolidacionModel>Proyecto}" />
+                            </VBox>
+                            <Text text="{consolidacionModel>Month}"/>
+                            <HBox justifyContent="Center" alignItems="Center" gap="0.3rem">
+                                <core:Icon src="sap-icon://employee" color="Neutral"/>
+                                <Text text="{consolidacionModel>Headcount}" />
+                            </HBox>
+                            <ObjectNumber number="{consolidacionModel>TotalHours}" unit="hrs"/>
+                            <ObjectStatus 
+                                text="{consolidacionModel>StatusText}" 
+                                state="{consolidacionModel>StatusState}" 
+                                
+                            />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
 
-        <ComboBox
-            id="periodComboBox"
-            selectedKey="{filterModel>/period}"
-            width="10rem">
+        <f:footer>
+            <OverflowToolbar>
+                <Text id="mensajeFooterText" text="Selecciona los paquetes consolidados a enviar." class="sapUiSmallMarginBegin"/>
+                <ToolbarSpacer />
+                <Button id="btnGuardarBorrador" text="Guardar Borrador" type="Transparent" press=".onSaveDraft" />
+                <Button id="btnCancelarConsolidacion" text="Deseleccionar" type="Reject" press=".onCancel" />
+                <Button id="btnEnviarAprobacion" text="Enviar al Cliente" type="Emphasized" icon="sap-icon://paper-plane" press=".onSendForApproval" />
+            </OverflowToolbar>
+        </f:footer>
 
-            <core:Item id="items213" key="All" text="Todos"/>
-            <core:Item id="items7" key="Aug2026" text="Agosto 2026"/>
-            <core:Item id="items8"  key="Sep2026" text="Septiembre 2026"/>
-
-        </ComboBox>
-    </HBox>
-
-    <!-- Filtro de estatus -->
-    <HBox
-        id="filterFieldEstatus"
-        class="filterField"
-        alignItems="Center">
-
-        <Label
-            id="labelEstatusConsolidacion"
-            text="Estatus de consolidación"
-            labelFor="statusComboBox"/>
-
-        <ComboBox
-            id="statusComboBox"
-            selectedKey="{filterModel>/status}"
-            width="12rem">
-
-            <core:Item id="items4" key="All" text="Todos"/>
-            <core:Item id="items5" key="Ready" text="Listo para aprobación"/>
-            <core:Item id="items6" key="Draft" text="Borrador"/>
-
-        </ComboBox>
-    </HBox>
-
-    <!-- Filtro de agrupación -->
-    <HBox
-        id="filterFieldAgrupacion"
-        class="filterField"
-        alignItems="Center">
-
-        <Label
-            id="labelAgruparPor"
-            text="Agrupar por"
-            labelFor="groupByComboBox"/>
-
-        <ComboBox
-            id="groupByComboBox"
-            selectedKey="{filterModel>/groupBy}"
-            width="10rem">
-
-            <core:Item id="items1" key="Department" text="Departamento"/>
-            <core:Item id="items2" key="Month" text="Mes"/>
-            <core:Item id="items3" key="Status" text="Estatus"/>
-
-        </ComboBox>
-    </HBox>
-
-    <!-- Botón de búsqueda -->
-    <Button
-        id="executeFilterButton"
-        text="Go"
-        type="Emphasized"
-        press="onExecuteFilter"
-        class="goButton"/>
-
-</HBox>
-
-
-            
-            
-            
-            <VBox
-                id="consolidationLayout"
-                class="consolidationLayout">
-
-            
-                    <Table
-                        id="consolidacionTable"
-                        items="{consolidacionModel>/reports}"
-                        mode="MultiSelect"
-                        selectionChange="onSelectionChange"
-                        includeItemInSelection="true"
-                        growing="true"
-                        growingScrollToLoad="true"
-                        class="">
-
-                        <columns>
-                            <Column id="columnMesDepartamento" width="28%">
-                                <Text
-                                    id="headerMesDepartamento"
-                                    text="Mes / Departamento"/>
-                            </Column>
-
-                            <Column id="columnConsolidacionID" width="18%">
-                                <Text
-                                    id="headerConsolidacionID"
-                                    text="Consolidación ID"/>
-                            </Column>
-
-                            <Column
-                                id="columnHeadcount"
-                                width="16%"
-                                hAlign="End">
-
-                                <Text
-                                    id="headerHeadcount"
-                                    text="Headcount"/>
-                            </Column>
-
-                            <Column
-                                id="columnTotalHoras"
-                                width="18%"
-                                hAlign="End">
-
-                                <Text
-                                    id="headerTotalHoras"
-                                    text="Total horas"/>
-                            </Column>
-
-                            <Column id="columnEstatusEnvio" width="20%">
-                                <Text
-                                    id="headerEstatusEnvio"
-                                    text="Estatus de envío"/>
-                            </Column>
-                        </columns>
-
-                        <items>
-                            <ColumnListItem
-                                id="templateFilaConsolidacion"
-                                vAlign="Middle">
-
-                                <cells>
-                                    <VBox id="cellMesDepartamento">
-                                        <Text
-                                            id="cellMesReporte"
-                                            text="{consolidacionModel>Month}"
-                                            class="reportMonth"/>
-
-                                        <Text
-                                            id="cellDepartamentoReporte"
-                                            text="{consolidacionModel>Department}"
-                                            class="reportDepartment"/>
-                                    </VBox>
-
-                                    <Text
-                                        id="cellConsolidacionID"
-                                        text="{consolidacionModel>ConsolidacionID}"/>
-
-                                    <Text
-                                        id="cellHeadcount"
-                                        text="{consolidacionModel>Headcount}"/>
-
-                                    <Text
-                                        id="cellTotalHoras"
-                                        text="{consolidacionModel>TotalHours}"
-                                        class="totalHorasText"/>
-
-                                    <ObjectStatus
-                                        id="cellEstatusEnvio"
-                                        text="{consolidacionModel>StatusText}"
-                                        state="{consolidacionModel>StatusState}"
-                                        inverted="true"/>
-                                </cells>
-                            </ColumnListItem>
-                        </items>
-                    </Table>
-                </VBox>
-
-                <!-- Barra inferior de acciones -->
-                <HBox
-                    id="bottomActionsConsolidacion"
-                    class="borde bottomBar textAcciones"
-                    alignItems="Center">
-
-                    <Text
-                        id="selectedRowsText"
-                        class="textAcciones"
-                        text="Selecciona los reportes que deseas procesar."/>
-
-                    <ToolbarSpacer id="spacerAccionesInferiores"/>
-
-                    <Button
-                        id="btnEnviarAprobacion"
-                        text="Enviar a aprobación"
-                        type="Emphasized"
-                        icon="sap-icon://paper-plane"
-                        press="onSave"
-                        />
-
-                    <Button
-                        id="btnGuardarBorrador"
-                        text="Guardar borrador"
-                        press="onSaveDraft"
-                        class="btnGuardar"/>
-
-                    <Button
-                        id="btnCancelarConsolidacion"
-                        text="Cancelar"
-                        type="Reject"
-                        press="onCancel"
-                        class="btnCancelar"/>
-                                    
-                        
-                </HBox>
-
-                </VBox>
-        </content>
-    </Page>
+    </f:DynamicPage>
 </mvc:View>

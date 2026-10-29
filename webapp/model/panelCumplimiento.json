@@ -1,41 +1,41 @@
 {
     "oModelo": [
         { 
-            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100
+            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100, "periodo": "Oct2026", "horasBench": 10
         },
         { 
-            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50
+            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Completo", "estatusFirma": "Sin firmar", "porcentajeAvance": 75, "periodo": "Oct2026", "horasBench": 5
         },
         { 
-            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100
+            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100,  "periodo": "Oct2026", "horasBench": 8
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado", "porcentajeAvance": 75
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado", "porcentajeAvance": 75, "periodo": "Oct2026", "horasBench": 12
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a", "porcentajeAvance": 0
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a", "porcentajeAvance": 0, "periodo": "Oct2026", "horasBench": 0
         },{ 
-            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100
+            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "BTP", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50, "periodo": "Oct2026", "horasBench": 10
         },
         { 
-            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50
+            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50, "periodo": "Oct2026", "horasBench": 5
         },
         { 
-            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100
+            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100, "periodo": "Oct2026", "horasBench": 8
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado", "porcentajeAvance": 75
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "Pendiente", "estatusFirma": "Firmado", "porcentajeAvance": 75, "periodo": "Oct2026", "horasBench": 12
         },
         { 
-            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a", "porcentajeAvance": 0
+            "nombre": "Ana Torres", "cliente": "Cliente D", "equipo": "Equipo 3", "estatusReg": "n/a", "estatusFirma": "N/a", "porcentajeAvance": 0, "periodo": "Oct2026", "horasBench": 0
         },{ 
-            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100
+            "nombre": "Juan Pérez", "cliente": "Cliente A", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100, "periodo": "Oct2026", "horasBench": 10
         },
         { 
-            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50
+            "nombre": "María López", "cliente": "Cliente B", "equipo": "Equipo 2", "estatusReg": "Pendiente", "estatusFirma": "Sin firmar", "porcentajeAvance": 50, "periodo": "Oct2026", "horasBench": 5
         },
         { 
-            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100
+            "nombre": "Carlos García", "cliente": "Cliente C", "equipo": "BTP", "estatusReg": "Completo", "estatusFirma": "Firmado", "porcentajeAvance": 100, "periodo": "Oct2026", "horasBench": 8
         }
     ]
 }

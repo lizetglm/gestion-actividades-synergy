@@ -25,9 +25,9 @@ sap.ui.define([
             this.getOwnerComponent().getRouter().navTo("RouteProyectos", { clientIndex: sIndex });
         },
 
-        onNavBackToMain: function () {
-            this.getOwnerComponent().getRouter().navTo("RouteMain");
-        },
+        onBack: function() {
+			this.getOwnerComponent().getRouter().navTo("RouteMain");
+		},
 
         onExportarExcel: function () {
             let aCols = [

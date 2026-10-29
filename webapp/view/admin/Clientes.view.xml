@@ -8,6 +8,12 @@
     <f:DynamicPage id="pageClientes" class="sapUiSizeCompact">
         <f:title>
             <f:DynamicPageTitle>
+                <f:breadcrumbs >
+                   <Breadcrumbs currentLocationText="{i18n>appAdmin2}"
+                    class="sapUiSmallMarginTopBottom">
+                        <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                    </Breadcrumbs>
+                </f:breadcrumbs>
                 <f:heading>
                     <Title text="Gestión de Clientes" level="H1" />
                 </f:heading>

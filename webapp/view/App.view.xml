@@ -16,7 +16,25 @@
                 <ToolbarSpacer/>
                 <Title text="Gestión de Actividades de Consultoría" level="H2"/>
                 <ToolbarSpacer/>
-                <Button text="DU" type="Transparent"/>
+                <Button 
+                    icon="sap-icon://bell" 
+                    type="Transparent" 
+                    tooltip="Notificaciones" 
+                    press=".onNotificacionesPress">
+                    <customData>
+                        <BadgeCustomData 
+                            key="badge" 
+                            value="{headerModel>/numeroNotificaciones}" 
+                            visible="{= ${headerModel>/numeroNotificaciones} > 0 }" />
+                    </customData>
+                </Button>
+                
+                <Avatar 
+                    src="sap-icon://employee" 
+                    displaySize="XS" 
+                    press=".onAvatarPress" 
+                    tooltip="Mi Perfil"
+                    class="sapUiTinyMarginBegin sapUiSmallMarginEnd" />
             </tnt:ToolHeader>
         </tnt:header>
 

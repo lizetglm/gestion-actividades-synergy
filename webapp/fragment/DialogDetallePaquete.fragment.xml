@@ -1,0 +1,45 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog 
+        id="dialogDetallePaquete" 
+        title="Detalle: {detallePaquete>/Cliente} - {detallePaquete>/Proyecto}" 
+        contentWidth="600px" 
+        resizable="true" 
+        draggable="true"
+    >    
+        <content>
+            <Table id="tablaDetalleConsultores" 
+                items="{detallePaquete>/consultores}" 
+                alternateRowColors="true"
+            >
+                <columns>
+                    <Column><Text text="Consultor"/></Column>
+                    <Column hAlign="Center"><Text text="Estatus de Firma" /></Column>
+                    <Column hAlign="End" width="4rem"><Text text="PDF" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{detallePaquete>nombre}" />
+                            <ObjectStatus 
+                                text="{detallePaquete>estatusTexto}" 
+                                state="{detallePaquete>estatusEstado}" 
+                                icon="{= ${detallePaquete>estatusEstado} === 'Success' ? 'sap-icon://sys-enter-2' : 'sap-icon://alert' }" 
+                            />
+                            <Button 
+                                icon="sap-icon://pdf-attachment" 
+                                type="Transparent" 
+                                tooltip="Ver Reporte PDF" 
+                                press=".onVerPDFConsultor" 
+                                enabled="{= ${detallePaquete>estatusEstado} === 'Success' }" 
+                            />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+        
+        <buttons>
+            <Button text="Cerrar" press=".onCerrarDetallePaquete" type="Transparent" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

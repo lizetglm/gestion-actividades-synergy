@@ -1,0 +1,9 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <ViewSettingsDialog confirm=".onConfirmarOrdenamiento">
+        <sortItems>
+            <ViewSettingsItem text="Periodo (Mes)" key="Month" selected="true" />
+            <ViewSettingsItem text="Cliente" key="Cliente" />
+            <ViewSettingsItem text="Estatus de Envío" key="StatusText" />
+        </sortItems>
+    </ViewSettingsDialog>
+</core:FragmentDefinition>
