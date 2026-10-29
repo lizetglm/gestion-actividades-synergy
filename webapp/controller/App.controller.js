@@ -150,12 +150,18 @@ sap.ui.define(
                 sKey = "calendarioActividades";
             } else if (sRouteName === "RouteReporteMensual") {
                 sKey = "reporteMensual";
+            } else if (sRouteName === "RouteHistorial") {
+                sKey = "historial";
             } else if (sRouteName === "RoutePanelCumplimiento") {
                 sKey = "panelCumplimiento";
             } else if (sRouteName === "RouteClientesProyectos") {
                 sKey = "clientesProyectos";
             } else if (sRouteName === "RoutePerfiles") {
                 sKey = "perfiles";
+            } else if (sRouteName === "RouteConfiguracion") {
+                sKey = "configuracion";
+            } else if (sRouteName === "RouteConsolidacion") {
+                sKey = "consolidacion";
             }
 
             // sombrear el elemento seleccionado en el sideMenu
@@ -182,12 +188,18 @@ sap.ui.define(
                 oRouter.navTo("RouteCalendarioActividades");
             } else if(sKey === "reporteMensual") {
                 oRouter.navTo("RouteReporteMensual");
+            } else if(sKey === "historial") {
+                oRouter.navTo("RouteHistorial");
             } else if (sKey === "panelCumplimiento") {
                 oRouter.navTo("RoutePanelCumplimiento");
             } else if (sKey === "clientesProyectos") {
                 oRouter.navTo("RouteClientesProyectos");
             } else if (sKey === "perfiles") {
                 oRouter.navTo("RoutePerfiles");
+            } else if (sKey === "configuracion") {
+                oRouter.navTo("RouteConfiguracion");
+            } else if (sKey === "consolidacion") {
+                oRouter.navTo("RouteConsolidacion");
             }
         }
       });

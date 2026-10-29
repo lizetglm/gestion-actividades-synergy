@@ -45,9 +45,12 @@
                     <tnt:NavigationListItem text="{i18n>app1}" key="registrarActividad" icon="sap-icon://add-activity" />
                     <tnt:NavigationListItem text="{i18n>app2}" key="calendarioActividades" icon="sap-icon://calendar" />
                     <tnt:NavigationListItem text="{i18n>app4}" key="reporteMensual" icon="sap-icon://pending" />
+                    <tnt:NavigationListItem text="{i18n>app5}" key="historial" icon="sap-icon://customer-history" />
                     <tnt:NavigationListItem text="{i18n>appAdmin1}" key="panelCumplimiento" icon="sap-icon://activity-2" />
                     <tnt:NavigationListItem text="{i18n>appAdmin2}" key="clientesProyectos" icon="sap-icon://company-view" />
                     <tnt:NavigationListItem text="{i18n>appAdmin3}" key="perfiles" icon="sap-icon://employee-lookup" />
+                    <tnt:NavigationListItem text="{i18n>appAdmin4}" key="configuracion" icon="sap-icon://customize" />
+                    <tnt:NavigationListItem text="{i18n>appAdmin5}" key="consolidacion" icon="sap-icon://complete" />
                 </tnt:NavigationList>
             </tnt:SideNavigation>
         </tnt:sideContent>
