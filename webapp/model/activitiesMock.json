@@ -1,0 +1,33 @@
+
+{
+  "activities": [
+    {
+      "fecha": "2026-09-05",
+      "cliente": "Cliente A",
+      "proyecto": "Desarrollo web",
+      "descripcion": "Corrección de errores",
+      "horas": 3
+    },
+    {
+      "fecha": "2026-09-14",
+      "cliente": "Cliente A",
+      "proyecto": "Desarrollo web",
+      "descripcion": "Desarrollo y pruebas",
+      "horas": 8
+    },
+    {
+      "fecha": "2026-09-05",
+      "cliente": "Cliente B",
+      "proyecto": "Soporte",
+      "descripcion": "Revisión de incidencias",
+      "horas": 2.5
+    },
+    {
+      "fecha": "2026-09-11",
+      "cliente": "Cliente A",
+      "proyecto": "Desarrollo web",
+      "descripcion": "Pruebas de funcionalidad",
+      "horas": 5.5
+    }
+  ]
+}

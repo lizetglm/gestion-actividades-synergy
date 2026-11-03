@@ -34,15 +34,36 @@
             
             <HBox
                 id="monthHeader"
+                class="monthHeader"
                 justifyContent="SpaceBetween"
                 alignItems="Center">
 
-                <VBox id="vboxMonth">
+                <HBox
+                    id="vboxMonth"
+                    alignItems="Center"
+                    renderType="Bare">
+
+                    <Button
+                        id="btnMesAnterior"
+                        icon="sap-icon://navigation-left-arrow"
+                        type="Transparent"
+                        tooltip="Mes anterior"
+                        press=".onMesAnterior"/>
+
                     <Title
                         id="monthTitle"
-                        text="Septiembre 2026"
-                        level="H3"/>
-                </VBox>
+                        text="{calendarModel>/monthTitle}"
+                        level="H3"
+                        class="sapUiTinyMarginBeginEnd"/>
+
+                    <Button
+                        id="btnMesSiguiente"
+                        icon="sap-icon://navigation-right-arrow"
+                        type="Transparent"
+                        tooltip="Mes siguiente"
+                        press=".onMesSiguiente"/>
+
+                </HBox>
                 <Button
                     id="btnExport"
                     text="Exportar a Excel"
@@ -61,7 +82,7 @@
                     class="kpiCard kpiBlue">
                     <Title
                         id="titleHrs"
-                        text="62.5 h"
+                        text="{calendarModel>/kpi/horasTexto}"
                         level="H2"
                         class="kpiTitleBlue"/>
                     <Text
@@ -73,7 +94,7 @@
                     class="kpiCard kpiBlue">
                     <Title
                         id="titleDays"
-                        text="8 / 11"
+                        text="{calendarModel>/kpi/diasTexto}"
                         level="H2"
                         class="kpiTitleBlue" />
                     <Text
@@ -85,7 +106,7 @@
                     class="kpiCard kpiOrange">
                     <Title
                         id="titlePnd"
-                        text="3"
+                        text="{calendarModel>/kpi/pendientesTexto}"
                         level="H2"
                         class="kpiTitleOrange" />
                     <Text
@@ -97,7 +118,7 @@
                     class="kpiCard kpiRed">
                     <Title
                         id="titleSts"
-                        text="Pendiente"
+                        text="{calendarModel>/kpi/estadoReporte}"
                         level="H2"
                         class="kpiTitleRed" />
                     <Text
@@ -123,12 +144,13 @@
                         labelFor="periodComboBox"/>
                     <ComboBox
                         id="comboClients"
-                        selectedKey="{filterModel>/period}"
-                        width="10rem">
-                        <core:Item id="itemClient" key="All" text="Todos"/>
-                        <core:Item id="item1Client" key="Aug2026" text="Cliente A"/>
-                        <core:Item id="item2Client"  key="Sep2026" text="Cliente B"/>
+                        selectedKey="{filterModel>/clienteSeleccionado}"
+                        width="10rem"
+                        items="{filterModel>/clientes}">
+                        <core:Item id="itemClient" key="{filterModel>}" text="{filterModel>}"/>
                     </ComboBox>
+
+
                 </HBox>
 
                 <HBox
@@ -141,11 +163,10 @@
                         labelFor="statusComboBox"/>
                     <ComboBox
                         id="comboProjects"
-                        selectedKey="{filterModel>/status}"
-                        width="12rem">
-                        <core:Item id="itemProjects" key="All" text="Todos"/>
-                        <core:Item id="item1Projects" key="Ready" text="Proyecto 1"/>
-                        <core:Item id="item2Projects" key="Draft" text="Proyecto 2"/>
+                        selectedKey="{filterModel>/proyectoSeleccionado}"
+                        width="12rem"
+                        items="{filterModel>/proyectos}">
+                        <core:Item id="itemProjects" key="{filterModel>}" text="{filterModel>}"/>
                     </ComboBox>
                 </HBox>
 
@@ -153,7 +174,7 @@
                     id="executeFilterBtnCalendar"
                     text="Go"
                     type="Emphasized"
-                    press="onExecuteFilter"
+                    press=".onExecuteFilter"
                     class="goButton"/>
             </HBox>
 

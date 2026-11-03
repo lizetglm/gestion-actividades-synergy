@@ -14,136 +14,479 @@ sap.ui.define([
             onInit: function () {
 
                 // Datos de prueba para desarrollar el frontend.
+                this._iYear = 2026;
+                this._iMonth = 8; 
+
+                this._actualizarTituloMes();
+
                 var oModel = new JSONModel({
+                    monthTitle: this._sMonthTitle,
+
                     showDetails: false,
                     selectedDateTitle: "",
                     selectedDateTotal: 0,
                     selectedActivities: [],
 
-                    activities: [
-                        {
-                            fecha: "2026-09-05",
-                            cliente: "Cliente A",
-                            proyecto: "Desarrollo web",
-                            descripcion: "Corrección de errores",
-                            horas: 3
-                        },
-                        {
-                            fecha: "2026-09-05",
-                            cliente: "Cliente B",
-                            proyecto: "Soporte",
-                            descripcion: "Revisión de incidencias",
-                            horas: 2.5
-                        },
-                        {
-                            fecha: "2026-09-11",
-                            cliente: "Cliente A",
-                            proyecto: "Desarrollo web",
-                            descripcion: "Pruebas de funcionalidad",
-                            horas: 5.5
-                        }
-                    ]
+                    kpi: {
+                        horasTexto: "0 h",
+                        diasTexto: "0 / 0",
+                        pendientesTexto: "0",
+                        estadoReporte: "Pendiente"
+                    },
+
+                    activities: []
                 });
 
                 this.getView().setModel(oModel, "calendarModel");
-                this._crearCalendario();
+
+                var oFilterModel = new JSONModel({
+                    clienteSeleccionado: "Todos",
+                    proyectoSeleccionado: "Todos",
+                    clientes: [],
+                    proyectos: []
+                });
+
+                this.getView().setModel(oFilterModel, "filterModel");
+
+                this._cargarActividadesMock();
             },
 
-            _crearCalendario: function () {
-                var oCalendar = this.byId("calendarGrid");
-                oCalendar.removeAllItems();
-                var iYear = 2026;
-                var iMonth = 8;
-                var oFirstDay = new Date(iYear, iMonth, 1);
+                        
+            _cargarActividadesMock: function () {
 
-                var iDaysInMonth =
-                    new Date(iYear, iMonth + 1, 0).getDate();
-                
-                var iStartDay = oFirstDay.getDay();
-                if (iStartDay === 0) {
-                    iStartDay = 6;
-                } else {
-                    iStartDay = iStartDay - 1;
+                var oCalendarModel = this.getView().getModel("calendarModel");
+
+                var sUrl = sap.ui.require.toUrl(
+                    "com/cg/actividades/vistacalendarioactividades/model/activitiesMock.json"
+                );
+
+                var oMockModel = new JSONModel();
+
+                oMockModel.attachRequestCompleted(function (oEvent) {
+
+                    if (!oEvent.getParameter("success")) {
+                        console.error("No se pudieron cargar las actividades.");
+                        return;
+                    }
+
+                    var aActivities =
+                        oMockModel.getProperty("/activities") || [];
+
+                    oCalendarModel.setProperty("/activities", aActivities);
+
+                    this._cargarOpcionesFiltros();
+                    this._crearCalendario();
+
+                    console.log(
+                        "Actividades cargadas desde JSON:",
+                        aActivities
+                    );
+
+                }.bind(this));
+
+                oMockModel.attachRequestFailed(function (oEvent) {
+                    console.error(
+                        "Error al solicitar activitiesMock.json:",
+                        oEvent.getParameters()
+                    );
+                });
+
+                oMockModel.loadData(sUrl);
+            },
+
+
+
+            _actualizarTituloMes: function () {
+
+                var oFecha = new Date(
+                    this._iYear,
+                    this._iMonth,
+                    1
+                );
+
+                var sTitulo = new Intl.DateTimeFormat("es-MX", {
+                    month: "long",
+                    year: "numeric"
+                }).format(oFecha);
+
+                this._sMonthTitle =
+                    sTitulo.charAt(0).toUpperCase() +
+                    sTitulo.slice(1);
+
+                var oModel = this.getView().getModel("calendarModel");
+
+                if (oModel) {
+                    oModel.setProperty(
+                        "/monthTitle",
+                        this._sMonthTitle
+                    );
                 }
-                for (var i = 0; i < iStartDay; i++) {
-                    var oEmptyDay = new VBox({
-                        height: "70px"
-                    });
-                    oEmptyDay.addStyleClass("calendarDay");
-                    oEmptyDay.addStyleClass("emptyDay");
-                    oCalendar.addItem(oEmptyDay);
+            },
+
+            onMesAnterior: function () {
+
+                var oFecha = new Date(
+                    this._iYear,
+                    this._iMonth - 1,
+                    1
+                );
+
+                this._iYear = oFecha.getFullYear();
+                this._iMonth = oFecha.getMonth();
+
+                this._actualizarTituloMes();
+                this._crearCalendario();
+
+                this.onCerrarDetalle();
+            },
+
+            onMesSiguiente: function () {
+
+                var oFecha = new Date(
+                    this._iYear,
+                    this._iMonth + 1,
+                    1
+                );
+
+                this._iYear = oFecha.getFullYear();
+                this._iMonth = oFecha.getMonth();
+
+                this._actualizarTituloMes();
+                this._crearCalendario();
+
+                this.onCerrarDetalle();
+            },
+
+            _obtenerEstadoDia: function (oFecha, nHoras, oHoy) {
+
+                if (nHoras >= 8) {
+                    return "completo";
                 }
 
-                // Obtener las actividades del modelo.
+                if (nHoras > 0) {
+                    return "incompleto";
+                }
+
+                return "sinRegistro";
+            },
+
+            _actualizarKpis: function () {
+
                 var oModel = this.getView().getModel("calendarModel");
                 var aActivities = oModel.getProperty("/activities") || [];
 
-                for (let iDay = 1; iDay <= iDaysInMonth; iDay++) {
-                    var oDay = new VBox({
+                var iYear = this._iYear;
+                var iMonth = this._iMonth;
+
+                var iDiasMes = new Date(
+                    iYear,
+                    iMonth + 1,
+                    0
+                ).getDate();
+
+                var oHoy = new Date();
+
+                var nHorasMes = 0;
+                var iCompletos = 0;
+                var iPendientes = 0;
+                var iLaborablesTranscurridos = 0;
+
+                for (var iDia = 1; iDia <= iDiasMes; iDia++) {
+
+                    var oFecha = new Date(iYear, iMonth, iDia);
+
+                    var sFecha =
+                        iYear + "-" +
+                        String(iMonth + 1).padStart(2, "0") + "-" +
+                        String(iDia).padStart(2, "0");
+
+                    var aActividadesDia = aActivities.filter(
+                        function (oActividad) {
+                            return oActividad.fecha === sFecha;
+                        }
+                    );
+
+                    var nHorasDia = aActividadesDia.reduce(
+                        function (nTotal, oActividad) {
+                            return nTotal + Number(oActividad.horas || 0);
+                        },
+                        0
+                    );
+
+                    nHorasMes += nHorasDia;
+
+                    var sEstado = this._obtenerEstadoDia(
+                        oFecha,
+                        nHorasDia,
+                        oHoy
+                    );
+
+                    var oHoySinHora = new Date(
+                        oHoy.getFullYear(),
+                        oHoy.getMonth(),
+                        oHoy.getDate()
+                    );
+
+                    var bTranscurrido = oFecha <= oHoySinHora;
+
+                    if (
+                        oFecha.getDay() !== 0 &&
+                        oFecha.getDay() !== 6 &&
+                        bTranscurrido
+                    ) {
+                        iLaborablesTranscurridos++;
+
+                        if (sEstado === "completo") {
+                            iCompletos++;
+                        } else {
+                            iPendientes++;
+                        }
+                    }
+                }
+
+                oModel.setProperty(
+                    "/kpi/horasTexto",
+                    Number(nHorasMes.toFixed(2)) + " h"
+                );
+
+                oModel.setProperty(
+                    "/kpi/diasTexto",
+                    iCompletos + " / " + iLaborablesTranscurridos
+                );
+
+                oModel.setProperty(
+                    "/kpi/pendientesTexto",
+                    String(iPendientes)
+                );
+            },
+            
+
+            _obtenerActividadesFiltradas: function () {
+
+                var oModel = this.getView().getModel("calendarModel");
+                var oFilterModel = this.getView().getModel("filterModel");
+
+                var aActivities = oModel.getProperty("/activities") || [];
+
+                var sCliente = oFilterModel.getProperty("/clienteSeleccionado");
+                var sProyecto = oFilterModel.getProperty("/proyectoSeleccionado");
+
+                return aActivities.filter(function (oActivity) {
+
+                    var bCliente =
+                        sCliente === "Todos" ||
+                        oActivity.cliente === sCliente;
+
+                    var bProyecto =
+                        sProyecto === "Todos" ||
+                        oActivity.proyecto === sProyecto;
+
+                    return bCliente && bProyecto;
+                });
+            },
+
+            onExecuteFilter: function () {
+
+                var oFilterModel = this.getView().getModel("filterModel");
+
+                console.log(
+                    "Cliente seleccionado:",
+                    oFilterModel.getProperty("/clienteSeleccionado")
+                );
+
+                console.log(
+                    "Proyecto seleccionado:",
+                    oFilterModel.getProperty("/proyectoSeleccionado")
+                );
+
+                console.log(
+                    "Actividades filtradas:",
+                    this._obtenerActividadesFiltradas()
+                );
+
+                this._crearCalendario();
+                this.onCerrarDetalle();
+            },
+
+            _cargarOpcionesFiltros: function () {
+
+                var oModel = this.getView().getModel("calendarModel");
+                var oFilterModel = this.getView().getModel("filterModel");
+
+                var aActivities = oModel.getProperty("/activities") || [];
+
+                var aClientes = [...new Set(
+                    aActivities.map(function (oActivity) {
+                        return oActivity.cliente;
+                    }).filter(Boolean)
+                )];
+
+                var aProyectos = [...new Set(
+                    aActivities.map(function (oActivity) {
+                        return oActivity.proyecto;
+                    }).filter(Boolean)
+                )];
+
+                oFilterModel.setProperty(
+                    "/clientes",
+                    ["Todos"].concat(aClientes)
+                );
+
+                oFilterModel.setProperty(
+                    "/proyectos",
+                    ["Todos"].concat(aProyectos)
+                );
+            },
+            
+            _crearCalendario: function () {
+
+                var oCalendar = this.byId("calendarGrid");
+                oCalendar.removeAllItems();
+
+                var iYear = this._iYear;
+                var iMonth = this._iMonth;
+
+                var oModel = this.getView().getModel("calendarModel");
+
+                var aActivities = this._obtenerActividadesFiltradas();
+
+                var oHoy = new Date();
+
+                var iDaysInMonth = new Date(
+                    iYear,
+                    iMonth + 1,
+                    0
+                ).getDate();
+
+                var iStartDay = (new Date(
+                    iYear,
+                    iMonth,
+                    1
+                ).getDay() + 6) % 7;
+
+                for (var i = 0; i < iStartDay; i++) {
+
+                    var oEmptyDay = new VBox({
                         height: "70px"
                     });
-                    oDay.addStyleClass("calendarDay");
-                    var oNumber = new Text({
-                        text: String(iDay)
-                    });
-                    oNumber.addStyleClass("dayNumber");
-                    oDay.addItem(oNumber);
+
+                    oEmptyDay.addStyleClass("calendarDay");
+                    oEmptyDay.addStyleClass("emptyDay");
+
+                    oCalendar.addItem(oEmptyDay);
+                }
+
+                for (let iDay = 1; iDay <= iDaysInMonth; iDay++) {
+
+                    let oFecha = new Date(iYear, iMonth, iDay);
 
                     let sDate =
                         iYear + "-" +
                         String(iMonth + 1).padStart(2, "0") + "-" +
                         String(iDay).padStart(2, "0");
 
-                    // Buscar actividades de la fecha.
+                    var oDay = new VBox({
+                        height: "70px"
+                    });
+
+                    oDay.addStyleClass("calendarDay");
+
+                    var oNumber = new Text({
+                        text: String(iDay)
+                    });
+
+                    oNumber.addStyleClass("dayNumber");
+                    oDay.addItem(oNumber);
+
                     var aDayActivities = aActivities.filter(
                         function (oActivity) {
                             return oActivity.fecha === sDate;
                         }
                     );
-                    if (aDayActivities.length > 0) {
-                        var nHours = aDayActivities.reduce(
-                            function (nTotal, oActivity) {
-                                return nTotal + Number(oActivity.horas || 0);
-                            },
-                            0
-                        );
+                    var nHours = aDayActivities.reduce(
+                        function (nTotal, oActivity) {
+                            return nTotal + Number(oActivity.horas || 0);
+                        },
+                        0
+                    );
 
-                        oDay.addStyleClass("completedDay");
-                        var oStatus = new Text({
-                            text: "●"
-                        });
-                        oStatus.addStyleClass("grandeCirculo");
-                        oStatus.addStyleClass("dayStatus");
-                        oDay.addItem(oStatus);
+                    var sEstado = this._obtenerEstadoDia(
+                        oFecha,
+                        nHours,
+                        oHoy
+                    );
+                    
+
+                    if (
+                        iDay === oHoy.getDate() &&
+                        iMonth === oHoy.getMonth() &&
+                        iYear === oHoy.getFullYear()
+                    ) {
+                        oDay.addStyleClass("currentDay");
+                    }
+                    var oStatus = new Text({
+                        text: "●"
+                    });
+
+                    oStatus.addStyleClass("grandeCirculo");
+                    oStatus.addStyleClass("dayStatus");
+
+                    if (sEstado === "completo") {
+
+                        oStatus.addStyleClass("statusComplete");
+
+                    } else if (sEstado === "incompleto") {
+
+                        oStatus.addStyleClass("statusIncomplete");
+
+                    } else {
+
+                        oStatus.addStyleClass("statusUnregistered");
+
+                    }
+
+                    oDay.addItem(oStatus);
+
+                    if (nHours > 0) {
+
                         var oHours = new Text({
-                            text: nHours + " h"
+                            text: Number(nHours.toFixed(2)) + " h"
                         });
+
                         oHours.addStyleClass("dayHours");
+
+                        if (nHours < 8) {
+                            oHours.addStyleClass("incomplete");
+                        }
+
                         oDay.addItem(oHours);
                     }
 
-                    // Marca visual de prueba del día 11.
-                    if (iDay === 11) {
-                        oDay.addStyleClass("currentDay");
-                    }
                     oDay.setTooltip(
-                        "Consultar actividades del " + iDay
+                        sDate + " - " +
+                        nHours + " horas - " +
+                        sEstado
                     );
+
                     oDay.addStyleClass("selectableDay");
+
                     oDay.attachBrowserEvent(
                         "click",
                         function () {
                             this._mostrarActividades(sDate);
                         }.bind(this)
                     );
+
                     oCalendar.addItem(oDay);
                 }
+
+                this._actualizarKpis();
             },
+
 
             _mostrarActividades: function (sDate) {
                 var oModel = this.getView().getModel("calendarModel");
-                var aActivities = oModel.getProperty("/activities") || [];
-                // Buscar las actividades de la fecha seleccionada.
+                var aActivities = this._obtenerActividadesFiltradas();
                 var aSelectedActivities = aActivities.filter(
                     function (oActivity) {
                         return oActivity.fecha === sDate;
@@ -185,8 +528,18 @@ sap.ui.define([
             },
 
             onExportExcel: function () {
-                var oModel = this.getView().getModel("calendarModel");
-                var aActivities = oModel.getProperty("/activities") || [];
+                var iYear = this._iYear;
+                var iMonth = this._iMonth;
+
+                var aActivities = this._obtenerActividadesFiltradas().filter(
+                    function (oActivity) {
+
+                        var sMonth = iYear + "-" +
+                            String(iMonth + 1).padStart(2, "0");
+
+                        return oActivity.fecha.substring(0, 7) === sMonth;
+                    }
+                );
                 if (aActivities.length === 0) {
                     sap.m.MessageToast.show("No hay actividades para exportar.");
                     return;
@@ -239,7 +592,14 @@ sap.ui.define([
                     },
 
                     dataSource: aExportData,
-                    fileName: "Actividades_Septiembre_2026"
+                    fileName: "Actividades_" +
+                        new Intl.DateTimeFormat("es-MX", {
+                            month: "long"
+                        }).format(new Date(this._iYear, this._iMonth, 1))
+                        .replace(/^./, function (letra) {
+                            return letra.toUpperCase();
+                        }) +
+                        "_" + this._iYear + ".xlsx"
                 };
 
                 var oSpreadsheet = new Spreadsheet(oSettings);
