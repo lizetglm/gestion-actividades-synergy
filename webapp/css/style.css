@@ -218,8 +218,23 @@
 .monthHeader{
     padding: 8px 20px 5px 20px;
 }
-.monthHeader .sapMBtn{
-    min-width: 150px;
+#btnMesAnterior .sapMBtnInner,
+#btnMesSiguiente .sapMBtnInner {
+    min-width: 2.25rem;
+}
+
+/* Indicadores de actividades del calendario */
+
+.calendarGrid .calendarDay .dayStatus.statusComplete {
+    color: #2b7c2b !important;
+}
+
+.calendarGrid .calendarDay .dayStatus.statusIncomplete {
+    color: #e9730c !important;
+}
+
+.calendarGrid .calendarDay .dayStatus.statusUnregistered {
+    color: #8996a3 !important;
 }
 
 /* EXCLUSIVAS USUARIOS Y PERFILES */
@@ -397,6 +412,11 @@
     margin-top: 18px;
     font-size: 11px;
     color: #2b7c2b;
+}
+.incomplete{
+    margin-top: 18px;
+    font-size: 11px;
+    color: #e9730c;
 }
 
 .userAdminPage, .mainLayout{

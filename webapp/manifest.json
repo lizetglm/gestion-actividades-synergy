@@ -33,8 +33,15 @@
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "2.0"
         }
+      },
+      "actividadesService": {
+        "uri": "/sap/opu/odata4/sap/zgl_sb_gestion/srvd/sap/zgl_sd_gestion/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
       }
-    }
+    } 
   },
   "sap.ui": {
     "technology": "UI5",
@@ -68,6 +75,7 @@
       "compact": true,
       "cozy": true
     },
+        
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
@@ -79,8 +87,19 @@
         "dataSource": "mainService",
         "preload": true,
         "settings": {}
+      },
+      "actividadesOData": {
+        "type": "sap.ui.model.odata.v4.ODataModel",
+        "dataSource": "actividadesService",
+        "preload": false,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true
+        }
       }
     },
+
     "resources": {
       "css": [
         {
