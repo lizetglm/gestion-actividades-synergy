@@ -51,134 +51,107 @@ sap.ui.define([
         },
 
         // --- CRUD OPERACIONES ---
+        _abrirDialogo: async function (oContext, sTitulo) {
+            if (!this._pDialog) {
+                this._pDialog = Fragment.load({
+                    id: this.getView().getId(),
+                    name: "ns.frontend.fragment.DialogCliente",
+                    controller: this
+                }).then((oDialog) => {
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                });
+            }
+            const oDialog = await this._pDialog;
+            this._oContextDialogo = oContext;
+            oDialog.setTitle(sTitulo);
+            oDialog.setBindingContext(oContext);
+            oDialog.open();
+        },
 
-        
+        onCerrarDialogCliente: async function () {
+            (await this._pDialog).close();
+        },
 
-        // 1. CREAR
+        // Se ejecuta al cerrar por cualquier vía (Cancelar, Guardar o ESC)
+        onAfterCloseDialogo: async function () {
+            const oModel = this.getView().getModel();
+            const oDialog = await this._pDialog;
+
+            // Descarta creaciones o ediciones no guardadas
+            if (oModel.hasPendingChanges("grupoDialogo")) {
+                oModel.resetChanges("grupoDialogo");
+            }
+            oDialog.setBindingContext(null);
+            Fragment.byId(this.getView().getId(), "inpNombre")?.setValueState("None");
+            this._oContextDialogo = null;
+        },
+
+        // Crear
         onAddCliente: function () {
-            var oListBinding = this.byId("tablaClientes").getBinding("items");
-            
-            // Creamos un contexto transitorio directo en OData v4
-            var oNewContext = oListBinding.create({
-                "Nombre": "",
-                "Telefono": "",
-                "Correo": "",
-                "Activo": "X"
-            }, true); // expand/transient
-
-            this._oActiveContext = oNewContext;
-            this._isEditMode = false;
-            this._abrirDialogoCliente(oNewContext);
+            const oListBinding = this.byId("tablaClientes").getBinding("items");
+            // Contexto transitorio, el POST se envía hasta el submitBatch
+            const oContext = oListBinding.create({ Activo: true }, true);
+            this._abrirDialogo(oContext, "Nuevo Cliente");
         },
 
-        // 2. EDITAR
+        // Editar
         onEditCliente: function (oEvent) {
-            var oContext = oEvent.getSource().getBindingContext();
-            this._oActiveContext = oContext;
-            this._isEditMode = true;
-            this._abrirDialogoCliente(oContext);
+            const oContext = oEvent.getSource().getBindingContext();
+            this._abrirDialogo(oContext, "Editar Cliente");
         },
 
-        // 3. GUARDAR
-        onGuardarCliente: function () {
-            var oModel = this.getView().getModel();
-            var oDialog = this.byId("dialogGestionarCliente");
+        // Guardar
+        onGuardarCliente: async function () {
+            const oModel = this.getView().getModel();
+            const oDialog = await this._pDialog;
+            const oContext = this._oContextDialogo;
+            const oInpNombre = Fragment.byId(this.getView().getId(), "inpNombre");
 
-            // Validar campos requeridos
-            var sNombre = this._oActiveContext.getProperty("Nombre");
-            if (!sNombre || sNombre.trim() === "") {
-                MessageToast.show("El nombre del cliente es obligatorio.");
+            const sNombre = (oContext.getProperty("Nombre") || "").trim();
+            if (!sNombre) {
+                oInpNombre?.setValueState("Error");
+                oInpNombre?.setValueStateText("El nombre es obligatorio");
                 return;
             }
+            oInpNombre?.setValueState("None");
 
             oDialog.setBusy(true);
+            try {
+                await oModel.submitBatch("grupoDialogo");
 
-            if (this._isEditMode) {
-                // Sincronizar cambios pendientes de actualización
-                oModel.submitBatch("$auto").then(function () {
-                    oDialog.setBusy(false);
-                    MessageToast.show("Cliente actualizado correctamente.");
-                    this.onCerrarDialogCliente();
-                }.bind(this)).catch(function (oError) {
-                    oDialog.setBusy(false);
-                    MessageBox.error("Error al actualizar cliente: " + oError.message);
-                }.bind(this));
-            } else {
-                // Confirmar la creación del contexto transitorio
-                this._oActiveContext.created().then(function () {
-                    oDialog.setBusy(false);
-                    MessageToast.show("Cliente creado exitosamente.");
-                    this.onCerrarDialogCliente();
-                }.bind(this)).catch(function (oError) {
-                    oDialog.setBusy(false);
-                    if (this._oActiveContext) {
-                        this._oActiveContext.delete("$auto");
-                    }
-                    MessageBox.error("Error al crear el cliente: " + oError.message);
-                }.bind(this));
-
-                // Disparar envío del batch
-                oModel.submitBatch("$auto");
+                if (oModel.hasPendingChanges("grupoDialogo")) {
+                    MessageBox.error("No se pudo guardar. Revisa los datos e intenta de nuevo.");
+                } else {
+                    MessageToast.show("Cliente guardado");
+                    oDialog.close();
+                }
+            } catch (oError) {
+                MessageBox.error(oError.message);
+            } finally {
+                oDialog.setBusy(false);
             }
         },
 
-        // 4. CANCELAR / CERRAR DIÁLOGO
-        onCerrarDialogCliente: function () {
-            var oModel = this.getView().getModel();
-            
-            // Si estábamos creando y cancelamos, eliminamos el contexto sin guardar
-            if (!this._isEditMode && this._oActiveContext && this._oActiveContext.isTransient()) {
-                this._oActiveContext.delete("$auto");
-            } else if (this._isEditMode && oModel.hasPendingChanges()) {
-                // Revertir cambios locales si cancelamos en modo edición
-                oModel.resetChanges();
-            }
 
-            this._oActiveContext = null;
-            this.byId("dialogGestionarCliente").close();
-        },
-
-        // 5. INACTIVAR / ELIMINAR
+        // borrado lógico 
         onInactivarCliente: function (oEvent) {
-            var oItem = oEvent.getSource();
-            var oContext = oItem.getBindingContext();
+            const oContext = oEvent.getSource().getBindingContext();
+            const sNombre = oContext.getProperty("Nombre");
 
-            MessageBox.confirm("¿Estás seguro de que deseas eliminar este cliente y sus datos asociados?", {
-                title: "Confirmar Eliminación",
-                icon: MessageBox.Icon.WARNING,
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        oContext.delete().then(function () {
-                            MessageToast.show("Cliente eliminado correctamente.");
-                        }).catch(function (oError) {
-                            MessageBox.error("Error al eliminar: " + oError.message);
-                        });
+            MessageBox.confirm(`¿Inactivar al cliente "${sNombre}"?`, {
+                onClose: async (sAccion) => {
+                    if (sAccion !== MessageBox.Action.OK) { return; }
+                    try {
+                        // "$auto" fuerza el envío inmediato, sin esperar el grupoDialogo
+                        await oContext.setProperty("Activo", false, "$auto");
+                        MessageToast.show("Cliente inactivado");
+                    } catch (oError) {
+                        MessageBox.error(oError.message);
                     }
                 }
             });
         },
-
-        // --- GESTIÓN DEL FRAGMENTO ---
-        _abrirDialogoCliente: function (oContext) {
-            var oView = this.getView();
-
-            if (!this._pDialog) {
-                this._pDialog = Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogCliente",
-                    controller: this
-                }).then(function (oDialog) {
-                    oView.addDependent(oDialog);
-                    return oDialog;
-                });
-            }
-
-            this._pDialog.then(function (oDialog) {
-                // Asignar directamente el Contexto OData v4 al Diálogo
-                oDialog.setBindingContext(oContext);
-                oDialog.open();
-            });
-        }
 
     });
 });

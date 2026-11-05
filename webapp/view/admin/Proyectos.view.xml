@@ -26,9 +26,9 @@
         <uxap:headerContent>
             <FlexBox wrap="Wrap">
                 <Avatar src="sap-icon://factory" backgroundColor="Random" displaySize="M" class="sapUiTinyMarginEnd"/>
-                <layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
+                <layout:VerticalLayout class="sapUiSmallMarginBeginEnd sapUiSmallMarginTopBottom">
                     <ObjectStatus title="{i18n>numTelefono}" text="{Telefono}"/>
-					<ObjectStatus title="{i18n>email}" text="{Correo}"/>
+					<ObjectStatus title="{i18n>email}" text="{Correo}" />
                 </layout:VerticalLayout>
             </FlexBox>
         </uxap:headerContent>
@@ -51,16 +51,13 @@
                                 </headerToolbar>
 
                                 <columns>
-                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="100px">
-                                        <Text text="{i18n>id}" />
-                                    </Column>
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                                         <Text text="{i18n>nameProject}" />
                                     </Column>
                                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                                         <Text text="{i18n>description}" />
                                     </Column>
-                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="100px">
+                                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline" width="4.5rem">
                                         <Text text="{i18n>estatus}" />
                                     </Column>
                                     <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
@@ -71,13 +68,12 @@
                                 <items>
                                     <ColumnListItem type="Navigation" press=".onSelectProyecto">
                                         <cells>
-                                            <Text text="{ProjectUuid}" />
                                             <Text text="{Nombre}" />
                                             <Text text="{Descripcion}" />
-                                            <ObjectStatus text="{= ${Activo} === 'X' ? 'Activo' : 'Inactivo' }" state="Information" />
+                                            <ObjectStatus text="{= ${Activo} === 'Yes' ? 'Activo' : 'Inactivo' }" state="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }" />
                                             <HBox justifyContent="End" gap="0.5rem">
-                                                <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditProyecto" />
-                                                <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarProyecto" />
+                                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditProyecto" />
+                                                <Button icon="sap-icon://delete" type="Transparent" tooltip="Inactivar" press=".onInactivarProyecto" />
                                             </HBox>
                                         </cells>
                                     </ColumnListItem>

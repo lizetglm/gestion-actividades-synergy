@@ -15,7 +15,7 @@
                     </Breadcrumbs>
                 </f:breadcrumbs>
                 <f:heading>
-                    <Title text="Gestión de Clientes" level="H1" />
+                    <Title text="Catálogo de Clientes" level="H1" />
                 </f:heading>
             </f:DynamicPageTitle>
         </f:title>
@@ -45,10 +45,10 @@
                 items="{
                     path: '/Clientes',
                     parameters: {$count: true},
-                    sorter: {
-                        path: 'Activo',
-                        descending: true
-                    }
+                    sorter: [
+                        { path: 'Activo', descending: true },
+                        { path: 'Nombre', descending: false }
+                    ]
                 }"
                 alternateRowColors="true"
                 class="sapUiMediumMarginBottom">
@@ -85,10 +85,10 @@
                             <Text text="{Nombre}" />
                             <Text text="{Telefono}" />
                             <Text text="{Correo}" />
-                            <ObjectStatus text="{= ${Activo} === 'X' ? 'Activo' : 'Inactivo' }" state="{= ${Activo} === 'X' ? 'Success' : 'Error' }" />
+                            <ObjectStatus text="{= ${Activo} === 'Yes' ? 'Activo' : 'Inactivo' }" state="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }" />
                             <HBox justifyContent="End" gap="0.5rem">
-                                <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditCliente" />
-                                <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarCliente" />
+                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditCliente" />
+                                <Button icon="sap-icon://delete" type="Transparent" tooltip="Inactivar" press=".onInactivarCliente" />
                             </HBox>
                         </cells>
                     </ColumnListItem>
