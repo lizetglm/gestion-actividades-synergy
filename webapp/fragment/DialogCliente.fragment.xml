@@ -6,8 +6,9 @@
     <Dialog 
         id="dialogGestionarCliente" 
         title="Datos del Cliente" 
-        contentWidth="450px">
-        
+        contentWidth="450px"
+        afterClose=".onAfterCloseDialogo"
+    >    
         <content>
             <form:SimpleForm 
                 editable="true"
@@ -17,10 +18,10 @@
                     <Input value="{Nombre}" placeholder="Ej. Omega Logistics" id="inpNombre" />
                     
                     <Label text="Teléfono" />
-                    <Input value="{Telefono}" placeholder="Ej. 4111234567" />
+                    <Input value="{Telefono}" placeholder="Ej. 4111234567" id="inpTelefono" />
 
                     <Label text="Correo" />
-                    <Input value="{Correo}" placeholder="correo@empresa.com" />
+                    <Input value="{Correo}" placeholder="correo@empresa.com" id="inpCorreo" />
                     
                     <Label text="Estatus (Activo)" />
                     <Switch 

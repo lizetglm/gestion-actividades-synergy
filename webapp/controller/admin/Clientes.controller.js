@@ -73,17 +73,31 @@ sap.ui.define([
             (await this._pDialog).close();
         },
 
-        // Se ejecuta al cerrar por cualquier vía (Cancelar, Guardar o ESC)
-        onAfterCloseDialogo: async function () {
+        _descartarCambios: function () {
             const oModel = this.getView().getModel();
-            const oDialog = await this._pDialog;
+            const oContext = this._oContextDialogo;
 
-            // Descarta creaciones o ediciones no guardadas
+            if (oContext && oContext.isTransient()) {
+                // Creación aún no guardada: se cancela y desaparece la fila fantasma
+                oContext.created()?.catch(() => {}); 
+                oContext.delete().catch(() => {});
+            }
             if (oModel.hasPendingChanges("grupoDialogo")) {
+                // Revierte ediciones pendientes de un cliente existente
                 oModel.resetChanges("grupoDialogo");
             }
+        },
+
+        // Se ejecuta al cerrar por cualquier vía (Cancelar, Guardar o ESC)
+        onAfterCloseDialogo: async function () {
+            const oDialog = await this._pDialog;
+
+            this._descartarCambios();
+
             oDialog.setBindingContext(null);
             Fragment.byId(this.getView().getId(), "inpNombre")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpTelefono")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpCorreo")?.setValueState("None");
             this._oContextDialogo = null;
         },
 
@@ -106,15 +120,37 @@ sap.ui.define([
             const oModel = this.getView().getModel();
             const oDialog = await this._pDialog;
             const oContext = this._oContextDialogo;
+
             const oInpNombre = Fragment.byId(this.getView().getId(), "inpNombre");
+            const oInpTelefono = Fragment.byId(this.getView().getId(), "inpTelefono");
+            const oInpCorreo = Fragment.byId(this.getView().getId(), "inpCorreo");
 
             const sNombre = (oContext.getProperty("Nombre") || "").trim();
+            const sTelefono = (oContext.getProperty("Telefono") || "").trim();
+            const sCorreo = (oContext.getProperty("Correo") || "").trim();
+
+            // Validaciones básicas
             if (!sNombre) {
                 oInpNombre?.setValueState("Error");
+                oInpNombre?.focus();
                 oInpNombre?.setValueStateText("El nombre es obligatorio");
                 return;
-            }
-            oInpNombre?.setValueState("None");
+            }oInpNombre?.setValueState("None");
+
+            if (!sTelefono) {
+                oInpTelefono?.setValueState("Error");
+                oInpTelefono?.focus();
+                oInpTelefono?.setValueStateText("El teléfono es obligatorio");
+                return;
+            }oInpTelefono?.setValueState("None");
+
+            if (!sCorreo) {
+                oInpCorreo?.setValueState("Error");
+                oInpCorreo?.focus();
+                oInpCorreo?.setValueStateText("El correo es obligatorio");
+                return;
+            }oInpCorreo?.setValueState("None");
+            
 
             oDialog.setBusy(true);
             try {
