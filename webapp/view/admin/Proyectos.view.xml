@@ -9,12 +9,12 @@
         <uxap:headerTitle>
             <uxap:ObjectPageDynamicHeaderTitle>
                 <uxap:expandedHeading>
-                    <Title text="Cliente: {mock>nombre}" wrapping="true"/>
+                    <Title text="Cliente: {Nombre}" wrapping="true"/>
                 </uxap:expandedHeading>
                 <uxap:snappedHeading>
                     <FlexBox fitContainer="true" alignItems="Center">
                         <Avatar src="sap-icon://factory" backgroundColor="Random" class="sapUiTinyMarginEnd"/>
-                        <Title text="Cliente: {mock>nombre}" wrapping="true" />
+                        <Title text="Cliente: {Nombre}" wrapping="true" />
                     </FlexBox>
                 </uxap:snappedHeading>
                 <uxap:actions>
@@ -27,8 +27,8 @@
             <FlexBox wrap="Wrap">
                 <Avatar src="sap-icon://factory" backgroundColor="Random" displaySize="M" class="sapUiTinyMarginEnd"/>
                 <layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
-                    <ObjectStatus title="{i18n>numTelefono}" text="1-844-726-7733"/>
-					<ObjectStatus title="{i18n>email}" text="email@address.com"/>
+                    <ObjectStatus title="{i18n>numTelefono}" text="{Telefono}"/>
+					<ObjectStatus title="{i18n>email}" text="{Correo}"/>
                 </layout:VerticalLayout>
             </FlexBox>
         </uxap:headerContent>
@@ -38,7 +38,10 @@
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
-                            <Table id="tablaProyectosDetalle" items="{mock>proyectos}" alternateRowColors="true">
+                            <Table id="tablaProyectosDetalle" 
+                                items="{_Proyectos}" 
+                                alternateRowColors="true"
+                            >
                                 <headerToolbar>
                                     <OverflowToolbar>
                                         <ToolbarSpacer />
@@ -68,10 +71,10 @@
                                 <items>
                                     <ColumnListItem type="Navigation" press=".onSelectProyecto">
                                         <cells>
-                                            <Text text="{mock>idProyecto}" />
-                                            <Text text="{mock>nombreProyecto}" />
-                                            <Text text="{mock>descripcion}" />
-                                            <ObjectStatus text="{mock>estatusProyecto}" state="Information" />
+                                            <Text text="{ProjectUuid}" />
+                                            <Text text="{Nombre}" />
+                                            <Text text="{Descripcion}" />
+                                            <ObjectStatus text="{= ${Activo} === 'X' ? 'Activo' : 'Inactivo' }" state="Information" />
                                             <HBox justifyContent="End" gap="0.5rem">
                                                 <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditProyecto" />
                                                 <Button icon="sap-icon://delete" type="Reject" tooltip="Inactivar" press=".onInactivarProyecto" />

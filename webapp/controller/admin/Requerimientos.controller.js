@@ -18,19 +18,23 @@ sap.ui.define([
         onInit: function () {
             this.getOwnerComponent().getRouter().getRoute("RouteRequerimientos").attachPatternMatched(this._onRouteMatched, this);
         },
+
         _onRouteMatched: function (oEvent) {
-            this._sClientIndex = oEvent.getParameter("arguments").clientIndex;
-            this._sProjectIndex = oEvent.getParameter("arguments").projectIndex;
+            this._sClientUuid = oEvent.getParameter("arguments").clientUuid;
+            this._sProjectUuid = oEvent.getParameter("arguments").projectUuid;
             
-            // Conectamos la vista al proyecto exacto (ej: /clientes/0/proyectos/1)
+            // Enlazamos la vista directamente al proyecto específico usando su UUID en OData V4
             this.getView().bindElement({
-                path: "/clientes/" + this._sClientIndex + "/proyectos/" + this._sProjectIndex,
-                model: "mock"
+                path: "/Proyectos(ProjectUuid=" + this._sProjectUuid + ")",
+                parameters: {
+                    $expand: "_Requerimientos,_Asignaciones"
+                }
             });
         },
+
         onCloseColumn: function () {
             this.getOwnerComponent().getRouter().navTo("RouteProyectos", {
-                clientIndex: this._sClientIndex
+                clientUuid: this._sClientUuid
             });
         },
 

@@ -21,10 +21,14 @@ sap.ui.define([
         },
 
         _onRouteMatched: function (oEvent) {
-            this._sClientIndex = oEvent.getParameter("arguments").clientIndex;
+            this._sClientUuid = oEvent.getParameter("arguments").clientUuid;
+            
+            // Enlazamos la vista al cliente usando su ruta de OData V4 por clave única
             this.getView().bindElement({
-                path: "/clientes/" + this._sClientIndex,
-                model: "mock"
+                path: "/Clientes(ClientUuid=" + this._sClientUuid + ")",
+                parameters: {
+                    $expand: "_Proyectos" // Expandimos la composición de proyectos del backend RAP
+                }
             });
         },
 
@@ -51,12 +55,13 @@ sap.ui.define([
 
         // navegacion a columna 3
         onSelectProyecto: function (oEvent) {
-            var sPath = oEvent.getSource().getBindingContext("mock").getPath();
-            var sProjIndex = sPath.split("/").pop(); 
+            var oItem = oEvent.getSource();
+            var oContext = oItem.getBindingContext();
+            var sProjectUuid = oContext.getProperty("ProjectUuid");
             
             this.getOwnerComponent().getRouter().navTo("RouteRequerimientos", {
-                clientIndex: this._sClientIndex,
-                projectIndex: sProjIndex
+                clientUuid: this._sClientUuid,
+                projectUuid: sProjectUuid
             });
         },
 
@@ -67,17 +72,22 @@ sap.ui.define([
 
         // CRUD ----------------------------------------------------
         onAddProyecto: function () {
-            this._bEsEdicion = false;
-            let oDatosNuevos = {
-                idProyecto: "", 
-                nombreProyecto: "", 
-                descripcion: "", 
-                fechaInicio: "",
-                fechaFin: "",
-                estatusProyecto: "En Progreso", 
-                requerimientos: []
-            };
-            this._abrirDialogoProyecto(oDatosNuevos);
+            // Obtenemos el contexto actual del cliente para crear un proyecto hijo mediante la asociación de composición
+            var oClientContext = this.getView().getBindingContext();
+            var oModel = this.getView().getModel();
+            
+            // Creamos la lista relacionada mediante la navegación de OData V4
+            var oListBinding = oModel.bindList("_Proyectos", oClientContext);
+            var oNewContext = oListBinding.create({
+                Nombre: "",
+                Descripcion: "",
+                FechaInicio: "",
+                FechaFin: "",
+                Activo: true
+            });
+            //this._abrirDialogoProyecto(oNewContext);
+
+            MessageToast.show("Nuevo proyecto listo para configurar.");
         },
 
         onEditProyecto: function (oEvent) {

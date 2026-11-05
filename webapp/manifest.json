@@ -16,22 +16,12 @@
       "toolsId": "be6f0b9d-8e77-4f22-9bd7-b0ab56d789ef"
     },
     "dataSources": {
-      "ZUI_DBVIEW_VAN": {
-        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_DBVIEW_VAN',Version='0001')/$value/",
-        "type": "ODataAnnotation",
-        "settings": {
-          "localUri": "localService/mainService/ZUI_DBVIEW_VAN.xml"
-        }
-      },
       "mainService": {
-        "uri": "/sap/opu/odata/sap/ZUI_DBVIEW/",
+        "uri": "/sap/opu/odata4/sap/zgl_sb_gestion/srvd/sap/zgl_sd_gestion/0001/",
         "type": "OData",
         "settings": {
-          "annotations": [
-            "ZUI_DBVIEW_VAN"
-          ],
-          "localUri": "localService/mainService/metadata.xml",
-          "odataVersion": "2.0"
+          "odataVersion": "4.0",
+          "localUri": "localService/mainService/metadata.xml"
         }
       },
       "actividadesService": {
@@ -86,7 +76,11 @@
       "": {
         "dataSource": "mainService",
         "preload": true,
-        "settings": {}
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
       },
       "actividadesOData": {
         "type": "sap.ui.model.odata.v4.ODataModel",
@@ -172,16 +166,16 @@
       "pattern": "clientesProyectos",
       "target": ["TargetClientesProyectos", "TargetClientesMaster"]
     },
-    {
-      "name": "RouteProyectos",
-      "pattern": "clientesProyectos/cliente/{clientIndex}",
-      "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle"]
-    },
-    {
-      "name": "RouteRequerimientos",
-      "pattern": "clientesProyectos/cliente/{clientIndex}/proyecto/{projectIndex}",
-      "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle", "TargetRequerimientosDetalle"]
-    },
+        {
+          "name": "RouteProyectos",
+          "pattern": "clientesProyectos/cliente/{clientUuid}",
+          "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle"]
+        },
+        {
+          "name": "RouteRequerimientos",
+          "pattern": "clientesProyectos/cliente/{clientUuid}/proyecto/{projectUuid}",
+          "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle", "TargetRequerimientosDetalle"]
+        },
         {
           "name": "RoutePerfiles",
           "pattern": "perfiles",
@@ -241,33 +235,33 @@
           "viewId": "PanelCumplimiento",
           "viewName": "admin.PanelCumplimiento"
         },
-      "TargetClientesProyectos": {
-        "viewType": "XML",
-        "transition": "slide",
-        "viewId": "ClientesProyectos",
-        "viewName": "admin.ClientesProyectos" 
-      },
-      "TargetClientesMaster": {
-        "parent": "TargetClientesProyectos",
-        "controlId": "fcl",
-        "controlAggregation": "beginColumnPages",
-        "viewId": "Clientes",
-        "viewName": "admin.Clientes" 
-      },
-      "TargetProyectosDetalle": {
-        "parent": "TargetClientesProyectos",
-        "controlId": "fcl",
-        "controlAggregation": "midColumnPages",
-        "viewId": "Proyectos",
-        "viewName": "admin.Proyectos" 
-      },
-      "TargetRequerimientosDetalle": {
-        "parent": "TargetClientesProyectos",
-        "controlId": "fcl",
-        "controlAggregation": "endColumnPages",
-        "viewId": "Requerimientos",
-        "viewName": "admin.Requerimientos" 
-      },
+        "TargetClientesProyectos": {
+          "viewType": "XML",
+          "transition": "slide",
+          "viewId": "ClientesProyectos",
+          "viewName": "admin.ClientesProyectos" 
+        },
+        "TargetClientesMaster": {
+          "parent": "TargetClientesProyectos",
+          "controlId": "fcl",
+          "controlAggregation": "beginColumnPages",
+          "viewId": "Clientes",
+          "viewName": "admin.Clientes" 
+        },
+        "TargetProyectosDetalle": {
+          "parent": "TargetClientesProyectos",
+          "controlId": "fcl",
+          "controlAggregation": "midColumnPages",
+          "viewId": "Proyectos",
+          "viewName": "admin.Proyectos" 
+        },
+        "TargetRequerimientosDetalle": {
+          "parent": "TargetClientesProyectos",
+          "controlId": "fcl",
+          "controlAggregation": "endColumnPages",
+          "viewId": "Requerimientos",
+          "viewName": "admin.Requerimientos" 
+        },
         "TargetPerfiles": {
           "transition": "slide",
           "clearControlAggregation": false,
@@ -291,3 +285,5 @@
     }
   }
 }
+
+

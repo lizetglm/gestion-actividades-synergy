@@ -12,29 +12,29 @@
             <form:SimpleForm 
                 editable="true" 
                 layout="ResponsiveGridLayout"
-                labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12"
-                emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
-                columnsXL="1" columnsL="1" columnsM="1">
-                
+                labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
                 <form:content>
-                    <Label text="ID Cliente" required="true" />
-                    <Input value="{modelo>idCliente}" placeholder="Ej. CLI-006" />
+                    <Label text="Nombre del Cliente" required="true" />
+                    <Input value="{Nombre}" placeholder="Ej. Omega Logistics" />
                     
-                    <Label text="Nombre" required="true" />
-                    <Input value="{modelo>nombre}" placeholder="Ej. Omega Logistics" />
+                    <Label text="Teléfono" />
+                    <Input value="{Telefono}" placeholder="Ej. 4111234567" />
+
+                    <Label text="Correo" />
+                    <Input value="{Correo}" placeholder="correo@empresa.com" />
                     
-                    <Label text="Estatus" />
-                    <Select selectedKey="{modelo>estatus}">
-                        <core:Item key="Activo" text="Activo" />
-                        <core:Item key="Inactivo" text="Inactivo" />
-                        <core:Item key="Prospecto" text="Prospecto" />
-                    </Select>
+                    <Label text="Estatus (Activo)" />
+                    <Switch 
+                        state="{= ${Activo} === 'X' }" 
+                        change=".onStateChange"
+                        customTextOn="Sí" 
+                        customTextOff="No"/>
                 </form:content>
             </form:SimpleForm>
         </content>
         
         <buttons>
-            <Button text="Guardar" type="Emphasized" press=".onGuardarClienteMock" />
+            <Button text="Guardar" type="Emphasized" press=".onGuardarCliente" />
             <Button text="Cancelar" type="Transparent" press=".onCerrarDialogCliente" />
         </buttons>
     </Dialog>

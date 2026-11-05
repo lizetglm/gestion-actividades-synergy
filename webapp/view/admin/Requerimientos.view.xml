@@ -11,7 +11,7 @@
         <uxap:headerTitle>
             <uxap:ObjectPageDynamicHeaderTitle>
                 <uxap:expandedHeading>
-                    <Title text="Proyecto: {mock>nombreProyecto}" wrapping="true"/>
+                    <Title text="Proyecto: {Nombre}" wrapping="true"/>
                 </uxap:expandedHeading>
                 <uxap:snappedHeading>
                     <Title text="{mock>nombreProyecto}" wrapping="true" />
@@ -25,8 +25,8 @@
         <uxap:headerContent>
             <layout:VerticalLayout class="sapUiSmallMarginBeginEnd">
                 <ObjectStatus title="ID Proyecto" text="{mock>idProyecto}"/>
-                <ObjectStatus title="Fechas" text="{mock>fechaInicio} al {mock>fechaFin}"/>
-                <ObjectStatus title="Estatus" text="{mock>estatusProyecto}" state="Information"/>
+                <ObjectStatus title="Fechas" text="{FechaInicio} al {FechaFin}"/>
+                <ObjectStatus title="Estatus" text="{Activo}" state="Information"/>
             </layout:VerticalLayout>
         </uxap:headerContent>
 
@@ -36,7 +36,10 @@
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
-                            <Table id="tablaRequerimientos" items="{mock>requerimientos}" alternateRowColors="true">
+                            <Table id="tablaRequerimientos" 
+                                items="{_Requerimientos}" 
+                                alternateRowColors="true"
+                            >
                                 <headerToolbar>
                                     <OverflowToolbar>
                                         <ToolbarSpacer />
@@ -58,8 +61,8 @@
                                 <items>
                                     <ColumnListItem>
                                         <cells>
-                                            <Text text="{mock>idRequerimiento}" />
-                                            <Text text="{mock>descripcion}" />
+                                            <Text text="{ReqUuid}" />
+                                            <Text text="{Descripcion}" />
                                             <HBox justifyContent="End" gap="0.5rem">
                                                 <Button icon="sap-icon://edit" type="Attention" tooltip="Editar" press=".onEditRequerimiento" />
                                                 <Button icon="sap-icon://delete" type="Reject" tooltip="Eliminar" press=".onDeleteRequerimiento" />
@@ -78,7 +81,10 @@
                 <uxap:subSections>
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
-                            <Table id="tablaConsultoresDetalle" items="{mock>consultores}" alternateRowColors="true">
+                            <Table id="tablaConsultoresDetalle" 
+                                items="{_Asignaciones}" 
+                                alternateRowColors="true"
+                            >
                                 <headerToolbar>
                                     <OverflowToolbar>
                                         <ToolbarSpacer />
@@ -105,7 +111,7 @@
                                     <ColumnListItem id="colListItemConsultores">
                                         <cells>
                                             <Text text="{mock>nombreConsultor}" />
-                                            <Text text="{mock>rol}" />
+                                            <Text text="{Rol}" />
                                             <HBox justifyContent="End">
                                                 <Button icon="sap-icon://decline" type="Reject" tooltip="Remover" press=".onInactivarConsultor" />
                                             </HBox>
