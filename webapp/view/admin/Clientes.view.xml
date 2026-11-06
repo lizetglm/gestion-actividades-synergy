@@ -25,11 +25,11 @@
                 <layout:HorizontalLayout allowWrapping="true">
                     <layout:VerticalLayout class="sapUiMediumMarginEnd">
                         <Label text="Buscar Cliente" />
-                        <SearchField placeholder="Nombre del cliente..." width="300px" />
+                        <SearchField id="sfCliente" placeholder="Nombre o correo..." width="300px" search=".onFiltrar" />
                     </layout:VerticalLayout>
                     <layout:VerticalLayout>
                         <Label text="Estatus" />
-                        <Select width="200px" selectedKey="Todos">
+                        <Select id="selEstatus" width="200px" selectedKey="Todos" change=".onFiltrar">
                             <core:Item key="Todos" text="Todos" />
                             <core:Item key="Activo" text="Activos" />
                             <core:Item key="Inactivo" text="Inactivos" />
@@ -47,11 +47,11 @@
                     parameters: {$count: true},
                     sorter: [
                         { path: 'Activo', descending: true },
-                        { path: 'Nombre', descending: false }
+                        { path: 'Nombre' }
                     ]
                 }"
                 alternateRowColors="true"
-                class="sapUiMediumMarginBottom">
+                class="sapUiMediumMarginBottom tablaFondoColor">
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title text="Clientes" level="H2" />
@@ -71,7 +71,7 @@
                     <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
                         <Text text="Correo" />
                     </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+                    <Column minScreenWidth="Tablet" width="4rem" demandPopin="true" popinDisplay="Inline">
                         <Text text="Estatus" />
                     </Column>
                     <Column width="100px" hAlign="End" minScreenWidth="Tablet" demandPopin="true">
@@ -80,15 +80,28 @@
                 </columns>
 
                 <items>
-                    <ColumnListItem type="Navigation" press=".onSelectCliente">
+                    <ColumnListItem type="Navigation" 
+                        press=".onSelectCliente"
+                        highlight="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }"
+                    >
+                        <customData>
+                            <core:CustomData key="inactivo"
+                                value="{= ${Activo} === true ? 'false' : 'true' }"
+                                writeToDom="true" />
+                        </customData>
                         <cells>
                             <Text text="{Nombre}" />
                             <Text text="{Telefono}" />
                             <Text text="{Correo}" />
                             <ObjectStatus text="{= ${Activo} === 'Yes' ? 'Activo' : 'Inactivo' }" state="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }" />
                             <HBox justifyContent="End" gap="0.5rem">
-                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditCliente" />
-                                <Button icon="sap-icon://delete" type="Transparent" tooltip="Inactivar" press=".onInactivarCliente" />
+                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditCliente" 
+                                visible="{= ${Activo} === true ? true : false }" 
+                                />
+                                <Button icon="sap-icon://decline" type="Transparent" tooltip="Inactivar"
+                                        visible="{= ${Activo} === true ? true : false }" press=".onInactivarCliente" />
+                                <Button icon="sap-icon://accept" type="Transparent" tooltip="Activar"
+                                        visible="{= ${Activo} === true ? false : true }" press=".onActivarCliente" />
                             </HBox>
                         </cells>
                     </ColumnListItem>

@@ -71,122 +71,137 @@ sap.ui.define([
 
 
         // CRUD ----------------------------------------------------
-        onAddProyecto: function () {
-            // Obtenemos el contexto actual del cliente para crear un proyecto hijo mediante la asociación de composición
-            var oClientContext = this.getView().getBindingContext();
-            var oModel = this.getView().getModel();
-            
-            // Creamos la lista relacionada mediante la navegación de OData V4
-            var oListBinding = oModel.bindList("_Proyectos", oClientContext);
-            var oNewContext = oListBinding.create({
-                Nombre: "",
-                Descripcion: "",
-                FechaInicio: "",
-                FechaFin: "",
-                Activo: true
-            });
-            //this._abrirDialogoProyecto(oNewContext);
-
-            MessageToast.show("Nuevo proyecto listo para configurar.");
-        },
-
-        onEditProyecto: function (oEvent) {
-            this._bEsEdicion = true;
-            let oItem = oEvent.getSource();
-            this._sEditPath = oItem.getBindingContext("mock").getPath();
-            
-            // Clonamos los datos para no afectar la tabla antes de guardar
-            let oDatosActuales = JSON.parse(JSON.stringify(oItem.getBindingContext("mock").getObject()));
-            
-            // Mapeo temporal para que coincida con tu Fragment de DialogProyecto
-            oDatosActuales.nombre = oDatosActuales.nombreProyecto;
-            oDatosActuales.estatus = oDatosActuales.estatusProyecto;
-
-            this._abrirDialogoProyecto(oDatosActuales);
-        },
-
-        _abrirDialogoProyecto: function (oDatos) {
-            let oView = this.getView();
-            let oDialogModel = new JSONModel(oDatos);
-
-            if (!this._oDialogProyecto) {
-                Fragment.load({
-                    id: oView.getId(),
+        _abrirDialogo: async function (oContext, sTitulo) {
+            if (!this._pDialog) {
+                this._pDialog = Fragment.load({
+                    id: this.getView().getId(),
                     name: "ns.frontend.fragment.DialogProyecto",
                     controller: this
-                }).then(function (oDialog) {
-                    this._oDialogProyecto = oDialog;
-                    oView.addDependent(this._oDialogProyecto);
-                    this._oDialogProyecto.setModel(oDialogModel, "nuevoReq");
-                    this._oDialogProyecto.open();
-                }.bind(this));
-            } else {
-                this._oDialogProyecto.setModel(oDialogModel, "nuevoReq");
-                this._oDialogProyecto.open();
+                }).then((oDialog) => {
+                    oDialog.setBindingContext(null);
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                });
+            }
+            const oDialog = await this._pDialog;
+            this._oContextDialogo = oContext;
+            oDialog.setTitle(sTitulo);
+            oDialog.setBindingContext(oContext);
+            oDialog.open();
+        },
+
+        onCerrarDialogProyecto: async function () {
+            (await this._pDialog).close();
+        },
+
+        _descartarCambios: function () {
+            const oModel = this.getView().getModel();
+            const oContext = this._oContextDialogo;
+
+            if (oContext && oContext.isTransient()) {
+                oContext.created()?.catch(() => {}); 
+                oContext.delete().catch(() => {});
+            }
+            if (oModel.hasPendingChanges("grupDialogProyecto")) {
+                oModel.resetChanges("grupDialogProyecto");
             }
         },
 
-        onCerrarDialogProyecto: function () {
-            if (this._oDialogProyecto) {
-                this._oDialogProyecto.close();
+        onAfterCloseDialogo: async function () {
+            const oDialog = await this._pDialog;
+
+            this._descartarCambios();
+
+            oDialog.setBindingContext(null);
+            Fragment.byId(this.getView().getId(), "inpNombre")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpTelefono")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpCorreo")?.setValueState("None");
+            this._oContextDialogo = null;
+        },
+
+
+        // Crear
+        onAddProyecto: function () {
+            const oListBinding = this.byId("tablaProyectosDetalle").getBinding("items");
+    
+            const oContext = oListBinding.create({ Activo: true }, true);
+            this._abrirDialogo(oContext, "Nuevo Proyecto");
+        },
+
+        // Editar
+        onEditProyecto: function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            this._abrirDialogo(oContext, "Editar Proyecto");
+        },
+
+        // Guardar
+        onGuardarProyecto: async function () {
+            const oModel = this.getView().getModel();
+            const oDialog = await this._pDialog;
+            const oContext = this._oContextDialogo;
+
+            const oInpNombre = Fragment.byId(this.getView().getId(), "inpNombre");
+            const oInpDescripcion = Fragment.byId(this.getView().getId(), "inpDescripcion");
+            const oInpFechaInicio = Fragment.byId(this.getView().getId(), "inpFechaInicio");
+            const oInpFechaFin = Fragment.byId(this.getView().getId(), "inpFechaFin");
+
+            const sNombre = (oContext.getProperty("Nombre") || "").trim();
+            const sDescripcion = (oContext.getProperty("Descripcion") || "").trim();
+            const sFechaInicio = oContext.getProperty("FechaInicio");
+            const sFechaFin = oContext.getProperty("FechaFin");
+
+            // Validaciones básicas
+            if (!sNombre) {
+                oInpNombre?.setValueState("Error");
+                oInpNombre?.focus();
+                oInpNombre?.setValueStateText("El nombre es obligatorio");
+                return;
+            }oInpNombre?.setValueState("None");
+
+            if (!sDescripcion) {
+                oInpDescripcion?.setValueState("Error");
+                oInpDescripcion?.focus();
+                oInpDescripcion?.setValueStateText("La descripción es obligatoria");
+                return;
+            }oInpDescripcion?.setValueState("None");
+
+            if (!sFechaInicio) {
+                oInpFechaInicio?.setValueState("Error");
+                oInpFechaInicio?.focus();
+                oInpFechaInicio?.setValueStateText("La fecha de inicio es obligatoria");
+                return;
+            }oInpFechaInicio?.setValueState("None");
+
+            if (!sFechaFin) {
+                oInpFechaFin?.setValueState("Error");
+                oInpFechaFin?.focus();
+                oInpFechaFin?.setValueStateText("La fecha de fin es obligatoria");
+                return;
+            }oInpFechaFin?.setValueState("None");
+            
+            oDialog.setBusy(true);
+            try {
+                await oModel.submitBatch("grupoDialogo");
+
+                if (oModel.hasPendingChanges("grupoDialogo")) {
+                    MessageBox.error("No se pudo guardar. Revisa los datos e intenta de nuevo.");
+                } else {
+                    MessageToast.show("Proyecto guardado");
+                    oDialog.close();
+                    this.getView().getElementBinding().refresh();
+                }
+            } catch (oError) {
+                MessageBox.error(oError.message);
+            } finally {
+                oDialog.setBusy(false);
             }
         },
 
-        onGuardarProyectoMock: function () {
-            let oModeloDialog = this._oDialogProyecto.getModel("nuevoReq").getData();
-            let oModelMain = this.getView().getModel("mock");
-
-            // Mapeo inverso de regreso a la estructura JSON principal
-            oModeloDialog.nombreProyecto = oModeloDialog.nombre;
-            oModeloDialog.estatusProyecto = oModeloDialog.estatus;
-
-            if (this._bEsEdicion) {
-                oModelMain.setProperty(this._sEditPath, oModeloDialog);
-                MessageToast.show("Proyecto actualizado correctamente.");
-            } else {
-                let sPathProyectos = "/clientes/" + this._sClientIndex + "/proyectos";
-                let aProyectos = oModelMain.getProperty(sPathProyectos) || [];
-                aProyectos.push(oModeloDialog);
-                oModelMain.setProperty(sPathProyectos, aProyectos);
-                
-                // Actualiza el contador de proyectos del cliente
-                let iTotal = aProyectos.length;
-                oModelMain.setProperty("/clientes/" + this._sClientIndex + "/totalProyectos", iTotal);
-                
-                MessageToast.show("Nuevo proyecto creado exitosamente.");
-            }
-
-            this.onCerrarDialogProyecto();
-        },
-
+        // Eliminar
         onInactivarProyecto: function (oEvent) {
-            let oContext = oEvent.getSource().getBindingContext("mock");
-            let sPath = oContext.getPath();
-            let sProyecto = oContext.getProperty("nombreProyecto");
-
-            MessageBox.confirm("¿Estás seguro de inactivar el proyecto " + sProyecto + "?", {
-                title: "Confirmar Inactivación",
-                icon: MessageBox.Icon.WARNING,
-                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        let oModel = this.getView().getModel("mock");
-                        let aPathParts = sPath.split("/");
-                        let iIndexProyecto = parseInt(aPathParts.pop(), 10); // Índice del proyecto
-                        aPathParts.pop(); // Quita 'proyectos'
-                        let sPathPadre = aPathParts.join("/") + "/proyectos"; 
-
-                        let aProyectos = oModel.getProperty(sPathPadre);
-                        aProyectos.splice(iIndexProyecto, 1);
-                        oModel.setProperty(sPathPadre, aProyectos);
-                        
-                        // Actualiza el contador
-                        oModel.setProperty("/clientes/" + this._sClientIndex + "/totalProyectos", aProyectos.length);
-                        
-                        MessageToast.show("Proyecto removido exitosamente.");
-                    }
-                }.bind(this)
-            });
+            
         }
+
+
 	});
 });

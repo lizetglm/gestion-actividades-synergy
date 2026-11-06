@@ -24,9 +24,11 @@
         </uxap:headerTitle>
 
         <uxap:headerContent>
-            <FlexBox wrap="Wrap">
+            <FlexBox wrap="Wrap" alignItems="Center">
                 <Avatar src="sap-icon://factory" backgroundColor="Random" displaySize="M" class="sapUiTinyMarginEnd"/>
-                <layout:VerticalLayout class="sapUiSmallMarginBeginEnd sapUiSmallMarginTopBottom">
+                <layout:VerticalLayout class="sapUiSmallMarginBeginEnd ">
+                    <ObjectStatus title="{i18n>estatus}" text="{= ${Activo} === 'Yes' ? 'Activo' : 'Inactivo' }"
+                    state="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }" />
                     <ObjectStatus title="{i18n>numTelefono}" text="{Telefono}"/>
 					<ObjectStatus title="{i18n>email}" text="{Correo}" />
                 </layout:VerticalLayout>
@@ -39,7 +41,12 @@
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table id="tablaProyectosDetalle" 
-                                items="{_Proyectos}" 
+                                items="{
+                                    path: '_Proyectos',
+                                    sorter: [
+                                        { path: 'Nombre' }
+                                    ]
+                                }" 
                                 alternateRowColors="true"
                             >
                                 <headerToolbar>

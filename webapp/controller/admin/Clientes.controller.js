@@ -6,10 +6,12 @@ sap.ui.define([
     "sap/m/MessageBox",
     "sap/ui/export/Spreadsheet", 
     "sap/ui/export/library",
-    "ns/frontend/util/ExportHelper"
+    "ns/frontend/util/ExportHelper",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
 ], function (
     Controller, Fragment, JSONModel, MessageToast, MessageBox, 
-    Spreadsheet, exportLibrary, ExportHelper
+    Spreadsheet, exportLibrary, ExportHelper, Filter, FilterOperator
 ) {
     "use strict";
     const EdmType = exportLibrary.EdmType;
@@ -48,6 +50,45 @@ sap.ui.define([
 
             let oSheet = new Spreadsheet(oSettings);
             oSheet.build().finally(() => oSheet.destroy());
+        },
+
+        onFiltrar: function () {
+            const sTexto = this.byId("sfCliente").getValue().trim();
+            const sEstatus = this.byId("selEstatus").getSelectedKey();
+            const aFiltros = [];
+
+            if (sTexto) {
+                aFiltros.push(new Filter({
+                    filters: [
+                        new Filter({ path: "Nombre", operator: FilterOperator.Contains, value1: sTexto, caseSensitive: false }),
+                        new Filter({ path: "Correo", operator: FilterOperator.Contains, value1: sTexto, caseSensitive: false })
+                    ],
+                    and: false
+                }));
+            }
+            if (sEstatus !== "Todos") {
+                aFiltros.push(new Filter("Activo", FilterOperator.EQ, sEstatus === "Activo"));
+            }
+            this.byId("tablaClientes").getBinding("items").filter(aFiltros);
+        },
+
+        _getNamespace: async function () {
+            if (!this._sNS) {
+                const sContainer = await this.getView().getModel().getMetaModel()
+                    .requestObject("/$EntityContainer");
+                // "com.sap.gateway.srvd.xxx.v0001.Container" -> sin ".Container"
+                this._sNS = sContainer.substring(0, sContainer.lastIndexOf("."));
+            }
+            return this._sNS;
+        },
+
+        _ejecutarAccion: async function (oContext, sAccion) {
+            const oModel = this.getView().getModel();
+            const sNS = await this._getNamespace();
+            sap.ui.getCore().getMessageManager().removeAllMessages();
+            const oOperacion = oModel.bindContext(`${sNS}.${sAccion}(...)`, oContext,
+                { $$inheritExpandSelect: true });
+            await oOperacion.invoke("$auto");
         },
 
         // --- CRUD OPERACIONES ---
@@ -154,39 +195,75 @@ sap.ui.define([
 
             oDialog.setBusy(true);
             try {
+                sap.ui.getCore().getMessageManager().removeAllMessages();
                 await oModel.submitBatch("grupoDialogo");
 
                 if (oModel.hasPendingChanges("grupoDialogo")) {
-                    MessageBox.error("No se pudo guardar. Revisa los datos e intenta de nuevo.");
+                    this._mostrarErrorBackend("No se pudo guardar. Revisa los datos e intenta de nuevo.");
                 } else {
                     MessageToast.show("Cliente guardado");
                     oDialog.close();
+                    this.byId("tablaClientes").getBinding("items").refresh();
                 }
             } catch (oError) {
-                MessageBox.error(oError.message);
+                this._mostrarErrorBackend(oError.message);
             } finally {
                 oDialog.setBusy(false);
-            }
+}
         },
 
 
         // borrado lógico 
+        // onInactivarCliente: function (oEvent) {
+        //     const oContext = oEvent.getSource().getBindingContext();
+        //     const sNombre = oContext.getProperty("Nombre");
+
+        //     MessageBox.confirm(`¿Inactivar al cliente "${sNombre}"?`, {
+        //         onClose: async (sAccion) => {
+        //             if (sAccion !== MessageBox.Action.OK) { return; }
+        //             try {
+        //                 // "$auto" fuerza el envío inmediato, sin esperar el grupoDialogo
+        //                 await oContext.setProperty("Activo", false, "$auto");
+        //                 MessageToast.show("Cliente inactivado");
+        //                 this.byId("tablaClientes").getBinding("items").refresh();
+        //             } catch (oError) {
+        //                 MessageBox.error(oError.message);
+        //             }
+        //         }
+        //     });
+        // },
+
         onInactivarCliente: function (oEvent) {
             const oContext = oEvent.getSource().getBindingContext();
-            const sNombre = oContext.getProperty("Nombre");
-
-            MessageBox.confirm(`¿Inactivar al cliente "${sNombre}"?`, {
+            MessageBox.confirm(`¿Inactivar al cliente "${oContext.getProperty("Nombre")}"?`, {
                 onClose: async (sAccion) => {
                     if (sAccion !== MessageBox.Action.OK) { return; }
                     try {
-                        // "$auto" fuerza el envío inmediato, sin esperar el grupoDialogo
-                        await oContext.setProperty("Activo", false, "$auto");
+                        await this._ejecutarAccion(oContext, "inactivar");
                         MessageToast.show("Cliente inactivado");
                     } catch (oError) {
-                        MessageBox.error(oError.message);
+                        this._mostrarErrorBackend(oError.message);
                     }
                 }
             });
+        },
+
+        onActivarCliente: async function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            try {
+                await this._ejecutarAccion(oContext, "activar");
+                MessageToast.show("Cliente activado");
+            } catch (oError) {
+                this._mostrarErrorBackend(oError.message);
+            }
+        },
+
+        // Muestra los mensajes de validación que devuelve RAP
+        _mostrarErrorBackend: function (sRespaldo) {
+            const aErrores = sap.ui.getCore().getMessageManager().getMessageModel().getData()
+                .filter((oMsg) => oMsg.getType() === "Error")
+                .map((oMsg) => oMsg.getMessage());
+            MessageBox.error(aErrores.length ? [...new Set(aErrores)].join("\n") : sRespaldo);
         },
 
     });

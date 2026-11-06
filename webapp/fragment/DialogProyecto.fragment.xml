@@ -4,8 +4,9 @@
     xmlns:form="sap.ui.layout.form">
     
     <Dialog id="idProyectoDialog" 
-        title="Nuevo/Editar Proyecto" 
-        contentWidth="500px">    
+        contentWidth="500px"
+        afterClose=".onAfterCloseDialogo"
+    >    
         <content>
             <form:SimpleForm 
                 editable="true" 
@@ -13,22 +14,22 @@
                 labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
                 <form:content>
                     <Label text="Nombre del Proyecto" required="true" />
-                    <Input value="{nuevoReq>Nombre}" placeholder="Ej. Implementación SAP BTP" />
+                    <Input value="{Nombre}" placeholder="Ej. Implementación SAP BTP" id="inpNombre"/>
                     
                     <Label text="Descripción" required="true" />
-                    <TextArea value="{nuevoReq>Descripcion}" placeholder="Detalles del proyecto..." rows="4" />
+                    <TextArea value="{Descripcion}" placeholder="Detalles del proyecto..." rows="4" id="inpDescripcion"/>
 
                     <Label text="Fecha Inicio" />
-                    <DatePicker value="{nuevoReq>FechaInicio}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" />
+                    <DatePicker value="{FechaInicio}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" id="inpFechaInicio"/>
                     
                     <Label text="Fecha Fin" />
-                    <DatePicker value="{nuevoReq>FechaFin}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" />
+                    <DatePicker value="{FechaFin}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" id="inpFechaFin"/>
                 </form:content>
             </form:SimpleForm>
         </content>
         
         <buttons>
-            <Button text="Guardar" type="Emphasized" press=".onGuardarProyectoMock" />
+            <Button text="Guardar" type="Emphasized" press=".onGuardarProyecto" />
             <Button text="Cancelar" type="Transparent" press=".onCerrarDialogProyecto" />
         </buttons>
     </Dialog>
