@@ -19,10 +19,10 @@
                     <Label text="Descripción" required="true" />
                     <TextArea value="{Descripcion}" placeholder="Detalles del proyecto..." rows="4" id="inpDescripcion"/>
 
-                    <Label text="Fecha Inicio" />
+                    <Label text="Fecha Inicio" required="true" />
                     <DatePicker value="{FechaInicio}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" id="inpFechaInicio"/>
                     
-                    <Label text="Fecha Fin" />
+                    <Label text="Fecha Fin" required="true" />
                     <DatePicker value="{FechaFin}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" id="inpFechaFin"/>
                 </form:content>
             </form:SimpleForm>

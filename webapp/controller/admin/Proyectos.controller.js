@@ -1,23 +1,25 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
     "sap/ui/core/Fragment",
     "sap/ui/export/Spreadsheet", 
     "sap/ui/export/library",
-    "ns/frontend/util/ExportHelper"
+    "ns/frontend/util/ExportHelper",
+    "ns/frontend/util/RapHelper"
 ], function (
-    Controller, JSONModel, MessageToast, MessageBox, Fragment, 
-    Spreadsheet, exportLibrary, ExportHelper
+    Controller, MessageToast, MessageBox, Fragment, 
+    Spreadsheet, exportLibrary, ExportHelper, RapHelper
 ) {
     "use strict";
     const EdmType = exportLibrary.EdmType;
+    const IDS_DIALOGO = ["inpNombre", "inpDescripcion", "inpFechaInicio", "inpFechaFin"];
 
 	return Controller.extend("ns.frontend.controller.admin.Proyectos", {
         onInit: function () {
-            this.getOwnerComponent().getRouter().getRoute("RouteProyectos").attachPatternMatched(this._onRouteMatched, this);
-            this.getOwnerComponent().getRouter().getRoute("RouteRequerimientos").attachPatternMatched(this._onRouteMatched, this);
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("RouteProyectos").attachPatternMatched(this._onRouteMatched, this);
+            oRouter.getRoute("RouteRequerimientos").attachPatternMatched(this._onRouteMatched, this);
         },
 
         _onRouteMatched: function (oEvent) {
@@ -25,19 +27,15 @@ sap.ui.define([
             
             // Enlazamos la vista al cliente usando su ruta de OData V4 por clave única
             this.getView().bindElement({
-                path: "/Clientes(ClientUuid=" + this._sClientUuid + ")",
-                parameters: {
-                    $expand: "_Proyectos" // Expandimos la composición de proyectos del backend RAP
-                }
+                path: "/Clientes(ClientUuid=" + this._sClientUuid + ")"
             });
         },
 
         onExportarProyectosExcel: function () {
             let aCols = [
-                { label: 'ID Proyecto', property: 'idProyecto', type: EdmType.String },
-                { label: 'Nombre del Proyecto', property: 'nombreProyecto', type: EdmType.String },
-                { label: 'Descripción', property: 'descripcion', type: EdmType.String },
-                { label: 'Estatus', property: 'estatusProyecto', type: EdmType.String }
+                { label: 'Nombre del Proyecto', property: 'Nombre', type: EdmType.String },
+                { label: 'Descripción', property: 'Descripcion', type: EdmType.String },
+                { label: 'Estatus', property: 'Activo', type: EdmType.String }
             ];
 
             let oRowBinding = this.byId("tablaProyectosDetalle").getBinding("items");
@@ -78,7 +76,6 @@ sap.ui.define([
                     name: "ns.frontend.fragment.DialogProyecto",
                     controller: this
                 }).then((oDialog) => {
-                    oDialog.setBindingContext(null);
                     this.getView().addDependent(oDialog);
                     return oDialog;
                 });
@@ -94,29 +91,14 @@ sap.ui.define([
             (await this._pDialog).close();
         },
 
-        _descartarCambios: function () {
-            const oModel = this.getView().getModel();
-            const oContext = this._oContextDialogo;
-
-            if (oContext && oContext.isTransient()) {
-                oContext.created()?.catch(() => {}); 
-                oContext.delete().catch(() => {});
-            }
-            if (oModel.hasPendingChanges("grupDialog")) {
-                oModel.resetChanges("grupDialog");
-            }
-        },
-
         onAfterCloseDialogo: async function () {
             const oDialog = await this._pDialog;
 
-            this._descartarCambios();
-
+            RapHelper.descartarCambios(this.getView().getModel(), this._oContextDialogo);
             oDialog.setBindingContext(null);
-            Fragment.byId(this.getView().getId(), "inpNombre")?.setValueState("None");
-            Fragment.byId(this.getView().getId(), "inpDescripcion")?.setValueState("None");
-            Fragment.byId(this.getView().getId(), "inpFechaInicio")?.setValueState("None");
-            Fragment.byId(this.getView().getId(), "inpFechaFin")?.setValueState("None");
+
+            IDS_DIALOGO.forEach((sId) =>
+                Fragment.byId(this.getView().getId(), sId)?.setValueState("None"));
             this._oContextDialogo = null;
         },
 
@@ -135,73 +117,73 @@ sap.ui.define([
         },
 
         // Guardar
+        _validar: function (sId, bValido, sTexto) {
+            const oInput = Fragment.byId(this.getView().getId(), sId);
+            oInput?.setValueState(bValido ? "None" : "Error");
+            if (!bValido) {
+                oInput?.setValueStateText(sTexto);
+                oInput?.focus();
+            }
+            return bValido;
+        },
+
         onGuardarProyecto: async function () {
+            const oContext = this._oContextDialogo;
             const oModel = this.getView().getModel();
             const oDialog = await this._pDialog;
-            const oContext = this._oContextDialogo;
-
-            const oInpNombre = Fragment.byId(this.getView().getId(), "inpNombre");
-            const oInpDescripcion = Fragment.byId(this.getView().getId(), "inpDescripcion");
-            const oInpFechaInicio = Fragment.byId(this.getView().getId(), "inpFechaInicio");
-            const oInpFechaFin = Fragment.byId(this.getView().getId(), "inpFechaFin");
 
             const sNombre = (oContext.getProperty("Nombre") || "").trim();
             const sDescripcion = (oContext.getProperty("Descripcion") || "").trim();
-            const sFechaInicio = oContext.getProperty("FechaInicio");
-            const sFechaFin = oContext.getProperty("FechaFin");
+            const sInicio = oContext.getProperty("FechaInicio");
+            const sFin = oContext.getProperty("FechaFin");
 
             // Validaciones básicas
-            if (!sNombre) {
-                oInpNombre?.setValueState("Error");
-                oInpNombre?.focus();
-                oInpNombre?.setValueStateText("El nombre es obligatorio");
+            if (!this._validar("inpNombre", !!sNombre, "El nombre es obligatorio")
+                || !this._validar("inpDescripcion", !!sDescripcion, "La descripción es obligatoria")
+                || !this._validar("inpFechaInicio", !!sInicio, "La fecha de inicio es obligatoria")
+                || !this._validar("inpFechaFin", !!sFin, "La fecha de fin es obligatoria")
+                || !this._validar("inpFechaFin", sFin >= sInicio,
+                    "La fecha de fin no puede ser anterior a la de inicio")) {
                 return;
-            }oInpNombre?.setValueState("None");
+            }
 
-            if (!sDescripcion) {
-                oInpDescripcion?.setValueState("Error");
-                oInpDescripcion?.focus();
-                oInpDescripcion?.setValueStateText("La descripción es obligatoria");
-                return;
-            }oInpDescripcion?.setValueState("None");
-
-            if (!sFechaInicio) {
-                oInpFechaInicio?.setValueState("Error");
-                oInpFechaInicio?.focus();
-                oInpFechaInicio?.setValueStateText("La fecha de inicio es obligatoria");
-                return;
-            }oInpFechaInicio?.setValueState("None");
-
-            if (!sFechaFin) {
-                oInpFechaFin?.setValueState("Error");
-                oInpFechaFin?.focus();
-                oInpFechaFin?.setValueStateText("La fecha de fin es obligatoria");
-                return;
-            }oInpFechaFin?.setValueState("None");
-            
-            oDialog.setBusy(true);
-            try {
-                await oModel.submitBatch("grupoDialogo");
-
-                if (oModel.hasPendingChanges("grupoDialogo")) {
-                    MessageBox.error("No se pudo guardar. Revisa los datos e intenta de nuevo.");
-                } else {
-                    MessageToast.show("Proyecto guardado");
-                    oDialog.close();
-                    this.getView().getElementBinding().refresh();
-                }
-            } catch (oError) {
-                MessageBox.error(oError.message);
-            } finally {
-                oDialog.setBusy(false);
+            if (await RapHelper.guardar(oModel, oDialog)) {
+                MessageToast.show("Proyecto guardado");
+                oDialog.close();
+                
+                this.getView().getElementBinding().refresh();
+                //RapHelper.refrescar(this.byId("tablaProyectosDetalle").getBinding("items"));
             }
         },
 
         // Eliminar
-        onInactivarProyecto: function (oEvent) {
-            
-        }
+        onInactivarProyecto: async function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            const bOk = await RapHelper.confirmar(
+                `¿Inactivar el proyecto "${oContext.getProperty("Nombre")}"?`);
+            if (!bOk) { return; }
+            await this._cambiarEstatus(oContext, "inactivar", "Proyecto inactivado");
 
+            this.getView().getElementBinding().refresh();
+        },
+
+        onActivarProyecto: async function (oEvent) {
+            await this._cambiarEstatus(oEvent.getSource().getBindingContext(),
+                "activar", "Proyecto activado");
+
+            this.getView().getElementBinding().refresh();
+        },
+
+        _cambiarEstatus: async function (oContext, sAccion, sMensaje) {
+            try {
+                await RapHelper.ejecutarAccion(this.getView().getModel(), oContext, sAccion);
+                MessageToast.show(sMensaje);
+
+                RapHelper.refrescar(this.byId("tablaProyectosDetalle").getBinding("items"));
+            } catch (oError) {
+                RapHelper.mostrarError(oError.message);
+            }
+        }
 
 	});
 });

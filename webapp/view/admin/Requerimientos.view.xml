@@ -70,6 +70,7 @@
                                             <Text text="{Descripcion}" />
                                             <HBox justifyContent="End" gap="0.5rem">
                                                 <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditRequerimiento" />
+
                                                 <Button icon="sap-icon://delete" type="Transparent" tooltip="Eliminar" press=".onDeleteRequerimiento" />
                                             </HBox>
                                         </cells>
@@ -87,7 +88,7 @@
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table id="tablaConsultoresDetalle" 
-                                items="{_Asignaciones}" 
+                                items="{ path: '_Asignaciones', sorter: { path: 'ConsultorNombre' } }" 
                                 alternateRowColors="true"
                             >
                                 <headerToolbar>
@@ -115,10 +116,10 @@
                                 <items>
                                     <ColumnListItem id="colListItemConsultores">
                                         <cells>
-                                            <Text text="{mock>nombreConsultor}" />
+                                            <Text text="{ConsultorNombre}" />
                                             <Text text="{Rol}" />
                                             <HBox justifyContent="End">
-                                                <Button icon="sap-icon://decline" type="Transparent" tooltip="Remover" press=".onInactivarConsultor" />
+                                                <Button icon="sap-icon://decline" type="Transparent" tooltip="Remover" press=".onDeleteAsignacion" />
                                             </HBox>
                                         </cells>
                                     </ColumnListItem>

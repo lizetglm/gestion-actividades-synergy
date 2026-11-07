@@ -6,17 +6,27 @@ sap.ui.define([
     "sap/ui/export/Spreadsheet", 
     "sap/ui/export/library",
     "sap/ui/core/Fragment",
-    "ns/frontend/util/ExportHelper"
+    "ns/frontend/util/ExportHelper",
+    "ns/frontend/util/RapHelper",
+
+    "sap/ui/model/Filter", "sap/ui/model/FilterOperator", "sap/ui/model/Sorter"
 ], function(
 	Controller, JSONModel, MessageToast, MessageBox,
-    Spreadsheet, exportLibrary,Fragment, ExportHelper
+    Spreadsheet, exportLibrary,Fragment, ExportHelper, RapHelper,
+
+    Filter, FilterOperator, Sorter
 ) {
 	"use strict";
     const EdmType = exportLibrary.EdmType;
+    const IDS_REQ = ["inpDescReq"];
 
 	return Controller.extend("ns.frontend.controller.admin.Requerimientos", {
         onInit: function () {
             this.getOwnerComponent().getRouter().getRoute("RouteRequerimientos").attachPatternMatched(this._onRouteMatched, this);
+
+            // solo debug
+            this._oConsultoresModel = new JSONModel({ items: [] });
+            this.getView().setModel(this._oConsultoresModel, "cons");
         },
 
         _onRouteMatched: function (oEvent) {
@@ -25,10 +35,7 @@ sap.ui.define([
             
             // Enlazamos la vista directamente al proyecto específico usando su UUID en OData V4
             this.getView().bindElement({
-                path: "/Proyectos(ProjectUuid=" + this._sProjectUuid + ")",
-                parameters: {
-                    $expand: "_Requerimientos,_Asignaciones"
-                }
+                path: "/Proyectos(ProjectUuid=" + this._sProjectUuid + ")"
             });
         },
 
@@ -40,8 +47,8 @@ sap.ui.define([
 
         onExportarReqExcel: function() {
             let aCols = [
-                { label: 'ID Requerimiento', property: 'idRequerimiento', type: EdmType.String },
-                { label: 'Descripción', property: 'descripcion', type: EdmType.String }
+                { label: 'ID Requerimiento', property: 'ReqId', type: EdmType.String },
+                { label: 'Descripción', property: 'Descripcion', type: EdmType.String }
             ];
             
             let oRowBinding = this.byId("tablaRequerimientos").getBinding("items");
@@ -87,7 +94,7 @@ sap.ui.define([
                     name: "ns.frontend.fragment.DialogRequerimiento",
                     controller: this
                 }).then((oDialog) => {
-                    oDialog.setBindingContext(null);
+                    //oDialog.setBindingContext(null);
                     this.getView().addDependent(oDialog);
                     return oDialog;
                 });
@@ -103,30 +110,18 @@ sap.ui.define([
             (await this._pDialog).close();
         },
 
-        _descartarCambios: function () {
-            const oModel = this.getView().getModel();
-            const oContext = this._oContextDialogo;
-
-            if (oContext && oContext.isTransient()) {
-                oContext.created()?.catch(() => {}); 
-                oContext.delete().catch(() => {});
-            }
-            if (oModel.hasPendingChanges("grupDialog")) {
-                oModel.resetChanges("grupDialog");
-            }
-        },
-
         onAfterCloseDialogo: async function () {
             const oDialog = await this._pDialog;
 
-            this._descartarCambios();
-
+            RapHelper.descartarCambios(this.getView().getModel(), this._oContextDialogo);
             oDialog.setBindingContext(null);
-            Fragment.byId(this.getView().getId(), "inpDescReq")?.setValueState("None");
+
+            IDS_REQ.forEach((sId) =>
+                Fragment.byId(this.getView().getId(), sId)?.setValueState("None"));
             this._oContextDialogo = null;
         },
 
-        
+        // CREAR
         onAddRequerimiento: function (oEvent) {
             const oListBinding = this.byId("tablaRequerimientos").getBinding("items");
     
@@ -134,9 +129,21 @@ sap.ui.define([
             this._abrirDialogoReq(oContext, "Nuevo Requerimiento");
         },
 
+        // EDITAR
         onEditRequerimiento: function (oEvent) {
             const oContext = oEvent.getSource().getBindingContext();
             this._abrirDialogoReq(oContext, "Editar Requerimiento");
+        },
+
+        // GUARDAR
+        _validar: function (sId, bValido, sTexto) {
+            const oInput = Fragment.byId(this.getView().getId(), sId);
+            oInput?.setValueState(bValido ? "None" : "Error");
+            if (!bValido) {
+                oInput?.setValueStateText(sTexto);
+                oInput?.focus();
+            }
+            return bValido;
         },
 
         onGuardarRequerimiento: async function () {
@@ -144,130 +151,131 @@ sap.ui.define([
             const oDialog = await this._pDialog;
             const oContext = this._oContextDialogo;
 
-            const oInpDescripcion = Fragment.byId(this.getView().getId(), "inpDescReq");
-
             const sDescripcion = (oContext.getProperty("Descripcion") || "").trim();
 
             // Validaciones básicas
-            if (!sDescripcion) {
-                oInpDescripcion?.setValueState("Error");
-                oInpDescripcion?.focus();
-                oInpDescripcion?.setValueStateText("La descripción es obligatoria");
+            if (!this._validar("inpDescReq", sDescripcion.length > 0, "La descripción es obligatoria.")) {
                 return;
-            }oInpDescripcion?.setValueState("None");
-
+            }
             
-            oDialog.setBusy(true);
+            if (await RapHelper.guardar(oModel, oDialog)) {
+                MessageToast.show("Requerimiento guardado");
+                oDialog.close();
+                
+                this.getView().getElementBinding().refresh();
+            }
+        },
+
+        // ELIMINAR
+        onDeleteRequerimiento: async function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            const bOk = await RapHelper.confirmar(
+                `¿Eliminar definitivamente el requerimiento ${oContext.getProperty("ReqId")}?\n\n` +
+                `"${oContext.getProperty("Descripcion")}" \n\n` +
+                "Esta acción no se puede deshacer.");
+            if (!bOk) { return; }
+
             try {
-                await oModel.submitBatch("grupoDialogo");
-
-                if (oModel.hasPendingChanges("grupoDialogo")) {
-                    MessageBox.error("No se pudo guardar. Revisa los datos e intenta de nuevo.");
-                } else {
-                    MessageToast.show("Requerimiento guardado");
-                    oDialog.close();
-                    this.getView().getElementBinding().refresh();
-                }
+                await RapHelper.borrar(oContext);
+                MessageToast.show("Requerimiento eliminado");
             } catch (oError) {
-                MessageBox.error(oError.message);
-            } finally {
-                oDialog.setBusy(false);
+                RapHelper.mostrarError(oError.message);
             }
         },
 
-        onDeleteRequerimiento: function (oEvent) {
-            
-        },
 
-        // CRUD CONSULTORES -----------------------------
-        onAsignarConsultor: function () {
-            let oView = this.getView();
-            // Obtenemos el ID del proyecto actual para pre-llenar el diálogo
-            let oProyectoActual = oView.getModel("mock").getProperty("/clientes/" + this._sClientIndex + "/proyectos/" + this._sProjectIndex);
-            
-            let oDatosNuevoConsultor = {
-                nombreConsultor: "",
-                proyectoAsignado: oProyectoActual.idProyecto, // Pre-asignado
-                rol: ""
-            };
-            let oDialogModel = new JSONModel(oDatosNuevoConsultor);
 
-            if (!this._oDialogConsultor) {
-                Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogConsultor", 
+        // CRUD ASIGNACIONES (CONSULTORES) -----------------------------
+        _abrirDialogoConsultor: async function (oContext) {
+            if (!this._pDialogConsultor) {
+                this._pDialogConsultor = Fragment.load({
+                    id: this.getView().getId(),
+                    name: "ns.frontend.fragment.DialogAsignarCons",
                     controller: this
-                }).then(function (oDialog) {
-                    this._oDialogConsultor = oDialog;
-                    oView.addDependent(this._oDialogConsultor);
-                    this._oDialogConsultor.setModel(oDialogModel, "nuevoConsultor");
-                    this._oDialogConsultor.open();
-                }.bind(this));
-            } else {
-                this._oDialogConsultor.setModel(oDialogModel, "nuevoConsultor");
-                this._oDialogConsultor.open();
+                }).then((oDialog) => {
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                });
+            }
+            const oDialog = await this._pDialogConsultor;
+            this._oContextConsultor = oContext;
+            oDialog.setTitle("Asignar consultor");
+            oDialog.setBindingContext(oContext);
+            oDialog.open();
+        },
+
+        onCerrarDialogConsultor: async function () {
+            (await this._pDialogConsultor).close();
+        },
+
+        onAfterCloseDialogoConsultor: async function () {
+            const oDialog = await this._pDialogConsultor;
+            RapHelper.descartarCambios(this.getView().getModel(), this._oContextConsultor);
+            oDialog.setBindingContext(null);
+            ["cmbConsultor", "cmbRol"].forEach((sId) =>
+                Fragment.byId(this.getView().getId(), sId)?.setValueState("None"));
+            this._oContextConsultor = null;
+        },
+
+        // Trae los consultores activos 
+        _cargarConsultores: async function () {
+            const oBinding = this.getView().getModel().bindList("/Consultores", null,
+                [new Sorter("Nombre")],
+                [new Filter("Activo", FilterOperator.EQ, true)],
+                { $select: "ConsultorUuid,Nombre,Correo" });
+            try {
+                const aContextos = await oBinding.requestContexts(0, 500);
+                this._oConsultoresModel.setData({
+                    items: aContextos.map((oCtx) => oCtx.getObject())
+                });
+            } finally {
+                oBinding.destroy();
             }
         },
 
-        onCerrarDialogConsultor: function () {
-            if (this._oDialogConsultor) {
-                this._oDialogConsultor.close();
-            }
-        },
-
-        onGuardarConsultorMock: function () {
-            let oDatosConsultor = this._oDialogConsultor.getModel("nuevoConsultor").getData();
-            let oModelMain = this.getView().getModel("mock");
-            
-            // Validamos que no vengan vacíos
-            if (!oDatosConsultor.nombreConsultor || !oDatosConsultor.rol) {
-                MessageBox.warning("Por favor, selecciona el consultor y su rol.");
+        onAsignarConsultor: async function () {
+            try {
+                await this._cargarConsultores();
+            } catch (oError) {
+                RapHelper.mostrarError(oError.message); // muestra el motivo real
                 return;
             }
-            
-            // CORRECCIÓN: La ruta ahora es directamente dentro del proyecto seleccionado
-            let sPathConsultores = "/clientes/" + this._sClientIndex + "/proyectos/" + this._sProjectIndex + "/consultores";
-            let aConsultores = oModelMain.getProperty(sPathConsultores) || [];
-            
-            // Insertamos al nuevo consultor
-            aConsultores.push({
-                nombreConsultor: oDatosConsultor.nombreConsultor,
-                rol: oDatosConsultor.rol
-            });
-            
-            oModelMain.setProperty(sPathConsultores, aConsultores);
-
-            MessageToast.show("Consultor asignado exitosamente al proyecto.");
-            this.onCerrarDialogConsultor();
+            const oListBinding = this.byId("tablaConsultoresDetalle").getBinding("items");
+            this._abrirDialogoConsultor(oListBinding.create({}, true));
         },
 
-        onInactivarConsultor: function(oEvent) {
-            let oContext = oEvent.getSource().getBindingContext("mock");
-            let sPath = oContext.getPath();
-            let oDatosFila = oContext.getObject(); 
+        onGuardarConsultor: async function () {
+            const oDialog = await this._pDialogConsultor;
+            const oContext = this._oContextConsultor;
+            const sConsultor = oContext.getProperty("ConsultorUuid");
+            const sRol = (oContext.getProperty("Rol") || "").trim();
 
-            let sMensaje = "¿Seguro que deseas remover al consultor " + oDatosFila.nombreConsultor + " del proyecto?";
+            if (!this._validar("cmbConsultor", !!sConsultor, "Selecciona un consultor")
+                || !this._validar("cmbRol", !!sRol, "El rol es obligatorio")) {
+                return;
+            }
 
-            MessageBox.confirm(sMensaje, {
-                title: "Remover Consultor",
-                icon: MessageBox.Icon.WARNING,
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        let oModel = this.getView().getModel("mock");
-                        let aPathParts = sPath.split("/");
-                        let iIndex = parseInt(aPathParts.pop(), 10);
-                        aPathParts.pop(); 
-                        let sPathPadre = aPathParts.join("/") + "/consultores";
+            if (await RapHelper.guardar(this.getView().getModel(), oDialog)) {
+                MessageToast.show("Consultor asignado al proyecto");
+                oDialog.close();
+                RapHelper.refrescar(this.byId("tablaConsultoresDetalle").getBinding("items"));
+            }
+        },
 
-                        let aConsultores = oModel.getProperty(sPathPadre);
-                        aConsultores.splice(iIndex, 1);
-                        oModel.setProperty(sPathPadre, aConsultores);
-                        
-                        this.byId("tablaConsultoresDetalle").getBinding("items").refresh();
-                        MessageToast.show("Simulación: Consultor removido exitosamente.");
-                    }
-                }.bind(this)
-            });
-        }
+        // Quitar consultor del proyecto (borrado real)
+        onDeleteAsignacion: async function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            const bOk = await RapHelper.confirmar(
+                `¿Quitar a ${oContext.getProperty("ConsultorNombre")} de este proyecto?`);
+            if (!bOk) { return; }
+            try {
+                await RapHelper.borrar(oContext);
+                MessageToast.show("Consultor removido del proyecto");
+            } catch (oError) {
+                RapHelper.mostrarError(oError.message);
+            }
+        },
+
+
 	});
 });

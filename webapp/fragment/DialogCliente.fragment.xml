@@ -17,16 +17,15 @@
                     <Label text="Nombre del Cliente" required="true" />
                     <Input value="{Nombre}" placeholder="Ej. Omega Logistics" id="inpNombre" />
                     
-                    <Label text="Teléfono" />
+                    <Label text="Teléfono" required="true" />
                     <Input value="{Telefono}" placeholder="Ej. 4111234567" id="inpTelefono" />
 
-                    <Label text="Correo" />
+                    <Label text="Correo" required="true" />
                     <Input value="{Correo}" placeholder="correo@empresa.com" id="inpCorreo" />
                     
                     <Label text="Estatus (Activo)" />
                     <Switch 
                         state="{Activo}" 
-                        change=".onStateChange"
                         customTextOn="Sí" 
                         customTextOff="No"/>
                 </form:content>

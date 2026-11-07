@@ -1,0 +1,44 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+
+    <Dialog id="dialogAsignarConsultor"
+        contentWidth="420px"
+        afterClose=".onAfterCloseDialogoConsultor">
+
+        <content>
+            <form:SimpleForm editable="true" layout="ResponsiveGridLayout"
+                labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12"
+                emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0"
+                columnsXL="1" columnsL="1" columnsM="1">
+                <form:content>
+                    <Label text="Consultor" required="true" />
+                    <ComboBox id="cmbConsultor"
+                        selectedKey="{ConsultorUuid}"
+                        placeholder="Busca por nombre..."
+                        showSecondaryValues="true"
+                        filterSecondaryValues="true"
+                        items="{cons>/items}">
+                        <core:ListItem key="{cons>ConsultorUuid}" text="{cons>Nombre}"
+                            additionalText="{cons>Correo}" />
+                    </ComboBox>
+                
+                    <Label text="Rol en el Proyecto" required="true" />
+                    <ComboBox id="cmbRol" value="{Rol}" forceSelection="false" maxLength="30"
+                        placeholder="Selecciona o escribe un rol">
+                        <core:Item key="Desarrollador ABAP RAP" text="Desarrollador ABAP RAP" />
+                        <core:Item key="Desarrollador Fiori" text="Desarrollador Fiori" />
+                        <core:Item key="Arquitecto Cloud" text="Arquitecto Cloud" />
+                        <core:Item key="QA Tester" text="QA Tester" />
+                    </ComboBox>
+                </form:content>
+            </form:SimpleForm>
+        </content>
+
+        <buttons>
+            <Button text="Asignar" type="Emphasized" press=".onGuardarConsultor" />
+            <Button text="Cancelar" type="Transparent" press=".onCerrarDialogConsultor" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -33,8 +33,8 @@ sap.ui.define([
 
         onExportarExcel: function () {
             let aCols = [
-                { label: 'ID Cliente', property: 'ClientUuid', type: EdmType.String },
                 { label: 'Nombre del Cliente', property: 'Nombre', type: EdmType.String },
+                { label: 'Teléfono', property: 'Telefono', type: EdmType.String },
                 { label: 'Correo', property: 'Correo', type: EdmType.String },
                 { label: 'Estatus', property: 'Activo', type: EdmType.String }
             ];
