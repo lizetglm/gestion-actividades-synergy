@@ -102,8 +102,8 @@ sap.ui.define([
                 oContext.created()?.catch(() => {}); 
                 oContext.delete().catch(() => {});
             }
-            if (oModel.hasPendingChanges("grupDialogProyecto")) {
-                oModel.resetChanges("grupDialogProyecto");
+            if (oModel.hasPendingChanges("grupDialog")) {
+                oModel.resetChanges("grupDialog");
             }
         },
 
@@ -114,11 +114,11 @@ sap.ui.define([
 
             oDialog.setBindingContext(null);
             Fragment.byId(this.getView().getId(), "inpNombre")?.setValueState("None");
-            Fragment.byId(this.getView().getId(), "inpTelefono")?.setValueState("None");
-            Fragment.byId(this.getView().getId(), "inpCorreo")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpDescripcion")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpFechaInicio")?.setValueState("None");
+            Fragment.byId(this.getView().getId(), "inpFechaFin")?.setValueState("None");
             this._oContextDialogo = null;
         },
-
 
         // Crear
         onAddProyecto: function () {

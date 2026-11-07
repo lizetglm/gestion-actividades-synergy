@@ -80,95 +80,103 @@ sap.ui.define([
 
 
         // CRUD REQUERIMIENTOS ----------------------
+        _abrirDialogoReq: async function (oContext, sTitulo) {
+            if (!this._pDialog) {
+                this._pDialog = Fragment.load({
+                    id: this.getView().getId(),
+                    name: "ns.frontend.fragment.DialogRequerimiento",
+                    controller: this
+                }).then((oDialog) => {
+                    oDialog.setBindingContext(null);
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                });
+            }
+            const oDialog = await this._pDialog;
+            this._oContextDialogo = oContext;
+            oDialog.setTitle(sTitulo);
+            oDialog.setBindingContext(oContext);
+            oDialog.open();
+        },
+
+        onCerrarDialogoReq: async function () {
+            (await this._pDialog).close();
+        },
+
+        _descartarCambios: function () {
+            const oModel = this.getView().getModel();
+            const oContext = this._oContextDialogo;
+
+            if (oContext && oContext.isTransient()) {
+                oContext.created()?.catch(() => {}); 
+                oContext.delete().catch(() => {});
+            }
+            if (oModel.hasPendingChanges("grupDialog")) {
+                oModel.resetChanges("grupDialog");
+            }
+        },
+
+        onAfterCloseDialogo: async function () {
+            const oDialog = await this._pDialog;
+
+            this._descartarCambios();
+
+            oDialog.setBindingContext(null);
+            Fragment.byId(this.getView().getId(), "inpDescReq")?.setValueState("None");
+            this._oContextDialogo = null;
+        },
+
+        
         onAddRequerimiento: function (oEvent) {
-            this._bReqEdicion = false;
-            let oDatosNuevoReq = { 
-                idRequerimiento: "", 
-                descripcion: "", 
-                estatus: "Activo"
-            };
-            this._abrirDialogoReq(oDatosNuevoReq);
+            const oListBinding = this.byId("tablaRequerimientos").getBinding("items");
+    
+            const oContext = oListBinding.create({}, true);
+            this._abrirDialogoReq(oContext, "Nuevo Requerimiento");
         },
 
         onEditRequerimiento: function (oEvent) {
-            this._bReqEdicion = true;
-            let oItem = oEvent.getSource();
-            this._sReqEditPath = oItem.getBindingContext("mock").getPath();
-            let oDatosReq = JSON.parse(JSON.stringify(oItem.getBindingContext("mock").getObject()));
-            this._abrirDialogoReq(oDatosReq);
+            const oContext = oEvent.getSource().getBindingContext();
+            this._abrirDialogoReq(oContext, "Editar Requerimiento");
         },
 
-        _abrirDialogoReq: function (oDatos) {
-            let oView = this.getView();
-            let oDialogModel = new JSONModel(oDatos);
+        onGuardarRequerimiento: async function () {
+            const oModel = this.getView().getModel();
+            const oDialog = await this._pDialog;
+            const oContext = this._oContextDialogo;
 
-            if (!this._oDialogRequerimiento) {
-                Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogRequerimiento",
-                    controller: this
-                }).then(function (oDialog) {
-                    this._oDialogRequerimiento = oDialog;
-                    oView.addDependent(this._oDialogRequerimiento);
-                    this._oDialogRequerimiento.setModel(oDialogModel, "nuevoReq");
-                    this._oDialogRequerimiento.open();
-                }.bind(this));
-            } else {
-                this._oDialogRequerimiento.setModel(oDialogModel, "nuevoReq");
-                this._oDialogRequerimiento.open();
-            }
-        },
+            const oInpDescripcion = Fragment.byId(this.getView().getId(), "inpDescReq");
 
-        onCerrarDialogoReq: function () {
-            if (this._oDialogRequerimiento) {
-                this._oDialogRequerimiento.close();
-            }
-        },
+            const sDescripcion = (oContext.getProperty("Descripcion") || "").trim();
 
-        onGuardarRequerimiento: function () {
-            let oDatosReq = this._oDialogRequerimiento.getModel("nuevoReq").getData();
-            let oModelMain = this.getView().getModel("mock");
-
-            if (!oDatosReq.idRequerimiento || !oDatosReq.descripcion) {
-                MessageBox.warning("Por favor, llena todos los campos obligatorios.");
+            // Validaciones básicas
+            if (!sDescripcion) {
+                oInpDescripcion?.setValueState("Error");
+                oInpDescripcion?.focus();
+                oInpDescripcion?.setValueStateText("La descripción es obligatoria");
                 return;
-            }
+            }oInpDescripcion?.setValueState("None");
 
-            if (this._bReqEdicion) {
-                oModelMain.setProperty(this._sReqEditPath, oDatosReq);
-                MessageToast.show("Requerimiento actualizado.");
-            } else {
-                let sPathReqs = "/clientes/" + this._sClientIndex + "/proyectos/" + this._sProjectIndex + "/requerimientos";
-                let aReqs = oModelMain.getProperty(sPathReqs) || [];
-                aReqs.push(oDatosReq);
-                oModelMain.setProperty(sPathReqs, aReqs);
-                MessageToast.show("Requerimiento agregado exitosamente.");
+            
+            oDialog.setBusy(true);
+            try {
+                await oModel.submitBatch("grupoDialogo");
+
+                if (oModel.hasPendingChanges("grupoDialogo")) {
+                    MessageBox.error("No se pudo guardar. Revisa los datos e intenta de nuevo.");
+                } else {
+                    MessageToast.show("Requerimiento guardado");
+                    oDialog.close();
+                    this.getView().getElementBinding().refresh();
+                }
+            } catch (oError) {
+                MessageBox.error(oError.message);
+            } finally {
+                oDialog.setBusy(false);
             }
-            this.onCerrarDialogoReq();
         },
 
         onDeleteRequerimiento: function (oEvent) {
-            let oContext = oEvent.getSource().getBindingContext("mock");
-            let sPath = oContext.getPath();
-
-            MessageBox.confirm("¿Estás seguro de que deseas eliminar este requerimiento?", {
-                title: "Confirmar Eliminación",
-                icon: MessageBox.Icon.WARNING,
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        let oModel = this.getView().getModel("mock");
-                        let aPathParts = sPath.split("/");
-                        let iIndex = parseInt(aPathParts.pop(), 10);
-                        aPathParts.pop(); // quitar 'requerimientos'
-                        let sPathPadre = aPathParts.join("/") + "/requerimientos";
-
-                        let aReqs = oModel.getProperty(sPathPadre);
-                        aReqs.splice(iIndex, 1);
-                        oModel.setProperty(sPathPadre, aReqs);
-                        MessageToast.show("Requerimiento eliminado.");
-                    }
-                }.bind(this)
-            });
+            
         },
 
         // CRUD CONSULTORES -----------------------------

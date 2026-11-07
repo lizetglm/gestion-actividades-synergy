@@ -5,8 +5,9 @@
     
     <Dialog 
         id="dialogNuevoReq" 
-        title="Nuevo/Editar Requerimiento" 
-        contentWidth="500px">
+        contentWidth="500px"
+        afterClose=".onAfterCloseDialogo"
+    >    
         <content>
             <form:SimpleForm 
                 editable="true" 
@@ -14,7 +15,7 @@
                 labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12">
                 <form:content>
                     <Label text="Descripción del Requerimiento" required="true" />
-                    <TextArea value="{nuevoReq>Descripcion}" placeholder="Detalles del requerimiento..." rows="4" />
+                    <TextArea value="{Descripcion}" placeholder="Detalles del requerimiento..." rows="4" id="inpDescReq" />
                 </form:content>
             </form:SimpleForm>
         </content>

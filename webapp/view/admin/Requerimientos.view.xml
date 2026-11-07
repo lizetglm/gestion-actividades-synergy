@@ -36,7 +36,13 @@
                     <uxap:ObjectPageSubSection>
                         <uxap:blocks>
                             <Table id="tablaRequerimientos" 
-                                items="{_Requerimientos}" 
+                                items="{
+                                    path: '_Requerimientos',
+                                    sorter: [{
+                                        path: 'ReqId',
+                                        descending: false
+                                    }]
+                                }" 
                                 alternateRowColors="true"
                             >
                                 <headerToolbar>
@@ -60,7 +66,7 @@
                                 <items>
                                     <ColumnListItem>
                                         <cells>
-                                            <Text text="{ReqUuid}" />
+                                            <Text text="{ReqId}" />
                                             <Text text="{Descripcion}" />
                                             <HBox justifyContent="End" gap="0.5rem">
                                                 <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditRequerimiento" />
