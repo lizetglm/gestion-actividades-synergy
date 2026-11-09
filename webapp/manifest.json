@@ -31,7 +31,7 @@
           "odataVersion": "4.0"
         }
       }
-    } 
+    }
   },
   "sap.ui": {
     "technology": "UI5",
@@ -65,7 +65,6 @@
       "compact": true,
       "cozy": true
     },
-        
     "models": {
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
@@ -90,11 +89,11 @@
         "settings": {
           "synchronizationMode": "None",
           "operationMode": "Server",
-          "autoExpandSelect": true
+          "autoExpandSelect": true,
+          "groupId": "$direct"
         }
       }
     },
-
     "resources": {
       "css": [
         {
@@ -163,19 +162,31 @@
           ]
         },
         {
-    "name": "RouteClientesProyectos",
-      "pattern": "clientesProyectos",
-      "target": ["TargetClientesProyectos", "TargetClientesMaster"]
-    },
+          "name": "RouteClientesProyectos",
+          "pattern": "clientesProyectos",
+          "target": [
+            "TargetClientesProyectos",
+            "TargetClientesMaster"
+          ]
+        },
         {
           "name": "RouteProyectos",
           "pattern": "clientesProyectos/cliente/{clientUuid}",
-          "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle"]
+          "target": [
+            "TargetClientesProyectos",
+            "TargetClientesMaster",
+            "TargetProyectosDetalle"
+          ]
         },
         {
           "name": "RouteRequerimientos",
           "pattern": "clientesProyectos/cliente/{clientUuid}/proyecto/{projectUuid}",
-          "target": ["TargetClientesProyectos", "TargetClientesMaster", "TargetProyectosDetalle", "TargetRequerimientosDetalle"]
+          "target": [
+            "TargetClientesProyectos",
+            "TargetClientesMaster",
+            "TargetProyectosDetalle",
+            "TargetRequerimientosDetalle"
+          ]
         },
         {
           "name": "RoutePerfiles",
@@ -224,7 +235,7 @@
           "viewId": "Historial",
           "viewName": "Historial"
         },
-         "TargetConsolidacion": {
+        "TargetConsolidacion": {
           "transition": "slide",
           "clearControlAggregation": false,
           "viewId": "Consolidacion",
@@ -240,28 +251,28 @@
           "viewType": "XML",
           "transition": "slide",
           "viewId": "ClientesProyectos",
-          "viewName": "admin.ClientesProyectos" 
+          "viewName": "admin.ClientesProyectos"
         },
         "TargetClientesMaster": {
           "parent": "TargetClientesProyectos",
           "controlId": "fcl",
           "controlAggregation": "beginColumnPages",
           "viewId": "Clientes",
-          "viewName": "admin.Clientes" 
+          "viewName": "admin.Clientes"
         },
         "TargetProyectosDetalle": {
           "parent": "TargetClientesProyectos",
           "controlId": "fcl",
           "controlAggregation": "midColumnPages",
           "viewId": "Proyectos",
-          "viewName": "admin.Proyectos" 
+          "viewName": "admin.Proyectos"
         },
         "TargetRequerimientosDetalle": {
           "parent": "TargetClientesProyectos",
           "controlId": "fcl",
           "controlAggregation": "endColumnPages",
           "viewId": "Requerimientos",
-          "viewName": "admin.Requerimientos" 
+          "viewName": "admin.Requerimientos"
         },
         "TargetPerfiles": {
           "transition": "slide",
@@ -286,5 +297,3 @@
     }
   }
 }
-
-

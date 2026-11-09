@@ -34,14 +34,15 @@ sap.ui.define([
             this.setModel(models.createDeviceModel(), "device");
 
             // Modelo temporal de clientes y proyectos
-            var oModelClientes = new JSONModel("model/clientes.json");
+            var sRutaClientes = this.getManifestObject().resolveUri("model/clientes.json");
+            var oModelClientes = new JSONModel(sRutaClientes);
             this.setModel(oModelClientes, "modeloClientes");
 
             // Inicializar navegación después de crear los modelos
             this.getRouter().initialize();
         },
 
-   
+
 
 
     });
