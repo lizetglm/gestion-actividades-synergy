@@ -1,39 +1,48 @@
-/**
- * eslint-disable @sap/ui5-jsdocs/no-jsdoc
- */
-
 sap.ui.define([
-        "sap/ui/core/UIComponent",
-        "sap/ui/Device",
-        "ns/frontend/model/models"
-    ],
-    function (UIComponent, Device, models) {
-        "use strict";
+    "sap/ui/core/UIComponent",
+    "sap/ui/Device",
+    "sap/ui/model/json/JSONModel",
+    "ns/frontend/model/models"
+], function (UIComponent, Device, JSONModel, models) {
+    "use strict";
 
-        return UIComponent.extend("ns.frontend.Component", {
-            metadata: {
-                manifest: "json"
-            },
+    return UIComponent.extend("ns.frontend.Component", {
 
-            /**
-             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-             * @public
-             * @override
-             */
-            init: function () {
-                // call the base component's init function
-                UIComponent.prototype.init.apply(this, arguments);
+        metadata: {
+            manifest: "json"
+        },
 
-                // enable routing
-                this.getRouter().initialize();
+        init: function () {
 
-                // set the device model
-                this.setModel(models.createDeviceModel(), "device");
+            // Inicialización del componente SAPUI5
+            UIComponent.prototype.init.apply(this, arguments);
 
-                // modelo solo de prueba para clientes y proyectos (eliminar despues)
-                var oModel = new sap.ui.model.json.JSONModel("model/clientes.json"); 
-                this.setModel(oModel, "modeloClientes");
-            }
-        });
-    }
-);
+            // Modelo global de autenticación y perfil
+            var oUiEstado = new JSONModel({
+                tituloHeader: "",
+                userName: "",
+                saludo: "Cargando información del usuario...",
+                esConsultor: false,
+                esAdministrador: false,
+                autenticacionFinalizada: false,
+                errorAutenticacion: false
+            });
+
+            this.setModel(oUiEstado, "uiPantalla");
+
+            // Modelo de dispositivo
+            this.setModel(models.createDeviceModel(), "device");
+
+            // Modelo temporal de clientes y proyectos
+            var oModelClientes = new JSONModel("model/clientes.json");
+            this.setModel(oModelClientes, "modeloClientes");
+
+            // Inicializar navegación después de crear los modelos
+            this.getRouter().initialize();
+        },
+
+   
+
+
+    });
+});

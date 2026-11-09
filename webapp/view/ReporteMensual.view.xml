@@ -40,9 +40,7 @@
                     <ObjectStatus id="objS1tatus" text="Generado, pendiente de firma" state="Warning" />
                 </HBox>
                 </FlexBox>
-
-            
-        <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap" >
+  <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap" >
             <VBox id="leftColumn" width="69%">
                 <Panel id="panelReporte" backgroundDesign="Solid" headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA" accessibleRole="Region" class="borde">
                     <content>

@@ -4,8 +4,9 @@ sap.ui.define(
         "sap/ui/model/json/JSONModel",
         "sap/ui/core/Fragment",
         "sap/m/MessageToast",
+        "sap/m/MessageBox"
     ],
-    function(BaseController, JSONModel, Fragment, MessageToast) {
+    function(BaseController, JSONModel, Fragment, MessageToast, MessageBox) {
       "use strict";
   
       return BaseController.extend("ns.frontend.controller.App", {
@@ -136,72 +137,209 @@ sap.ui.define(
             oToolPage.setSideExpanded(!bExpanded);
         },
 
-        onRouteChange: function (oEvent) {
-            var sRouteName = oEvent.getParameter("name"); //nombre de la ruta
-            var oSideNavigation = this.byId("sideNavigation");
-            var sKey = "";
+        
+onRouteChange: function (oEvent) {
+    const sRouteName = oEvent.getParameter("name");
+    const oRouter = this.getOwnerComponent().getRouter();
+    const oUiModel = this.getOwnerComponent().getModel("uiPantalla");
+    const oSideNavigation = this.byId("sideNavigation");
 
-            // mapeo del nombre de la rta y el key del sideMenu
-            if (sRouteName === "RouteMain") {
-                sKey = "home";
-            } else if (sRouteName === "RouteRegistrarActividad") {
-                sKey = "registrarActividad";
-            } else if (sRouteName === "RouteCalendarioActividades") {
-                sKey = "calendarioActividades";
-            } else if (sRouteName === "RouteReporteMensual") {
-                sKey = "reporteMensual";
-            } else if (sRouteName === "RouteHistorial") {
-                sKey = "historial";
-            } else if (sRouteName === "RoutePanelCumplimiento") {
-                sKey = "panelCumplimiento";
-            } else if (sRouteName === "RouteClientesProyectos") {
-                sKey = "clientesProyectos";
-            } else if (sRouteName === "RoutePerfiles") {
-                sKey = "perfiles";
-            } else if (sRouteName === "RouteConfiguracion") {
-                sKey = "configuracion";
-            } else if (sRouteName === "RouteConsolidacion") {
-                sKey = "consolidacion";
-            }
-
-            // sombrear el elemento seleccionado en el sideMenu
-            if (sKey && oSideNavigation) {
-                oSideNavigation.setSelectedKey(sKey);
-            }
+    // Relación entre rutas, perfiles y opciones del menú
+    const mRutas = {
+        RouteMain: {
+            key: "home",
+            perfil: "AMBOS"
         },
-
-        onNavigationSelect: function (oEvent) {
-            var sKey = oEvent.getParameter("item").getKey();
-            var oRouter = this.getOwnerComponent().getRouter();
-
-            var oToolPage = this.byId("app");
-            if (oToolPage) {
-                oToolPage.setSideExpanded(false);
-            }
-
-            // Redirección de rutas
-            if (sKey === "home") {
-                oRouter.navTo("RouteMain");
-            } else if (sKey === "registrarActividad") {
-                oRouter.navTo("RouteRegistrarActividad");
-            } else if(sKey === "calendarioActividades") {
-                oRouter.navTo("RouteCalendarioActividades");
-            } else if(sKey === "reporteMensual") {
-                oRouter.navTo("RouteReporteMensual");
-            } else if(sKey === "historial") {
-                oRouter.navTo("RouteHistorial");
-            } else if (sKey === "panelCumplimiento") {
-                oRouter.navTo("RoutePanelCumplimiento");
-            } else if (sKey === "clientesProyectos") {
-                oRouter.navTo("RouteClientesProyectos");
-            } else if (sKey === "perfiles") {
-                oRouter.navTo("RoutePerfiles");
-            } else if (sKey === "configuracion") {
-                oRouter.navTo("RouteConfiguracion");
-            } else if (sKey === "consolidacion") {
-                oRouter.navTo("RouteConsolidacion");
-            }
+        RouteRegistrarActividad: {
+            key: "registrarActividad",
+            perfil: "CONSULTOR"
+        },
+        RouteCalendarioActividades: {
+            key: "calendarioActividades",
+            perfil: "CONSULTOR"
+        },
+        RouteReporteMensual: {
+            key: "reporteMensual",
+            perfil: "CONSULTOR"
+        },
+        RouteHistorial: {
+            key: "historial",
+            perfil: "CONSULTOR"
+        },
+        RoutePanelCumplimiento: {
+            key: "panelCumplimiento",
+            perfil: "ADMINISTRADOR"
+        },
+        RouteClientesProyectos: {
+            key: "clientesProyectos",
+            perfil: "ADMINISTRADOR"
+        },
+        RouteProyectos: {
+            key: "clientesProyectos",
+            perfil: "ADMINISTRADOR"
+        },
+        RouteRequerimientos: {
+            key: "clientesProyectos",
+            perfil: "ADMINISTRADOR"
+        },
+        RoutePerfiles: {
+            key: "perfiles",
+            perfil: "ADMINISTRADOR"
+        },
+        RouteConfiguracion: {
+            key: "configuracion",
+            perfil: "ADMINISTRADOR"
+        },
+        RouteConsolidacion: {
+            key: "consolidacion",
+            perfil: "ADMINISTRADOR"
         }
+    };
+
+    const oRuta = mRutas[sRouteName];
+
+    // No permitir rutas que no estén registradas
+    if (!oRuta) {
+        oRouter.navTo("RouteMain", {}, true);
+        return;
+    }
+
+    // El modelo se crea desde Main.controller.js
+    if (!oUiModel) {
+        if (sRouteName !== "RouteMain") {
+            oRouter.navTo("RouteMain", {}, true);
+        }
+        return;
+    }
+
+    // Esperar a que finalice la identificación SAP
+    const bFinalizada =
+        oUiModel.getProperty("/autenticacionFinalizada") === true;
+
+    if (!bFinalizada) {
+        if (sRouteName !== "RouteMain") {
+            oRouter.navTo("RouteMain", {}, true);
+        }
+        return;
+    }
+
+    const bEsAdmin =
+        oUiModel.getProperty("/esAdministrador") === true;
+
+    const bEsConsultor =
+        oUiModel.getProperty("/esConsultor") === true;
+
+    const bAutorizado =
+        (oRuta.perfil === "AMBOS" && (bEsAdmin || bEsConsultor)) ||
+        (oRuta.perfil === "ADMINISTRADOR" && bEsAdmin) ||
+        (oRuta.perfil === "CONSULTOR" && bEsConsultor);
+
+    // Bloquear navegación no autorizada
+    if (!bAutorizado) {
+        if (sRouteName !== "RouteMain") {
+            sap.m.MessageToast.show(
+                "No tienes permisos para acceder a esta pantalla."
+            );
+
+            oRouter.navTo("RouteMain", {}, true);
+        }
+
+        return;
+    }
+
+    // Mantener seleccionada la opción correcta del menú
+    if (oSideNavigation) {
+        oSideNavigation.setSelectedKey(oRuta.key);
+    }
+},
+
+
+        
+onNavigationSelect: function (oEvent) {
+    const sKey = oEvent.getParameter("item").getKey();
+    const oRouter = this.getOwnerComponent().getRouter();
+    const oUiModel = this.getOwnerComponent().getModel("uiPantalla");
+
+    const oToolPage = this.byId("app");
+    if (oToolPage) {
+        oToolPage.setSideExpanded(false);
+    }
+
+    // Si el perfil aún no se ha cargado, no permitir navegar.
+    if (!oUiModel) {
+        sap.m.MessageToast.show("Validando permisos del usuario...");
+        return;
+    }
+
+    const bEsAdmin = oUiModel.getProperty("/esAdministrador") === true;
+    const bEsConsultor = oUiModel.getProperty("/esConsultor") === true;
+
+    // Rutas permitidas por perfil
+    const mRutas = {
+        home: {
+            ruta: "RouteMain",
+            perfil: "AMBOS"
+        },
+        registrarActividad: {
+            ruta: "RouteRegistrarActividad",
+            perfil: "CONSULTOR"
+        },
+        calendarioActividades: {
+            ruta: "RouteCalendarioActividades",
+            perfil: "CONSULTOR"
+        },
+        reporteMensual: {
+            ruta: "RouteReporteMensual",
+            perfil: "CONSULTOR"
+        },
+        historial: {
+            ruta: "RouteHistorial",
+            perfil: "CONSULTOR"
+        },
+        panelCumplimiento: {
+            ruta: "RoutePanelCumplimiento",
+            perfil: "ADMINISTRADOR"
+        },
+        clientesProyectos: {
+            ruta: "RouteClientesProyectos",
+            perfil: "ADMINISTRADOR"
+        },
+        perfiles: {
+            ruta: "RoutePerfiles",
+            perfil: "ADMINISTRADOR"
+        },
+        configuracion: {
+            ruta: "RouteConfiguracion",
+            perfil: "ADMINISTRADOR"
+        },
+        consolidacion: {
+            ruta: "RouteConsolidacion",
+            perfil: "ADMINISTRADOR"
+        }
+    };
+
+    const oDestino = mRutas[sKey];
+
+    if (!oDestino) {
+        sap.m.MessageToast.show("Opción de navegación desconocida");
+        return;
+    }
+
+    const bAutorizado =
+        (oDestino.perfil === "AMBOS" && (bEsAdmin || bEsConsultor)) ||
+        (oDestino.perfil === "ADMINISTRADOR" && bEsAdmin) ||
+        (oDestino.perfil === "CONSULTOR" && bEsConsultor);
+
+    if (!bAutorizado) {
+        sap.m.MessageBox.error(
+            "No tienes permisos para acceder a esta función."
+        );
+        return;
+    }
+
+    oRouter.navTo(oDestino.ruta);
+},
+
       });
     }
   );

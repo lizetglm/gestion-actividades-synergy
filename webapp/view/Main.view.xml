@@ -21,7 +21,8 @@
                 </Title>
 
                 <!-- APLICACIONES DE CONSULTOR -->
-                <VBox class="sapUiSmallMarginTopBottom  ">
+                <VBox class="sapUiSmallMarginTopBottom  "
+                visible="{uiPantalla>/esConsultor}">
                     <Label
                         design="Bold"
                         text="{i18n>consultantGroup}"
@@ -44,7 +45,8 @@
                 </VBox>
 
                 <!-- APLICACIONES DE ADMINISTRADOR -->
-                <VBox class="sapUiSmallMarginTopBottom  ">
+                <VBox class="sapUiSmallMarginTopBottom  "
+                visible="{uiPantalla>/esAdministrador}">
                     <Label
                         design="Bold"
                         text="{i18n>adminGroup}"
@@ -69,3 +71,4 @@
         </content>
     </Page>
 </mvc:View>
+

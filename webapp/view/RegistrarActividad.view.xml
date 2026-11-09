@@ -1,174 +1,345 @@
-<mvc:View id="vistaRegistrarActividad"
-    xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form"
-	controllerName="ns.frontend.controller.RegistrarActividad"
-	xmlns:mvc="sap.ui.core.mvc"
-	xmlns="sap.m"
-	xmlns:c="sap.ui.core"
-	displayBlock="true"
-	height="100%"
-	busyIndicatorDelay="0"
->
-    <Page id="idRegistrarActividadPage" showHeader="false" backgroundDesign="Transparent" class="sapUiResponsiveContentPadding" >
-        <!-- <customHeader >
-            <c:Fragment fragmentName="ns.frontend.fragment.Header" />
-        </customHeader> -->
+
+<mvc:View
+    id="vistaRegistrarActividad"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    controllerName="ns.frontend.controller.RegistrarActividad"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:c="sap.ui.core"
+    displayBlock="true"
+    height="100%"
+    busyIndicatorDelay="0">
+
+    <Page
+        id="idRegistrarActividadPage"
+        showHeader="false"
+        backgroundDesign="Transparent"
+        class="sapUiResponsiveContentPadding">
+
         <content>
             <VBox class="sapUiSmallMargin gapBody">
+
+                <!-- NAVEGACIÓN -->
                 <Breadcrumbs currentLocationText="{i18n>app1}">
-                    <Link text="{i18n>tituloGrupo1}" press=".onBack" />
+                    <Link
+                        text="{i18n>tituloGrupo1}"
+                        press=".onBack" />
                 </Breadcrumbs>
 
-                <FlexBox justifyContent="SpaceBetween" alignItems="End" >
+                <!-- ENCABEZADO -->
+                <FlexBox
+                    justifyContent="SpaceBetween"
+                    alignItems="End">
+
                     <Title
-                        level="H4" titleStyle="H4"
+                        level="H4"
+                        titleStyle="H4"
                         text="{uiPantalla>/saludo}"
                         wrapping="true"
-                        wrappingType="Hyphenated">
-                    </Title>
-                    <Button text="{i18n>save}" 
-                        icon="sap-icon://save" 
-                        type="Emphasized" 
+                        wrappingType="Hyphenated" />
+
+                    <Button
+                        text="{i18n>save}"
+                        icon="sap-icon://save"
+                        type="Emphasized"
                         class="sapUiSmallMarginBegin"
-                        press=".onGuardar"    
-                    />
+                        press=".onGuardar" />
+
                 </FlexBox>
 
-                <!-- FORMULARIO DE REGISRTO DE ACTIVIDAD -->
+                <!-- FORMULARIO -->
                 <Panel class="sapUiResponsiveContentPadding">
                     <content>
-                        <layout:Grid defaultSpan="L6 M6 S12" class="sapUiSmallMarginTop">
-                            <!-- Izquierda (Contexto del trabajo)-->
+
+                        <layout:Grid
+                            defaultSpan="L6 M6 S12"
+                            class="sapUiSmallMarginTop">
+
+                            <!-- COLUMNA IZQUIERDA -->
                             <VBox>
+
+                                <!-- CLIENTE -->
                                 <VBox class="sapUiTinyMarginBottom">
-                                    <Label text="{i18n>customer}" required="true" />
-                                    <Select id="clienteSelect" width="100%" wrapItemsText="true" selectedKey="{uiPantalla>/cliente}">
-                                        <items>
-                                            <c:Item key="" text="-- Seleccione un cliente --" />
-                                            <c:Item key="cliente1" text="Cliente Alpha S.A." />
-                                            <c:Item key="cliente2" text="Cliente Beta S.A." />
-                                            <c:Item key="cliente3" text="Cliente Gamma S.A." />
-                                        </items>
+
+                                    <Label
+                                        text="{i18n>customer}"
+                                        required="{= !${uiPantalla>/esCapacitacion} }" />
+
+                                    <Select
+                                        id="clienteSelect"
+                                        width="100%"
+                                        forceSelection="false"
+                                        selectedKey="{uiPantalla>/cliente}"
+                                        enabled="{= !${uiPantalla>/esCapacitacion} }"
+                                        change=".onClienteChange"
+                                        items="{catalogos>/clientes}">
+
+                                        <c:Item
+                                            key="{catalogos>uuid}"
+                                            text="{catalogos>nombre}" />
+
                                     </Select>
                                 </VBox>
 
-                                <CheckBox text="{i18n>formCapacitacion}" selected="{uiPantalla>/esCapacitacion}" class="sapUiTinyMarginBottom" />
-                                
+                                <!-- CAPACITACIÓN INTERNA -->
+                                <CheckBox
+                                    text="{i18n>formCapacitacion}"
+                                    selected="{uiPantalla>/esCapacitacion}"
+                                    class="sapUiTinyMarginBottom" />
+
+                                <!-- PROYECTO -->
                                 <VBox class="sapUiTinyMarginBottom">
-                                    <Label text="{i18n>project}" required="true" />
-                                    <Select id="proyectoSelect" width="100%" wrapItemsText="true" enabled="{= !${uiPantalla>/esCapacitacion} }" selectedKey="{uiPantalla>/proyecto}">
-                                        <items>
-                                            <c:Item key="" text="-- Seleccione un proyecto --" />
-                                            <c:Item key="Implementación RAP" text="Implementación RAP" />
-                                            <c:Item key="Desarrollo Fiori" text="Desarrollo Fiori" />
-                                            <c:Item key="Integración BTP" text="Integración BTP" />
-                                        </items>
+
+                                    <Label
+                                        text="{i18n>project}"
+                                        required="{= !${uiPantalla>/esCapacitacion} }" />
+
+                                    <Select
+                                        id="proyectoSelect"
+                                        width="100%"
+                                        forceSelection="false"
+                                        selectedKey="{uiPantalla>/proyecto}"
+                                        enabled="{= !${uiPantalla>/esCapacitacion} }"
+                                        change=".onProyectoChange"
+                                        items="{catalogos>/proyectos}">
+
+                                        <c:Item
+                                            key="{catalogos>uuid}"
+                                            text="{catalogos>nombre}" />
+
                                     </Select>
+
                                 </VBox>
 
-                                <VBox class="sapUiTinyMarginBottom" >
-                                    <Label text="{i18n>formRequerimiento}" required="true" />
-                                    <Select id="requerimientoSelect" width="100%" wrapItemsText="true" enabled="{= !${uiPantalla>/esCapacitacion} }" selectedKey="{uiPantalla>/requerimiento}">
-                                        <items>
-                                            <c:Item key="" text="-- Seleccione un requerimiento --" />
-                                            <c:Item key="REQ-001" text="Implementación RAP" />
-                                            <c:Item key="REQ-002" text="Desarrollo Fiori" />
-                                            <c:Item key="REQ-003" text="Integración BTP" />
-                                        </items>
+                                <!-- REQUERIMIENTO -->
+                                <VBox class="sapUiTinyMarginBottom">
+
+                                    <Label
+                                        text="{i18n>formRequerimiento}"
+                                        required="false" />
+
+                                   <Select
+                                        id="requerimientoSelect"
+                                        width="100%"
+                                        forceSelection="false"
+                                        selectedKey="{uiPantalla>/requerimiento}"
+                                        enabled="{= !${uiPantalla>/esCapacitacion} }"
+                                        items="{catalogos>/requerimientos}">
+
+                                        <c:Item
+                                            key="{catalogos>uuid}"
+                                            text="{catalogos>nombre}" />
+
                                     </Select>
+
                                 </VBox>
+
                             </VBox>
 
-                            <!-- Derecha -->
+                            <!-- COLUMNA DERECHA -->
                             <VBox>
-                                <layout:Grid defaultSpan="L6 M6 S12" hSpacing="0" >
+
+                                <layout:Grid
+                                    defaultSpan="L6 M6 S12"
+                                    hSpacing="0">
+
+                                    <!-- FECHA -->
                                     <VBox class="sapUiTinyMarginBottom sapUiTinyMarginEnd">
-                                        <Label text="{i18n>formFecha}" required="true" />
-                                        <DatePicker value="{uiPantalla>/fechaCaptura}" width="100%" change=".onFechaChange" />
+
+                                        <Label
+                                            text="{i18n>formFecha}"
+                                            required="true" />
+
+                                        <DatePicker
+                                            id="fechaCapturaPicker"
+                                            value="{uiPantalla>/fechaCaptura}"
+                                            valueFormat="yyyy-MM-dd"
+                                            displayFormat="dd/MM/yyyy"
+                                            width="100%"
+                                            change=".onFechaChange" />
+
                                     </VBox>
 
+                                    <!-- HORAS -->
                                     <VBox class="sapUiTinyMarginBottom">
-                                        <Label text="{i18n>formHInvertidas}" required="true" />
-                                        <Input type="Number" placeholder="Ej. 3.5" value="{uiPantalla>/horasInvertidas}" id="horasInvertidasInput" width="100%" />
+
+                                        <Label
+                                            text="{i18n>formHInvertidas}"
+                                            required="true" />
+
+                                        <Input
+                                            id="horasInvertidasInput"
+                                            type="Number"
+                                            placeholder="Ej. 3.5"
+                                            value="{uiPantalla>/horasInvertidas}"
+                                            width="100%" 
+                                            enabled="true"/>
+
                                     </VBox>
+
                                 </layout:Grid>
 
+                                <!-- DESCRIPCIÓN -->
                                 <VBox class="sapUiTinyMarginBottom">
-                                    <Label text="{i18n>formDescripcion}" required="true" />
-                                    <TextArea id="descripcionInput"
-                                        placeholder="Ej. Curso avanzado de SAP RAP y BTP. Desarrollo de validaciones..."
+
+                                    <Label
+                                        text="{i18n>formDescripcion}"
+                                        required="true" />
+
+                                    <TextArea
+                                        id="descripcionInput"
+                                        placeholder="Describe la actividad realizada..."
                                         rows="5"
-                                        width="100%" 
-                                        value="{uiPantalla>/descripcion}"
-                                    />
+                                        width="100%"
+                                        value="{uiPantalla>/descripcion}" />
+
                                 </VBox>
+
                             </VBox>
 
                         </layout:Grid>
+
                     </content>
                 </Panel>
 
-                <!-- TABLA DE ACTIVIDADES REGISTRADAS HOY -->
-                <Title class="sapUiSmallMarginTop"
-                    level="H4" titleStyle="H4"
+                <!-- TABLA DE ACTIVIDADES -->
+                <Title
+                    class="sapUiSmallMarginTop"
+                    level="H4"
+                    titleStyle="H4"
                     text="{uiPantalla>/tableTitle}"
                     wrapping="true"
-                    wrappingType="Hyphenated">
-                </Title>
-                <Table items="{modeloFiltrado>/}" alternateRowColors="true" >
+                    wrappingType="Hyphenated" />
+
+                <Table
+                    id="tablaActividades"
+                    items="{modeloFiltrado>/}"
+                    alternateRowColors="true"
+                    noDataText="No hay actividades registradas para esta fecha.">
+
                     <headerToolbar>
                         <OverflowToolbar>
-                            <ToolbarSpacer/>
-                            <Button text="Exportar a Excel" icon="sap-icon://excel-attachment" tooltip="Exportar a Excel" press=".onExportarExcel" type="Emphasized"/>
+
+                            <ToolbarSpacer />
+
+                            <Button
+                                text="Exportar a Excel"
+                                icon="sap-icon://excel-attachment"
+                                tooltip="Exportar a Excel"
+                                press=".onExportarExcel"
+                                type="Emphasized" />
+
                         </OverflowToolbar>
                     </headerToolbar>
+
                     <columns>
-                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+
+                        <Column
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            popinDisplay="Inline">
                             <Text text="{i18n>formFecha}" />
                         </Column>
-                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+
+                        <Column
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            popinDisplay="Inline">
                             <Text text="{i18n>customer}" />
                         </Column>
-                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+
+                        <Column
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            popinDisplay="Inline">
                             <Text text="{i18n>formRequerimiento}" />
                         </Column>
-                        <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+
+                        <Column
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            popinDisplay="Inline">
                             <Text text="{i18n>description}" />
                         </Column>
-                        <Column width="8rem" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+
+                        <Column
+                            width="8rem"
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            popinDisplay="Inline">
                             <Text text="{i18n>tblHoras}" />
                         </Column>
-                        <Column width="6rem" hAlign="End" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+
+                        <Column
+                            width="6rem"
+                            hAlign="End"
+                            minScreenWidth="Tablet"
+                            demandPopin="true"
+                            popinDisplay="Inline">
                             <Text text="{i18n>actions}" />
                         </Column>
+
                     </columns>
+
                     <items>
-                        <ColumnListItem type="Active" press=".onFilaClickeada" highlight="{= ${modeloFiltrado>esCapacitacion} ? 'Success' : 'None' }">
+
+                        <ColumnListItem
+                            type="Active"
+                            press=".onFilaClickeada"
+                            highlight="{= ${modeloFiltrado>esCapacitacion} ? 'Success' : 'None' }">
+
                             <cells>
+
                                 <Text text="{modeloFiltrado>fecha}" />
+
                                 <Text text="{modeloFiltrado>cliente}" />
+
                                 <Text text="{modeloFiltrado>requerimiento}" />
+
                                 <Text text="{modeloFiltrado>descripcion}" />
+
                                 <Text text="{modeloFiltrado>horas} h" />
-                                <HBox gap="0.5rem" justifyContent="Center">
-                                    <Button icon="sap-icon://edit" press=".onEditarActividad" type="Attention"/>
-                                    <Button icon="sap-icon://delete" press=".onEliminarActividad" type="Reject"/>
+
+                                <HBox
+                                    gap="0.5rem"
+                                    justifyContent="Center">
+
+                                    <Button
+                                        icon="sap-icon://edit"
+                                        press=".onEditarActividad"
+                                        type="Attention" />
+
+                                    <Button
+                                        icon="sap-icon://delete"
+                                        press=".onEliminarActividad"
+                                        type="Reject" />
+
                                 </HBox>
+
                             </cells>
+
                         </ColumnListItem>
+
                     </items>
+
                 </Table>
 
             </VBox>
         </content>
 
-        <!-- HORAS REGISTRADAS TOTAL -->
+        <!-- TOTAL DE HORAS -->
         <footer>
-            <OverflowToolbar >
-                <ObjectStatus 
-                    text="{uiPantalla>/horasTotales}" 
-                    state="Success" 
-                    class="sapMTitleStyleH5 " />
+            <OverflowToolbar>
+
+                <ObjectStatus
+                    text="{uiPantalla>/horasTotales}"
+                    state="Success"
+                    class="sapMTitleStyleH5" />
+
             </OverflowToolbar>
         </footer>
+
     </Page>
+
 </mvc:View>

@@ -11,10 +11,14 @@ function (Controller, JSONModel) {
         },
 
         onInit: function () {
-            let  uiEstado = {
+            let uiEstado = {
                 tituloHeader: this.getResourceBundle().getText("titleMain"),
-                userName: "User",
-                saludo: "Hola, bienvenido"
+                userName: "",
+                saludo: "Cargando información del usuario...",
+                esConsultor: false,
+                esAdministrador: false,
+                autenticacionFinalizada: false,
+                errorAutenticacion: false
 
             };
 
@@ -90,8 +94,79 @@ function (Controller, JSONModel) {
                 listaAdmin: appsAdministrador
             };
                         
-            this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
-            this.getView().setModel(new JSONModel(apps), "apps");
+            // Modelo de usuario compartido con toda la aplicación
+            this.getOwnerComponent().setModel(
+                new JSONModel(uiEstado),
+                "uiPantalla"
+            );
+
+            // Modelo de tarjetas de la pantalla principal
+            this.getView().setModel(
+                new JSONModel(apps),
+                "apps"
+            );
+
+            this._cargarUsuarioAutenticado();
+
+        },
+
+        _cargarUsuarioAutenticado: async function () {
+            const oUiModel = this.getOwnerComponent().getModel("uiPantalla");
+            const oODataModel = this.getOwnerComponent().getModel();
+
+            try {
+                const oBinding = oODataModel.bindList(
+                    "/MiUsuario",
+                    undefined,
+                    undefined,
+                    undefined,
+                    { $$groupId: "$direct" }
+                );
+                const aContextos = await oBinding.requestContexts(0, 2);
+
+                if (aContextos.length !== 1) {
+                    throw new Error("Usuario no registrado o acceso no autorizado");
+                }
+
+                const oUsuario = await aContextos[0].requestObject();
+
+                const bEsAdmin =
+                    oUsuario.Perfil === "ADMINISTRADOR" &&
+                    oUsuario.Activo === true;
+
+                const bEsConsultor =
+                    oUsuario.Perfil === "CONSULTOR" &&
+                    oUsuario.Activo === true;
+
+                if (!bEsAdmin && !bEsConsultor) {
+                    throw new Error("Perfil no autorizado");
+                }
+
+                oUiModel.setProperty("/userName", oUsuario.IdentidadSso);
+                oUiModel.setProperty(
+                    "/saludo",
+                    "Hola, bienvenido " + oUsuario.IdentidadSso
+                );
+
+                oUiModel.setProperty("/esAdministrador", bEsAdmin);
+                oUiModel.setProperty("/esConsultor", bEsConsultor);
+                oUiModel.setProperty("/errorAutenticacion", false);
+
+            } catch (oError) {
+                console.error("Error al identificar al usuario:", oError);
+
+                oUiModel.setProperty("/userName", "");
+                oUiModel.setProperty("/saludo", "Acceso no autorizado");
+                oUiModel.setProperty("/esAdministrador", false);
+                oUiModel.setProperty("/esConsultor", false);
+
+                oUiModel.setProperty("/errorAutenticacion", true);
+
+                
+            }
+            finally {
+    oUiModel.setProperty("/autenticacionFinalizada", true);
+}
         },
 
         onSaludar: function () {
@@ -111,3 +186,4 @@ function (Controller, JSONModel) {
         }
     });
 });
+
