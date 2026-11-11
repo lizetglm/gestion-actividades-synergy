@@ -18,6 +18,7 @@ sap.ui.define([
 
     return Controller.extend("ns.frontend.controller.admin.Clientes", {
 
+
         // --- NAVEGACIÓN (LEER) ---
         onSelectCliente: function (oEvent) {
             var oItem = oEvent.getSource(); 
@@ -211,27 +212,6 @@ sap.ui.define([
                 oDialog.setBusy(false);
 }
         },
-
-
-        // borrado lógico 
-        // onInactivarCliente: function (oEvent) {
-        //     const oContext = oEvent.getSource().getBindingContext();
-        //     const sNombre = oContext.getProperty("Nombre");
-
-        //     MessageBox.confirm(`¿Inactivar al cliente "${sNombre}"?`, {
-        //         onClose: async (sAccion) => {
-        //             if (sAccion !== MessageBox.Action.OK) { return; }
-        //             try {
-        //                 // "$auto" fuerza el envío inmediato, sin esperar el grupoDialogo
-        //                 await oContext.setProperty("Activo", false, "$auto");
-        //                 MessageToast.show("Cliente inactivado");
-        //                 this.byId("tablaClientes").getBinding("items").refresh();
-        //             } catch (oError) {
-        //                 MessageBox.error(oError.message);
-        //             }
-        //         }
-        //     });
-        // },
 
         onInactivarCliente: function (oEvent) {
             const oContext = oEvent.getSource().getBindingContext();

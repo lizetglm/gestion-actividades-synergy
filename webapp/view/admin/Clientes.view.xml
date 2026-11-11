@@ -80,9 +80,10 @@
                 </columns>
 
                 <items>
-                    <ColumnListItem type="Navigation" 
+                    <ColumnListItem 
+                        type="{= ${Activo} === 'No' ? 'Inactive' : 'Navigation' }"
                         press=".onSelectCliente"
-                        highlight="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }"
+                        highlight="{= ${Activo} === 'No' ? 'Error' : 'Success' }"
                     >
                         <customData>
                             <core:CustomData key="inactivo"
@@ -93,15 +94,20 @@
                             <Text text="{Nombre}" />
                             <Text text="{Telefono}" />
                             <Text text="{Correo}" />
-                            <ObjectStatus text="{= ${Activo} === 'Yes' ? 'Activo' : 'Inactivo' }" state="{= ${Activo} === 'Yes' ? 'Success' : 'Error' }" />
+                            <ObjectStatus 
+                                text="{= ${Activo} === 'No' ? 'Inactivo' : 'Activo' }" 
+                                state="{= ${Activo} === 'No' ? 'Error' : 'Success' }" />
                             <HBox justifyContent="End" gap="0.5rem">
-                                <Button icon="sap-icon://edit" type="Transparent" tooltip="Editar" press=".onEditCliente" 
-                                visible="{= ${Activo} === true ? true : false }" 
+                                <Button icon="sap-icon://edit" type="Transparent" 
+                                    tooltip="Editar" press=".onEditCliente" 
+                                    visible="{= ${Activo} === true ? true : false }" 
                                 />
-                                <Button icon="sap-icon://decline" type="Transparent" tooltip="Inactivar"
-                                        visible="{= ${Activo} === true ? true : false }" press=".onInactivarCliente" />
-                                <Button icon="sap-icon://accept" type="Transparent" tooltip="Activar"
-                                        visible="{= ${Activo} === true ? false : true }" press=".onActivarCliente" />
+                                <Button icon="sap-icon://decline" type="Transparent"            
+                                    tooltip="Inactivar"
+                                    visible="{= ${Activo} === true ? true : false }" press=".onInactivarCliente" />
+                                <Button icon="sap-icon://accept" type="Transparent"     
+                                    tooltip="Activar"
+                                    visible="{= ${Activo} === true ? false : true }" press=".onActivarCliente" />
                             </HBox>
                         </cells>
                     </ColumnListItem>

@@ -1,125 +1,329 @@
-
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator",
+    "sap/ui/model/Sorter",
     "sap/ui/export/Spreadsheet",
     "sap/ui/export/library",
     "ns/frontend/util/ExportHelper",
-    "sap/ui/model/Sorter"
-], function(
-    Controller, JSONModel, MessageBox, MessageToast, Filter, FilterOperator, Spreadsheet, exportLibrary,
-    ExportHelper, Sorter
+    "ns/frontend/util/RapHelper"
+], function (
+    Controller, JSONModel, MessageBox, MessageToast, Filter, Sorter,
+    Spreadsheet, exportLibrary, ExportHelper, RapHelper
 ) {
-	"use strict";
+    "use strict";
     const EdmType = exportLibrary.EdmType;
 
-	return Controller.extend("ns.frontend.controller.admin.PanelCumplimiento", {
+    const GUID_VACIO = "00000000-0000-0000-0000-000000000000";
+    const TEXTO_REGISTRO = { SIN: "Sin registrar", PEN: "Pendiente", COM: "Completo" };
+    const TEXTO_FIRMA = { FIR: "Firmado", PEN: "Sin firmar" };
+
+    const TITULO_KPI = {
+        Activos: "Todos los consultores",
+        Firmados: "Reportes firmados",
+        Pendientes: "Reportes pendientes de firma",
+        SinRegistro: "Consultores sin registro"
+    };
+
+    const FILAS_MIN = 3;
+    const FILAS_MAX = 12;
+
+    const num = (v) => (v != null ? parseFloat(v) : null);
+
+    return Controller.extend("ns.frontend.controller.admin.PanelCumplimiento", {
+
         getResourceBundle: function () {
             return this.getOwnerComponent().getModel("i18n").getResourceBundle();
         },
 
         onInit: function () {
-            let  uiEstado = {
+            this._sKpiActivo = "Activos";
+            this._iPeticion = 0;
+            this._sTituloBase = this.getResourceBundle().getText("detallePorConsultor");
+
+            this.getView().setModel(new JSONModel({
                 tituloHeader: this.getResourceBundle().getText("titlePanelCumplimiento"),
-                tituloTabla: this.getResourceBundle().getText("detallePorConsultor"),
-                saludo: this.getResourceBundle().getText("saludoPanelCumplimiento") + " " + new Date().toLocaleDateString("es-MX", {
-                    month: "long",
-                    year: "numeric"
-                }),
-                kpis: {
-                    activos: 0,
-                    completos: 0,
-                    pendientes: 0,
-                    sinFirmar: 0
-                }
-            };
-            this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
+                saludo: "",
+                kpis: { activos: 0, completos: 0, pendientes: 0, sinFirmar: 0 },
+                horasTotales: 0
+            }), "uiPantalla");
 
-            this._sKpiActivo = "Todos";
-            
-            // Modelos solo de prueba
-            var oModel = new JSONModel("model/panelCumplimiento.json");
+            this.getView().setModel(new JSONModel({
+                arbol: [],
+                tituloTabla: this._sTituloBase
+            }), "panel");
 
-            //calcular KPIs al cargar el modelo
-            oModel.attachRequestCompleted(function() {
-                this._calcularKpisYFiltrar();
-            }.bind(this));
+            this._fijarPeriodoActual();
 
-            this.getView().setModel(oModel, "modelo"); // Modelos solo de prueba
-
-            // ASIGNACIÓN DE EVENTOS CLIC A LOS VBOX 
-            let aKpis = [
-                { id: "kpiActivos", type: "Activos" },
-                { id: "kpiCompletos", type: "Completos" },
-                { id: "kpiPendientes", type: "Pendientes" },
-                { id: "kpiSinFirmar", type: "SinFirmar" },
-            ];
-
-            aKpis.forEach(function(kpi) {
-                let oVBox = this.byId(kpi.id);
-                if(oVBox) {
-                    oVBox.addEventDelegate({
-                        onclick: function() { this.onKpiPress(kpi.type); }.bind(this)
-                    });
-                }
-            }.bind(this));
-        },
-
-        onBack: function() {
-			this.getOwnerComponent().getRouter().navTo("RouteMain");
-		},
-        
-
-        // ORDENAMIENTO DE TABLA 
-        onAbrirOrdenamiento: function (oEvent) {
-            var oView = this.getView();
-            if (!this._pDialogOrdenamiento) {
-                this._pDialogOrdenamiento = sap.ui.core.Fragment.load({
-                    id: oView.getId(),
-                    name: "ns.frontend.fragment.DialogOrdPanel", 
-                    controller: this
-                }).then(function (oDialog) {
-                    oView.addDependent(oDialog);
-                    return oDialog;
-                });
-            }
-            this._pDialogOrdenamiento.then(function (oDialog) {
-                oDialog.open();
+            // Clic en las tarjetas KPI (los ids de la vista se conservan)
+            [
+                { id: "kpiActivos", tipo: "Activos" },
+                { id: "kpiCompletos", tipo: "Firmados" },
+                { id: "kpiPendientes", tipo: "Pendientes" },
+                { id: "kpiSinFirmar", tipo: "SinRegistro" }
+            ].forEach((oKpi) => {
+                this.byId(oKpi.id)?.addEventDelegate({ onclick: () => this.onKpiPress(oKpi.tipo) });
             });
+
+            // Carga cada vez que se entra a la pantalla (en onInit el modelo aún no está disponible)
+            this.getOwnerComponent().getRouter()
+                .getRoute("RoutePanelCumplimiento")
+                .attachPatternMatched(this._alEntrar, this);
         },
 
-        onConfirmarOrdenamiento: function (oEvent) {
-            var oBinding = this.byId("tablaCumplimiento").getBinding("items");
-            var mParams = oEvent.getParameters();
-            oBinding.sort(new sap.ui.model.Sorter(mParams.sortItem.getKey(), mParams.sortDescending));
+        _alEntrar: function () {
+            this._cargarPanel();
         },
-        
 
-        // EXPORTACIÓN Y REPORTE ---
-        onExportarExcel: function () {
-            let aCols = [
-                { label: 'Consultor', property: 'nombre', type: EdmType.String },
-                { label: 'Cliente', property: 'cliente', type: EdmType.String },
-                { label: 'Equipo/Área', property: 'equipo', type: EdmType.String },
-                { label: 'Estatus de Registro', property: 'estatusReg', type: EdmType.String },
-                { label: 'Estatus de Firma', property: 'estatusFirma', type: EdmType.String },
-                { label: 'Avance (%)', property: 'porcentajeAvance', type: EdmType.Number }
+        onBack: function () {
+            this.getOwnerComponent().getRouter().navTo("RouteMain");
+        },
+
+        _fijarPeriodoActual: function () {
+            const oHoy = new Date();
+            this.byId("filtroAnio").setSelectedKey(String(oHoy.getFullYear()));
+            this.byId("filtroMes").setSelectedKey(String(oHoy.getMonth() + 1).padStart(2, "0"));
+            this._actualizarTituloPeriodo();
+        },
+
+        // ---------- LECTURA DE DATOS ----------
+
+        // Lee una colección (hasta 1000 filas) y la devuelve como arreglo.
+        // Se usa el modelo del componente: el de la vista puede no existir todavía.
+        _leer: async function (sPath, aFiltros, mParametros, aSorters) {
+            const oBinding = this.getOwnerComponent().getModel().bindList(
+                sPath, null, aSorters || [], aFiltros || [], mParametros || {});
+            try {
+                const aContextos = await oBinding.requestContexts(0, 1000);
+                return aContextos.map((oCtx) => oCtx.getObject());
+            } finally {
+                oBinding.destroy();
+            }
+        },
+
+        // Dos consultas por periodo: consultores (padres) y consultor x cliente (hijos)
+        _cargarPanel: async function () {
+            const iPeticion = ++this._iPeticion;
+            const oTabla = this.byId("tablaCumplimiento");
+            const aFiltros = [
+                new Filter("Anio", "EQ", this.byId("filtroAnio").getSelectedKey()),
+                new Filter("Mes", "EQ", this.byId("filtroMes").getSelectedKey())
             ];
 
-            let oRowBinding = this.byId("tablaCumplimiento").getBinding("items");
-            let sNombreArchivo = ExportHelper.generarNombreArchivoConFecha("Dashboard_Cumplimiento");
-            let oSettings = {
-                workbook: { columns: aCols },
-                dataSource: oRowBinding,
-                fileName: sNombreArchivo, 
-                worker: false
-            };
+            oTabla.setBusy(true);
+            try {
+                const [aConsultores, aClientes] = await Promise.all([
+                    this._leer("/PanelCumplimiento", aFiltros,
+                        { $select: "PeriodoUuid,ConsultorUuid,NombreConsultor,HorasRegistradas,DiasRegistrados" },
+                        [new Sorter("NombreConsultor")]),
+                    this._leer("/PanelCliente", aFiltros,
+                        { $select: "ConsultorUuid,ClienteUuid,NombreCliente,HorasRegistradas,DiasRegistrados," +
+                                   "RegistroEstado,FirmaEstado,Avance" },
+                        [new Sorter("NombreCliente")])
+                ]);
+                if (iPeticion !== this._iPeticion) { return; }   // llegó una petición más nueva
 
-            let oSheet = new Spreadsheet(oSettings);
+                this._aConsultores = aConsultores;
+                this._aClientes = aClientes;
+                this._construirArbol();
+            } catch (oError) {
+                RapHelper.mostrarError(oError.message);
+            } finally {
+                if (iPeticion === this._iPeticion) { oTabla.setBusy(false); }
+            }
+        },
+
+        // ---------- ARBOL Y KPI ----------
+
+        _construirArbol: function () {
+            const sCliente = this.byId("filtroCliente").getSelectedKey();   // "" = todos
+
+            // Hijos: un reporte (consultor x cliente) por fila
+            const mHijos = {};
+            (this._aClientes || []).forEach((c) => {
+                if (sCliente && c.ClienteUuid !== sCliente) { return; }
+                const nHoras = num(c.HorasRegistradas);
+                (mHijos[c.ConsultorUuid] = mHijos[c.ConsultorUuid] || []).push({
+                    ConsultorUuid: c.ConsultorUuid,
+                    ClienteUuid: c.ClienteUuid,
+                    Titulo: c.NombreCliente,
+                    SinCliente: c.ClienteUuid === GUID_VACIO,
+                    Horas: nHoras,
+                    Dias: c.DiasRegistrados,
+                    Detalle: nHoras != null ? `${nHoras} h (${c.DiasRegistrados} d)` : "—",
+                    RegistroEstado: c.RegistroEstado,
+                    FirmaEstado: c.FirmaEstado,
+                    EstatusRegistro: TEXTO_REGISTRO[c.RegistroEstado],
+                    EstatusFirma: TEXTO_FIRMA[c.FirmaEstado],
+                    Avance: c.Avance
+                });
+            });
+
+            // Padres: el estado se deduce de sus clientes
+            let aNodos = [];
+            (this._aConsultores || []).forEach((f) => {
+                const aHijos = mHijos[f.ConsultorUuid] || [];
+                if (sCliente && !aHijos.length) { return; }   // con filtro, solo quienes tienen ese cliente
+
+                const nFirmados = aHijos.filter((h) => h.FirmaEstado === "FIR").length;
+                const nPendientes = aHijos.length - nFirmados;
+                const nHoras = num(f.HorasRegistradas);
+
+                let sRegistro = "SIN";
+                if (aHijos.length) {
+                    sRegistro = aHijos.every((h) => h.RegistroEstado === "COM") ? "COM" : "PEN";
+                }
+                let sFirma = "SIN", sTextoFirma = "—";
+                if (aHijos.length) {
+                    if (!nPendientes) { sFirma = "FIR"; sTextoFirma = "Firmado"; }
+                    else if (!nFirmados) { sFirma = "PEN"; sTextoFirma = "Sin firmar"; }
+                    else {
+                        sFirma = "MIX";
+                        sTextoFirma = `${nFirmados} firmado${nFirmados > 1 ? "s" : ""} · ` +
+                                      `${nPendientes} pendiente${nPendientes > 1 ? "s" : ""}`;
+                    }
+                }
+
+                aNodos.push({
+                    ConsultorUuid: f.ConsultorUuid,
+                    Titulo: f.NombreConsultor,
+                    Horas: nHoras,
+                    Detalle: nHoras != null ? `${nHoras} h (${f.DiasRegistrados} d)` : "0 h",
+                    RegistroEstado: sRegistro,
+                    FirmaEstado: sFirma,
+                    EstatusRegistro: TEXTO_REGISTRO[sRegistro],
+                    EstatusFirma: sTextoFirma,
+                    Avance: aHijos.length
+                        ? Math.round(aHijos.reduce((s, h) => s + (h.Avance || 0), 0) / aHijos.length)
+                        : 0,
+                    children: aHijos
+                });
+            });
+
+            // KPI: antes de aplicar la tarjeta elegida, para no perder el panorama
+            const nReportesFirmados = aNodos.reduce(
+                (s, n) => s + n.children.filter((h) => h.FirmaEstado === "FIR").length, 0);
+            const nReportes = aNodos.reduce((s, n) => s + n.children.length, 0);
+            this.getView().getModel("uiPantalla").setProperty("/kpis", {
+                activos: aNodos.length,
+                completos: nReportesFirmados,
+                pendientes: nReportes - nReportesFirmados,
+                sinFirmar: aNodos.filter((n) => !n.children.length).length
+            });
+            this.getView().getModel("uiPantalla").setProperty("/horasTotales",
+                aNodos.reduce((s, n) => s + (n.Horas || 0), 0));
+
+            this.getView().getModel("panel").setProperty("/arbol", this._aplicarKpi(aNodos));
+        },
+
+        // La tarjeta elegida deja solo las filas que ella cuenta
+        _aplicarKpi: function (aNodos) {
+            const soloHijos = (fnHijo) => aNodos
+                .map((n) => {
+                    const aHijos = n.children.filter(fnHijo);
+                    return aHijos.length ? Object.assign({}, n, { children: aHijos }) : null;
+                })
+                .filter(Boolean);
+
+            switch (this._sKpiActivo) {
+                case "Firmados": return soloHijos((h) => h.FirmaEstado === "FIR");
+                case "Pendientes": return soloHijos((h) => h.FirmaEstado !== "FIR");
+                case "SinRegistro": return aNodos.filter((n) => !n.children.length);
+                default: return aNodos;
+            }
+        },
+
+        // ---------- FILTROS ----------
+
+        _actualizarTituloPeriodo: function () {
+            const sMes = this.byId("filtroMes").getSelectedItem()?.getText() || "";
+            const sAnio = this.byId("filtroAnio").getSelectedItem()?.getText() || "";
+            this.getView().getModel("uiPantalla").setProperty("/saludo", `Periodo: ${sMes} ${sAnio}`);
+        },
+
+        _restablecerTitulo: function () {
+            this._sKpiActivo = "Activos";
+            this.getView().getModel("panel").setProperty("/tituloTabla", this._sTituloBase);
+        },
+
+        // Año o mes: hay que pedir datos al servidor
+        onFiltroGlobalChange: function () {
+            this._restablecerTitulo();
+            this._actualizarTituloPeriodo();
+            this._cargarPanel();
+        },
+
+        // Cliente: se filtra en memoria
+        onFiltrarDashboard: function () {
+            this._restablecerTitulo();
+            this._construirArbol();
+        },
+
+        onKpiPress: function (sTipo) {
+            this._sKpiActivo = sTipo;
+            this.getView().getModel("panel").setProperty("/tituloTabla",
+                sTipo === "Activos" ? this._sTituloBase : TITULO_KPI[sTipo]);
+            this._construirArbol();
+        },
+
+        onResetFiltros: function () {
+            this.byId("filtroCliente").setSelectedKey("");
+            this.byId("filtroCliente").setValue("");
+            this._fijarPeriodoActual();
+            this._restablecerTitulo();
+            this._cargarPanel();
+            MessageToast.show("Filtros restablecidos");
+        },
+
+        // ---------- TAMAÑO DE LA TABLA ----------
+
+        // La tabla mide lo que tiene: mínimo 3 filas, máximo 12 (luego aparece scroll interno)
+        onFilasActualizadas: function () {
+            const oTabla = this.byId("tablaCumplimiento");
+            const iFilas = oTabla.getBinding("rows")?.getLength() || 0;
+            const iVisibles = Math.min(FILAS_MAX, Math.max(FILAS_MIN, iFilas));
+            if (oTabla.getVisibleRowCount() !== iVisibles) {
+                oTabla.setVisibleRowCount(iVisibles);
+            }
+        },
+
+        // ---------- EXPORTAR / IMPRIMIR ----------
+
+        // Una fila por consultor y cliente (o una sola si el consultor no tiene registro)
+        onExportarExcel: function () {
+            const aArbol = this.getView().getModel("panel").getProperty("/arbol") || [];
+            const aPlano = [];
+
+            aArbol.forEach((n) => {
+                (n.children.length ? n.children : [{}]).forEach((h) => aPlano.push({
+                    Consultor: n.Titulo,
+                    Cliente: h.Titulo || "—",
+                    Horas: h.Titulo ? h.Horas : n.Horas,
+                    Dias: h.Dias,
+                    EstatusRegistro: h.Titulo ? h.EstatusRegistro : n.EstatusRegistro,
+                    EstatusFirma: h.Titulo ? h.EstatusFirma : n.EstatusFirma,
+                    Avance: h.Titulo ? h.Avance : n.Avance
+                }));
+            });
+
+            const aCols = [
+                { label: "Consultor", property: "Consultor", type: EdmType.String },
+                { label: "Cliente", property: "Cliente", type: EdmType.String },
+                { label: "Horas", property: "Horas", type: EdmType.Number },
+                { label: "Días", property: "Dias", type: EdmType.Number },
+                { label: "Estatus de registro", property: "EstatusRegistro", type: EdmType.String },
+                { label: "Estatus de firma", property: "EstatusFirma", type: EdmType.String },
+                { label: "Avance (%)", property: "Avance", type: EdmType.Number }
+            ];
+
+            const oSheet = new Spreadsheet({
+                workbook: { columns: aCols },
+                dataSource: aPlano,
+                fileName: ExportHelper.generarNombreArchivoConFecha("Dashboard_Cumplimiento"),
+                worker: false
+            });
             oSheet.build().finally(() => oSheet.destroy());
         },
 
@@ -127,114 +331,24 @@ sap.ui.define([
             window.print();
         },
 
+        // ---------- ACCIONES DEL PIE ----------
 
-    
-        // KPIs DINÁMICOS ---
-        onKpiPress: function (sKpiType) {
-            this._sKpiActivo = sKpiType;
-            let sTitulo = "Detalle por consultor";
-            
-            switch(sKpiType) {
-                case 'Activos': sTitulo = "Todos los consultores activos"; break;
-                case 'Completos': sTitulo = "Consultores con registro al 100%"; break;
-                case 'Pendientes': sTitulo = "Consultores con días atrasados"; break;
-                case 'SinFirmar': sTitulo = "Consultores con firma pendiente"; break;
-            }
-            this.getView().getModel("uiPantalla").setProperty("/tituloTabla", sTitulo);
-            this._calcularKpisYFiltrar();
-        },
+        onRecordatorioMasivo: function () {
+            const aArbol = this.getView().getModel("panel").getProperty("/arbol") || [];
+            const iPendientes = aArbol.filter(
+                (n) => n.RegistroEstado !== "COM" || n.FirmaEstado !== "FIR").length;
 
-        _calcularKpisYFiltrar: function () {
-            let sPeriodo = this.byId("filtroPeriodo").getSelectedKey();
-            
-            // Calculamos los KPIs SOLO basados en el periodo
-            let aTodaLaData = this.getView().getModel("modelo").getProperty("/oModelo") || [];
-            let iActivos = 0, iCompletos = 0, iPendientes = 0, iSinFirmar = 0;
-
-            aTodaLaData.forEach(oFila => {
-                if (sPeriodo === "Todos" || oFila.periodo === sPeriodo) {
-                    iActivos++;
-                    if (oFila.estatusReg === "Completo") iCompletos++;
-                    if (oFila.estatusReg === "Pendiente") iPendientes++;
-                    if (oFila.estatusFirma === "Sin firmar") iSinFirmar++;
-                }
-            });
-
-            let oUiModel = this.getView().getModel("uiPantalla");
-            oUiModel.setProperty("/kpis/activos", iActivos);
-            oUiModel.setProperty("/kpis/completos", iCompletos);
-            oUiModel.setProperty("/kpis/pendientes", iPendientes);
-            oUiModel.setProperty("/kpis/sinFirmar", iSinFirmar);
-
-            this._aplicarFiltrosTabla();
-        },
-
-        // Aplica el conjunto completo de filtros (Periodo + Cliente + Equipo + KPI Activo) a la tabla
-        _aplicarFiltrosTabla: function() {
-            let sPeriodo = this.byId("filtroPeriodo").getSelectedKey();
-            let sCliente = this.byId("filtroCliente").getSelectedKey();
-            let sEquipo = this.byId("filtroEquipo").getSelectedKey();
-            
-            let aFiltros = [];
-            
-            if (sPeriodo && sPeriodo !== "Todos") aFiltros.push(new Filter("periodo", FilterOperator.EQ, sPeriodo));
-            if (sCliente && sCliente !== "Todos") aFiltros.push(new Filter("cliente", FilterOperator.Contains, sCliente));
-            if (sEquipo && sEquipo !== "Todos") aFiltros.push(new Filter("equipo", FilterOperator.Contains, sEquipo));
-            
-            if (this._sKpiActivo === 'Completos') aFiltros.push(new Filter("estatusReg", FilterOperator.EQ, "Completo"));
-            if (this._sKpiActivo === 'Pendientes') aFiltros.push(new Filter("estatusReg", FilterOperator.EQ, "Pendiente"));
-            if (this._sKpiActivo === 'SinFirmar') aFiltros.push(new Filter("estatusFirma", FilterOperator.EQ, "Sin firmar"));
-
-            let oBinding = this.byId("tablaCumplimiento").getBinding("items");
-            if (oBinding) {
-                oBinding.filter(aFiltros);
-            }
-        },
-
-
-        // FILTROS ---
-
-        onFiltroGlobalChange: function (oEvent) {
-            this._sKpiActivo = "Todos";
-            
-            // Actualizar el título ("saludo") con el texto seleccionado del ComboBox
-            let sTextoMes = this.byId("filtroPeriodo").getSelectedItem().getText();
-            this.getView().getModel("uiPantalla").setProperty("/saludo", "Periodo: " + sTextoMes);
-            this.getView().getModel("uiPantalla").setProperty("/tituloTabla", this.getResourceBundle().getText("detallePorConsultor"));
-            
-            // Recalcula KPIs (basado solo en periodo)
-            this._calcularKpisYFiltrar();
-        },
-        onFiltrarDashboard: function () {
-            this._sKpiActivo = "Todos";
-            this.getView().getModel("uiPantalla").setProperty("/tituloTabla", "Resultados Filtrados");
-            this._aplicarFiltrosTabla();
-        },
-
-        // FOOTER
-         onRecordatorioMasivo: function () {
-            let oTable = this.byId("tablaCumplimiento");
-            let aContexts = oTable.getBinding("items").getCurrentContexts();
-            let iAtrapados = 0;
-
-            // Recorremos la tabla filtrada en pantalla para buscar infractores
-            aContexts.forEach(function(oContext) {
-                let oFila = oContext.getObject();
-                if (oFila.estatusReg === "Pendiente" || oFila.estatusFirma === "Sin firmar") {
-                    iAtrapados++;
-                }
-            });
-
-            if (iAtrapados === 0) {
-                MessageBox.information("Todos los consultores visibles ya están al 100%. No hay recordatorios que enviar.");
+            if (iPendientes === 0) {
+                MessageBox.information("Todos los consultores visibles están al día. No hay recordatorios que enviar.");
                 return;
             }
 
-            MessageBox.confirm(`Se enviarán notificaciones push y correos a los ${iAtrapados} consultores que presentan atrasos o firmas pendientes. ¿Deseas continuar?`, {
-                title: "Confirmar Notificación Masiva",
-                onClose: function (sAction) {
-                    if (sAction === MessageBox.Action.OK) {
-                        MessageToast.show(`Notificaciones enviadas a ${iAtrapados} consultores.`);
+            MessageBox.confirm(`Se enviarán recordatorios a ${iPendientes} consultores con registro o firma pendiente. ¿Deseas continuar?`, {
+                title: "Confirmar notificación masiva",
+                onClose: (sAccion) => {
+                    if (sAccion === MessageBox.Action.OK) {
+                        // Pendiente: conectar con el proceso del backend (aún no envía nada)
+                        MessageToast.show("Envío simulado: todavía no está conectado al backend.");
                     }
                 }
             });
@@ -242,8 +356,6 @@ sap.ui.define([
 
         onConsolidar: function () {
             this.getOwnerComponent().getRouter().navTo("RouteConsolidacion");
-        },
-
-        
-	});
+        }
+    });
 });

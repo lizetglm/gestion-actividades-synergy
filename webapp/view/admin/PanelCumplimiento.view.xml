@@ -7,8 +7,9 @@
 	displayBlock="true" height="100%" busyIndicatorDelay="0"
     xmlns:f="sap.f"
     xmlns:mc="sap.suite.ui.microchart"
+    xmlns:t="sap.ui.table"
 >
-    <f:DynamicPage id="pagePanel"  showFooter="true">
+    <f:DynamicPage id="pagePanel"  showFooter="true" fitContent="true">
         <f:title>
             <f:DynamicPageTitle id="idPanelCDynamicPageTitle">
                 <f:breadcrumbs >
@@ -37,136 +38,144 @@
             <f:DynamicPageHeader>
                 <!-- Filtors -->
                 <FlexBox wrap="Wrap" class="gapPanelFiltros" >
+                    <!-- Filtro Año -->
                     <VBox class="sapUiMediumMarginEnd">
-                        <Label text="Periodo" />
-                        <Select id="filtroPeriodo" width="200px" selectedKey="Oct2026" change=".onFiltroGlobalChange" >
-                            <c:Item key="Sep2026" text="Septiembre 2026" />
-                            <c:Item key="Oct2026" text="Octubre 2026" />
+                        <Label text="Año" />
+                        <Select id="filtroAnio" width="140px" selectedKey="2026" change=".onFiltroGlobalChange" >
+                            <c:Item key="2025" text="2025" />
+                            <c:Item key="2026" text="2026" />
+                            <c:Item key="2027" text="2027" />
                         </Select>
                     </VBox>
+
+                    <!-- Filtro Mes -->
+                    <VBox class="sapUiMediumMarginEnd">
+                        <Label text="Mes" />
+                        <Select id="filtroMes" width="160px" selectedKey="10" change=".onFiltroGlobalChange" >
+                            <c:Item key="01" text="Enero" />
+                            <c:Item key="02" text="Febrero" />
+                            <c:Item key="03" text="Marzo" />
+                            <c:Item key="04" text="Abril" />
+                            <c:Item key="05" text="Mayo" />
+                            <c:Item key="06" text="Junio" />
+                            <c:Item key="07" text="Julio" />
+                            <c:Item key="08" text="Agosto" />
+                            <c:Item key="09" text="Septiembre" />
+                            <c:Item key="10" text="Octubre" />
+                            <c:Item key="11" text="Noviembre" />
+                            <c:Item key="12" text="Diciembre" />
+                        </Select>
+                    </VBox>
+
+                    <!-- Filtro Cliente (Dinámico desde OData /Clientes) -->
                     <VBox class="sapUiMediumMarginEnd">
                         <Label text="{i18n>customer}" />
-                        <Select id="filtroCliente" width="200px" selectedKey="Todos" change=".onFiltrarDashboard" >
-                            <c:Item key="Todos" text="Todos" />
-                            <c:Item key="Alpha" text="Cliente Alpha S.A." />
-                            <c:Item key="Beta" text="Cliente Beta" />
+                        <Select id="filtroCliente" width="200px" forceSelection="false" change=".onFiltrarDashboard"
+                            items="{ path: '/Clientes', parameters: { $orderby: 'Nombre' } }">
+                            <c:Item key="{ClientUuid}" text="{Nombre}" />
                         </Select>
                     </VBox>
-                    <VBox>
-                        <Label text="{i18n>filtro2}" />
-                        <Select id="filtroEquipo" width="200px" selectedKey="Todos" change=".onFiltrarDashboard">
-                            <c:Item key="Todos" text="Todos" />
-                            <c:Item key="SAP" text="Consultoría SAP" />
-                            <c:Item key="BTP" text="Integración BTP" />
-                        </Select>
+
+                    <!-- Botón Limpiar -->
+                    <VBox justifyContent="End">
+                        <Button text="Limpiar" icon="sap-icon://clear-filter" press=".onResetFiltros" type="Transparent"/>
                     </VBox>
                 </FlexBox>
 
                 <!-- Indicadores (KPI Tiles) -->
-                <layout:Grid class="noPadding sapUiSmallMarginTop" >
+                <layout:Grid class="noPadding sapUiSmallMarginTop">
                     <VBox id="kpiActivos" class="tarjetaKpi bordeAzul sapMPointer">
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel1}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/activos}" class="textoAzul" />
                         </FlexBox>
                     </VBox>
-
                     <VBox id="kpiCompletos" class="tarjetaKpi bordeVerde sapMPointer">
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel2}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/completos}" class="textoVerde" />
                         </FlexBox>
                     </VBox>
-
-                    <VBox id="kpiPendientes" class="tarjetaKpi bordeNaranja sapMPointer" >
+                    <VBox id="kpiPendientes" class="tarjetaKpi bordeNaranja sapMPointer">
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel3}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/pendientes}" class="textoNaranja" />
                         </FlexBox>
                     </VBox>
-
-                    <VBox id="kpiSinFirmar" class="tarjetaKpi bordeRojo sapMPointer" >
+                    <VBox id="kpiSinFirmar" class="tarjetaKpi bordeRojo sapMPointer">
                         <FlexBox direction="Column" alignItems="Center" justifyContent="Center" height="100%">
                             <Text text="{i18n>kpiPanel4}" class="sapMTitleStyleH5 sapUiTinyMarginBottom" />
                             <Title level="H1" text="{uiPantalla>/kpis/sinFirmar}" class="textoRojo" />
                         </FlexBox>
                     </VBox>
                 </layout:Grid>
+
             </f:DynamicPageHeader>
         </f:header>
 
         <f:content>
-            <!-- Tabla de detalles por consultor -->
-            <Table id="tablaCumplimiento"
-                items="{
-                    path: 'modelo>/oModelo',
-                    sorter: [
-                        { path: 'cliente', descending: false },
-                        { path: 'estatusReg', descending: false }
-                    ]
-                }"
-                class="tablaFondoColor sapUiMediumMarginBottom"
-                updateFinished=".onCalcularKPIs"
-            >
-                <headerToolbar>
-                    <Toolbar id="toolbarTablaCumplimiento">
-                        <Title id="tituloTablaCumplimiento" text="{uiPantalla>/tituloTabla}" level="H3"/>
-                        <ToolbarSpacer />
-                        <Button icon="sap-icon://sort" tooltip="Ordenar" press=".onAbrirOrdenamiento" />
-                        <Button tooltip="{i18n>btnExportarExcel}" icon="sap-icon://excel-attachment" press=".onExportarExcel"/>
-                    </Toolbar>
-                </headerToolbar>
-                <columns>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="{i18n>consultant}" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="{i18n>customer}" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="{i18n>filtro2}" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="{i18n>estatusReg}" />
-                    </Column>
-                    <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
-                        <Text text="{i18n>estatusFirma}" />
-                    </Column>
-                    <Column width="6rem" ><Text text="{i18n>avance}" /></Column>
-                </columns>
+            <t:TreeTable id="tablaCumplimiento"
+                rows="{ path: 'panel>/arbol',
+                        parameters: { arrayNames: ['children'], numberOfExpandedLevels: 0 } }"
+                selectionMode="None"
+                rowsUpdated=".onFilasActualizadas"
+                enableSelectAll="false">
 
-                <items>
-                    <ColumnListItem 
-                        highlight="{= (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : ${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }"
-                    >
-                        <customData>
-                            <c:CustomData key="estadoreg" value="{modelo>estatusReg}" writeToDom="true" />
-                            <c:CustomData key="estadofirma" value="{modelo>estatusFirma}" writeToDom="true" />
-                        </customData>
-                        
-                        <cells>
-                            <Text text="{modelo>nombre}" />
-                            <Text text="{modelo>cliente}" />
-                            <Text text="{modelo>equipo}" />
-                            <ObjectStatus 
-                                text="{modelo>estatusReg}" 
-                                state="{= ${modelo>estatusReg} === 'Completo' ? 'Success' : (${modelo>estatusReg} === 'Pendiente' ? 'Warning' : 'None') }" />
-                            <ObjectStatus 
-                                text="{modelo>estatusFirma}" 
-                                state="{= ${modelo>estatusFirma} === 'Firmado' ? 'Success' : (${modelo>estatusFirma} === 'Sin firmar' ? 'Error' : 'None') }" 
-                            />
-                            <mc:RadialMicroChart  size="XS" 
-                                percentage="{modelo>porcentajeAvance}" 
-                                valueColor="{= ${modelo>porcentajeAvance} === 100 ? 'Good' : 'Critical'}" 
-                            />
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
+                <t:extension>
+                    <Toolbar>
+                        <Title text="{panel>/tituloTabla}" level="H3"/>
+                        <ToolbarSpacer />
+                        <Text text="{= 'Total: ' + ${uiPantalla>/horasTotales} + ' h' }" />
+                        <Button icon="sap-icon://excel-attachment" tooltip="{i18n>btnExportarExcel}"
+                                press=".onExportarExcel"/>
+                    </Toolbar>
+                </t:extension>
+
+                <t:rowSettingsTemplate>
+                    <t:RowSettings highlight="{= ${panel>RegistroEstado} === 'SIN' ? 'Error' :
+                        (${panel>FirmaEstado} === 'FIR' ? 'Success' : 'Warning') }" />
+                </t:rowSettingsTemplate>
+
+                <t:columns>
+                    <t:Column width="auto" minWidth="16rem">
+                        <Label text="Consultor / Cliente"/>
+                        <t:template><Text text="{panel>Titulo}" wrapping="false"/></t:template>
+                    </t:Column>
+                    <t:Column width="9rem">
+                        <Label text="Horas"/>
+                        <t:template><Text text="{panel>Detalle}" wrapping="false"/></t:template>
+                    </t:Column>
+                    <t:Column width="10rem">
+                        <Label text="{i18n>estatusReg}"/>
+                        <t:template>
+                            <ObjectStatus text="{panel>EstatusRegistro}"
+                                state="{= ${panel>RegistroEstado} === 'COM' ? 'Success' :
+                                         (${panel>RegistroEstado} === 'PEN' ? 'Warning' : 'Error') }" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="10rem">
+                        <Label text="{i18n>estatusFirma}"/>
+                        <t:template>
+                            <ObjectStatus text="{panel>EstatusFirma}"
+                                state="{= ${panel>FirmaEstado} === 'FIR' ? 'Success' :
+                                         (${panel>FirmaEstado} === 'MIX' ? 'Warning' :
+                                         (${panel>FirmaEstado} === 'PEN' ? 'Error' : 'None')) }" />
+                        </t:template>
+                    </t:Column>
+                    <t:Column width="6rem" hAlign="Center">
+                        <Label text="{i18n>avance}"/>
+                        <t:template>
+                            <mc:RadialMicroChart size="XS" percentage="{panel>Avance}"
+                                visible="{panel>TieneAvance}"
+                                valueColor="{= ${panel>Avance} === 100 ? 'Good' : 'Critical'}"/>
+                        </t:template>
+                    </t:Column>
+                </t:columns>
+            </t:TreeTable>
         </f:content>
 
         <f:footer>
-            <OverflowToolbar>
+            <OverflowToolbar id="otbPanel">
                 <ToolbarSpacer />
                 <Button text="Recordatorio Masivo" 
                     icon="sap-icon://email" 
@@ -174,14 +183,18 @@
                     press=".onRecordatorioMasivo" 
                     tooltip="Enviar alerta a pendientes" 
                     class="sapUiTinyMarginEnd" 
-                />
+                >
+                    <layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+                </Button>
                 <Button text="Consolidar Reportes" 
                     icon="sap-icon://complete" 
                     type="Accept" 
                     press=".onConsolidar" 
                     tooltip="Navegar a consolidar reportes" 
                     class="sapUiTinyMarginEnd" 
-                />
+                >
+                    <layoutData><OverflowToolbarLayoutData priority="NeverOverflow"/></layoutData>
+                </Button>
             </OverflowToolbar>
         </f:footer>
 
