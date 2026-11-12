@@ -1,129 +1,231 @@
-<mvc:View id="vistaReporteMensual"
-	controllerName="ns.frontend.controller.ReporteMensual"
-	xmlns:mvc="sap.ui.core.mvc"
+
+<mvc:View
+    id="vistaReporteMensual"
+    controllerName="ns.frontend.controller.ReporteMensual"
+    xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:layout="sap.ui.layout"
-    xmlns:form="sap.ui.layout.form"
     busyIndicatorDelay="0"
     height="100%"
-    displayBlock="true"
->
-    <Page 
-        id="reportPage" 
+    displayBlock="true">
+
+    <Page
+        id="reportPage"
         showHeader="false"
         enableScrolling="true"
         backgroundDesign="Transparent"
-        class="sapUiResponsiveContentPadding"
-        
-        >
-        
+        class="sapUiResponsiveContentPadding">
+
         <content>
-        <VBox
+            <VBox
                 id="idBannerRM"
-                class="sapUiSmallMargin gapBody"
-                >
-            <Breadcrumbs id="idActualDireccionRM" currentLocationText="{i18n>repTitle}">
-                    <Link id="idRegresoRM" text="{i18n>title}" press=".onBack" />
+                class="sapUiSmallMargin gapBody">
+
+                <Breadcrumbs
+                    id="idActualDireccionRM"
+                    currentLocationText="{i18n>repTitle}">
+
+                    <Link
+                        id="idRegresoRM"
+                        text="{i18n>title}"
+                        press=".onBack"/>
                 </Breadcrumbs>
 
-                <FlexBox id="idFlexBoxRM" justifyContent="SpaceBetween" alignItems="End" >
+                <FlexBox
+                    id="idFlexBoxRM"
+                    justifyContent="SpaceBetween"
+                    alignItems="End">
+
                     <Title
                         id="idTituloRM"
-                        level="H4" titleStyle="H4"
+                        level="H4"
+                        titleStyle="H4"
                         text="Mi Reporte Mensual"
                         wrapping="true"
-                        wrappingType="Hyphenated">
-                    </Title>
-                    <HBox id="statusBox1" alignItems="Center">
-                    <Label id="lblStatusTe1xt" text="Estatus: " class="sapUiTinyMarginEnd boldLabel"/>
-                    <ObjectStatus id="objS1tatus" text="Generado, pendiente de firma" state="Warning" />
-                </HBox>
-                </FlexBox>
-  <HBox id="mainLayout" justifyContent="SpaceBetween" wrap="Wrap" >
-            <VBox id="leftColumn" width="69%">
-                <Panel id="panelReporte" backgroundDesign="Solid" headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA" accessibleRole="Region" class="borde">
-                    <content>
-                        <Text id="txtConsultorInfo" text="Consultor: Juan Pérez  |  Cliente: Cliente Alpha S.A.  |  Periodo: 01-31/08/2026" class="sapUiSmallMarginBottom"/>    
-                            <Table id="activityTable" class="sapUiTinyMarginBottom borde">
-                                <columns>
-                                    <Column id="colFecha"><Text id="txtColFecha" text="Fecha"/></Column>
-                                    <Column id="colReq"><Text id="txtColReq" text="Requerimiento"/></Column>
-                                    <Column id="colDesc"><Text id="txtColDesc" text="Descripción"/></Column>
-                                    <Column id="colHoras" hAlign="End"><Text id="txtColHoras" text="Horas"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="item1">
-                                        <cells>
-                                            <Text id="t1" text="01/08"/>
-                                            <Text id="t2" text="REQ-00231"/>
-                                            <Text id="t3" text="Ajuste de servicio OData"/>
-                                            <Text id="t4" text="6.0 h"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                    <ColumnListItem id="item2">
-                                        <cells>
-                                            <Text id="t5" text="04/08"/>
-                                            <Text id="t6" text="REQ-00231"/>
-                                            <Text id="t7" text="Pruebas unitarias RAP"/>
-                                            <Text id="t8" text="8.0 h"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                    <ColumnListItem id="item3">
-                                        <cells>
-                                            <Text id="t9" text="05/08"/>
-                                            <Text id="t10" text="Capacitación interna"/>
-                                            <Text id="t11" text="Curso SAP BTP ABAP Environment"/>
-                                            <Text id="t12" text="8.0 h"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                    <ColumnListItem id="item4">
-                                        <cells>
-                                            <Text id="t13" text="06/08"/>
-                                            <Text id="t14" text="REQ-00245"/>
-                                            <Text id="t15" text="Reunión de análisis con cliente"/>
-                                            <Text id="t16" text="3.0 h"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                            <Toolbar id="toolbarTotales" class="sapUiSmallMarginBottom toolbarTotalesCustom">
-                                <content>
-                                    <Label id="lblTotales" text="Total de horas del periodo: 168.0 h   |   Horas de capacitación interna: 16.0 h" class="totalHorasText" />
-                                </content>
-                            </Toolbar>
-                            <Text id="lblDeclaracion" text="Al firmar declaro que la información anterior refleja fielmente las actividades realizadas durante el periodo." class="sapUiTinyMarginBottom textoGrisSuave"/>
-                            <VBox id="boxFirma" class="sapUiSmallMarginTop textoGrisSuave">
-                                <Label id="lblFirma" text="Firma electrónica: __________________________________________________" class="sapUiSmallMarginBottom"/>
-                                <Label id="lblFechaFirma" text="Fecha de firma: "/>
-                            </VBox>
-                        </content>
-                    </Panel>
-                </VBox>
+                        wrappingType="Hyphenated"/>
 
-                <VBox id="rightColumn" width="29%">
-                    <Panel id="panelAccionesGlobal" backgroundDesign="Solid" headerText="Acciones" class="borde">
-                        <content>
-                            <Panel id="panelAcciones">
-                                <content>
-                                    <Button id="btnPDF" text="Descargar PDF" width="100%" class="sapUiTinyMarginBottom" icon="sap-icon://pdf-attachment" press="onDownloadPDF"/>
-                                    <Button id="btnFirmar" text="Firmar y enviar a RR.HH." width="100%" type="Emphasized" class="sapUiTinyMarginBottom" press="onSignReport"/>
-                                    <Button id="btnReapertura" text="Solicitar reapertura del periodo" width="100%" type="Reject" press="onRequestReopen"/>
-                                </content>
-                            </Panel>
-                            <Panel id="panelHistorial" backgroundDesign="Translucent" headerText="Historial de estatus">
-                                <content>
-                                    <VBox id="historialList">
-                                        <Text id="h1" text="• 01/09  Reporte generado automáticamente" class="sapUiTinyMarginBottom"/>
-                                        <Text id="h2" text="• 01/09  Notificación enviada al consultor"/>
-                                    </VBox>
-                                </content>
-                            </Panel>
-                        </content>
-                    </Panel>
-                </VBox>
-            </HBox>
+                    <HBox
+                        id="statusBox1"
+                        alignItems="Center">
+
+                        <Label
+                            id="lblStatusTe1xt"
+                            text="Estatus: "
+                            class="sapUiTinyMarginEnd boldLabel"/>
+
+                        <ObjectStatus
+                            id="objS1tatus"
+                            text="{reporteSeleccionado>/EstadoTexto}"
+                            state="{reporteSeleccionado>/EstadoColor}"/>
+                    </HBox>
+                </FlexBox>
+
+                <HBox
+                    id="mainLayout"
+                    justifyContent="SpaceBetween"
+                    wrap="Wrap">
+
+                    <VBox
+                        id="leftColumn"
+                        width="69%">
+
+                        <Panel
+                            id="panelReporte"
+                            backgroundDesign="Solid"
+                            headerText="REPORTE MENSUAL DE ACTIVIDADES DE CONSULTORÍA"
+                            accessibleRole="Region"
+                            class="borde">
+
+                            <content>
+                                <Text
+                                    id="txtConsultorInfo"
+                                    text="{reporteSeleccionado>/InformacionConsultor}"
+                                    class="sapUiSmallMarginBottom"/>                                
+                                <Table
+                                    id="activityTable"
+                                    class="sapUiTinyMarginBottom borde"
+                                    noDataText="No hay actividades registradas durante el mes actual."
+                                    items="{reporteSeleccionado>/Actividades}">
+
+                                    <columns>
+                                        <Column>
+                                            <Text text="Fecha"/>
+                                        </Column>
+
+                                        <Column>
+                                            <Text text="Cliente"/>
+                                        </Column>
+
+                                        <Column>
+                                            <Text text="Proyecto"/>
+                                        </Column>
+
+                                        <Column>
+                                            <Text text="Requerimiento"/>
+                                        </Column>
+
+                                        <Column>
+                                            <Text text="Descripción"/>
+                                        </Column>
+
+                                        <Column hAlign="End">
+                                            <Text text="Horas"/>
+                                        </Column>
+                                    </columns>
+
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text text="{reporteSeleccionado>FechaTexto}"/>
+                                                <Text text="{reporteSeleccionado>Cliente}"/>
+                                                <Text text="{reporteSeleccionado>Proyecto}"/>
+                                                <Text text="{reporteSeleccionado>Requerimiento}"/>
+                                                <Text text="{reporteSeleccionado>Descripcion}"/>
+                                                <Text text="{reporteSeleccionado>HorasTexto}"/>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+
+
+                                <Toolbar
+                                    id="toolbarTotales"
+                                    class="sapUiSmallMarginBottom toolbarTotalesCustom">
+
+                                    <content>
+                                        <Label
+                                            id="lblTotales"
+                                            text="{reporteSeleccionado>/TotalHorasTexto}"
+                                            class="totalHorasText"/>
+                                    </content>
+                                </Toolbar>
+
+                                <Text
+                                    id="lblDeclaracion"
+                                    text="Al firmar declaro que la información anterior refleja fielmente las actividades realizadas durante el periodo."
+                                    class="sapUiTinyMarginBottom textoGrisSuave"/>
+
+                                <VBox
+                                    id="boxFirma"
+                                    class="sapUiSmallMarginTop textoGrisSuave">
+
+                                    <Label
+                                        id="lblFirma"
+                                        text="Firma electrónica: ________________________________________________"
+                                        class="sapUiSmallMarginBottom"/>
+
+                                    <Label
+                                        id="lblFechaFirma"
+                                        text="Fecha de firma: Pendiente"/>
+                                </VBox>
+                            </content>
+                        </Panel>
+                    </VBox>
+
+                    <VBox
+                        id="rightColumn"
+                        width="29%">
+
+                        <Panel
+                            id="panelAccionesGlobal"
+                            backgroundDesign="Solid"
+                            headerText="Acciones"
+                            class="borde">
+
+                            <content>
+                                <Panel id="panelAcciones">
+                                    <content>
+                                        <Button
+                                            id="btnPDF"
+                                            text="Descargar PDF"
+                                            width="100%"
+                                            class="sapUiTinyMarginBottom"
+                                            icon="sap-icon://pdf-attachment"
+                                            enabled="{reporteSeleccionado>/TienePDF}"
+                                            press=".onDownloadPDF"/>
+
+                                        <Button
+                                            id="btnFirmar"
+                                            text="Firmar y enviar a RR.HH."
+                                            width="100%"
+                                            type="Emphasized"
+                                            class="sapUiTinyMarginBottom"
+                                            enabled="{reporteSeleccionado>/PuedeFirmar}"
+                                            press=".onSignReport"/>
+
+                                        <Button
+                                            id="btnReapertura"
+                                            text="Solicitar reapertura del periodo"
+                                            width="100%"
+                                            type="Reject"
+                                            enabled="{reporteSeleccionado>/PuedeSolicitarReapertura}"
+                                            press=".onRequestReopen"/>
+                                    </content>
+                                </Panel>
+
+                                <Panel
+                                    id="panelHistorial"
+                                    backgroundDesign="Translucent"
+                                    headerText="Historial de estatus">
+
+                                    <content>
+                                        <List
+                                            id="historialList"
+                                            showSeparators="None"
+                                            noDataText="No existe historial registrado."
+                                            items="{reporteSeleccionado>/Historial}">
+
+                                            <StandardListItem
+                                                title="{reporteSeleccionado>Texto}"/>
+                                        </List>
+                                    </content>
+                                </Panel>
+                            </content>
+                        </Panel>
+                    </VBox>
+                </HBox>
             </VBox>
         </content>
     </Page>
 </mvc:View>
+

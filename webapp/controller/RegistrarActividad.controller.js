@@ -20,12 +20,13 @@ sap.ui.define([
 
 		onInit: function () {
 			let sFechaHoy = this.obtenerFechaISO(new Date());
-
 			let uiEstado = {
 				tituloHeader: this.getResourceBundle().getText("titleRegistrarActividad"),
 				userName: "User",
 				horasTotales: this.getResourceBundle().getText("horasTotales", ["1", "0.0"]),
-				maximoHoras: 8,
+				maximoHoras: null,
+				diaCierreMensual: null,
+				politicaDiasPendientes: null,
 				fechaCaptura: sFechaHoy,
 				horasInvertidas: "",
 				esCapacitacion: false,
@@ -39,7 +40,6 @@ sap.ui.define([
 			};
 
 			this.getView().setModel(new JSONModel(uiEstado), "uiPantalla");
-
 			this.getView().setModel(
 				new JSONModel({
 					clientes: [],
@@ -51,21 +51,15 @@ sap.ui.define([
 
 			this.getView().setModel(new JSONModel([]), "modelo");
 			this.getView().setModel(new JSONModel([]), "modeloFiltrado");
-
-			// Usuario autenticado en SAP
-			this._consultorUuid = null;
-			this._usuarioActual = null;
-
-			// Cargar información desde SAP
-			this._cargarUsuarioActual();
+			this.consultorUuid = null;
+			this.usuarioActual = null;
+			this.cargarUsuarioActual();
 			this.cargarCatalogos();
-
-			// Inicializar tabla
-			this._actualizarTablaYTotales(sFechaHoy);
+			this.actualizarTablaYTotales(sFechaHoy);
 			this.cargarActividades();
 		},
 
-		_cargarUsuarioActual: async function () {
+		cargarUsuarioActual: async function () {
 			try {
 				const oOData = this.getOwnerComponent()
 					.getModel("actividadesOData");
@@ -75,9 +69,7 @@ sap.ui.define([
 				}
 
 				const oBinding = oOData.bindList("/MiUsuario");
-
 				const aContexts = await oBinding.requestContexts(0, 10);
-
 				const aUsuarios = await Promise.all(
 					aContexts.map(oContext => oContext.requestObject())
 				);
@@ -89,25 +81,17 @@ sap.ui.define([
 				}
 
 				const oUsuario = aUsuarios[0];
-
 				if (!oUsuario.Activo || !oUsuario.ConsultorUuid) {
 					throw new Error(
 						"El usuario está inactivo o no tiene consultor asociado."
 					);
 				}
 
-				this._consultorUuid = oUsuario.ConsultorUuid;
-				this._usuarioActual = oUsuario;
-
-				console.log("Usuario SAP:", oUsuario.IdentidadSso);
-				console.log("Perfil:", oUsuario.Perfil);
-				console.log("ConsultorUuid:", this._consultorUuid);
-
+				this.consultorUuid = oUsuario.ConsultorUuid;
+				this.usuarioActual = oUsuario;
 			} catch (oError) {
-				this._consultorUuid = null;
-				this._usuarioActual = null;
-
-				console.error("Error identificando usuario SAP:", oError);
+				this.consultorUuid = null;
+				this.usuarioActual = null;
 
 				MessageBox.error(
 					"No fue posible identificar al usuario autenticado en SAP."
@@ -116,11 +100,177 @@ sap.ui.define([
 		},
 
 
+		obtenerLimiteHorasSAP: async function () {
+
+			const oOData = this.getOwnerComponent()
+				.getModel("actividadesOData");
+
+			if (!oOData) {
+				throw new Error(
+					"No se encontró el modelo OData de actividades."
+				);
+			}
+
+			const oBinding = oOData.bindList(
+				"/Configuraciones",
+				undefined,
+				undefined,
+				undefined,
+				{
+					$$groupId: "$direct",
+					$filter:
+						"ClaveParametro eq 'LIMITE_HORAS_DIARIAS' " +
+						"and Activo eq true"
+				}
+			);
+
+			try {
+
+				const aContextos =
+					await oBinding.requestContexts(0, 2);
+
+				if (aContextos.length !== 1) {
+					throw new Error(
+						"No se encontró una configuración única " +
+						"para LIMITE_HORAS_DIARIAS."
+					);
+				}
+
+				const oConfiguracion =
+					await aContextos[0].requestObject();
+
+				const nLimite = Number(oConfiguracion.Valor);
+
+				if (!Number.isFinite(nLimite) || nLimite <= 0) {
+					throw new Error(
+						"El límite diario configurado en SAP no es válido."
+					);
+				}
+
+				this.getView()
+					.getModel("uiPantalla")
+					.setProperty("/maximoHoras", nLimite);
+
+				console.log(
+					"Límite diario recuperado desde SAP:",
+					nLimite
+				);
+
+				return nLimite;
+
+			} finally {
+				oBinding.destroy();
+			}
+		},
+
+
+		obtenerReglasPeriodoSAP: async function () {
+
+			const oOData = this.getOwnerComponent()
+				.getModel("actividadesOData");
+
+			if (!oOData) {
+				throw new Error(
+					"No se encontró el modelo OData de actividades."
+				);
+			}
+
+			const oBinding = oOData.bindList(
+				"/Configuraciones",
+				undefined,
+				undefined,
+				undefined,
+				{
+					$$groupId: "$direct"
+				}
+			);
+
+			try {
+				const aContextos =
+					await oBinding.requestContexts(0, 100);
+
+				const aConfiguraciones = await Promise.all(
+					aContextos.map(oContexto =>
+						oContexto.requestObject()
+					)
+				);
+
+				const obtenerValor = sClave => {
+					const oParametro = aConfiguraciones.find(
+						oConfiguracion =>
+							oConfiguracion.ClaveParametro === sClave &&
+							oConfiguracion.Activo === true
+					);
+
+					if (!oParametro) {
+						throw new Error(
+							"No existe el parámetro activo: " + sClave
+						);
+					}
+
+					return String(oParametro.Valor);
+				};
+
+				const nDiaCierre = Number(
+					obtenerValor("DIA_CIERRE_MENSUAL")
+				);
+
+				const sPolitica = obtenerValor(
+					"POLITICA_DIAS_PENDIENTES"
+				);
+
+				if (
+					!Number.isInteger(nDiaCierre) ||
+					nDiaCierre < 1 ||
+					nDiaCierre > 31
+				) {
+					throw new Error(
+						"El día de cierre mensual no es válido."
+					);
+				}
+
+				if (!["BLOQUEAR", "ADVERTIR"].includes(sPolitica)) {
+					throw new Error(
+						"La política de días pendientes no es válida."
+					);
+				}
+
+				const oReglas = {
+					diaCierreMensual: nDiaCierre,
+					politicaDiasPendientes: sPolitica
+				};
+
+				const oModeloUI =
+					this.getView().getModel("uiPantalla");
+
+				oModeloUI.setProperty(
+					"/diaCierreMensual",
+					nDiaCierre
+				);
+
+				oModeloUI.setProperty(
+					"/politicaDiasPendientes",
+					sPolitica
+				);
+
+				console.log(
+					"Reglas de periodo recuperadas desde SAP:",
+					oReglas
+				);
+
+				return oReglas;
+
+			} finally {
+				oBinding.destroy();
+			}
+		},
+
+
+
 		obtenerFechaISO: function (oFecha) {
 			const iAnio = oFecha.getFullYear();
 			const iMes = String(oFecha.getMonth() + 1).padStart(2, "0");
 			const iDia = String(oFecha.getDate()).padStart(2, "0");
-
 			return `${iAnio}-${iMes}-${iDia}`;
 		},
 
@@ -128,14 +278,12 @@ sap.ui.define([
 			if (!sFechaISO) {
 				return "";
 			}
-
 			const aPartes = sFechaISO.split("-");
-
 			return `${aPartes[2]}/${aPartes[1]}/${aPartes[0]}`;
 		},
 
 
-		_cargarEntidad: async function (sEntidad) {
+		cargarEntidad: async function (sEntidad) {
 			const oOData = this.getOwnerComponent()
 				.getModel("actividadesOData");
 
@@ -143,18 +291,11 @@ sap.ui.define([
 				throw new Error("No existe el modelo actividadesOData");
 			}
 
-			console.log("Consultando SAP:", sEntidad);
-
 			const oBinding = oOData.bindList("/" + sEntidad);
-
 			const aContexts = await oBinding.requestContexts(0, 100);
-
 			const aDatos = await Promise.all(
 				aContexts.map(oContext => oContext.requestObject())
 			);
-
-			console.log("Datos recibidos de " + sEntidad + ":", aDatos);
-
 			return aDatos;
 		},
 
@@ -165,32 +306,32 @@ sap.ui.define([
 			try {
 				const [aClientes, aProyectos, aRequerimientos] =
 					await Promise.all([
-						this._cargarEntidad("Clientes"),
-						this._cargarEntidad("Proyectos"),
-						this._cargarEntidad("Requerimientos")
+						this.cargarEntidad("Clientes"),
+						this.cargarEntidad("Proyectos"),
+						this.cargarEntidad("Requerimientos")
 					]);
 
 				console.log("CLIENTES RAW:", aClientes);
 				console.log("PROYECTOS RAW:", aProyectos);
 				console.log("REQUERIMIENTOS RAW:", aRequerimientos);
 
-				this._aClientesSAP = aClientes.map(oCliente => ({
+				this.aClientesSAP = aClientes.map(oCliente => ({
 					uuid: oCliente.ClientUuid,
 					nombre: oCliente.Nombre
 				}));
 
-				this._aProyectosSAP = aProyectos.map(oProyecto => ({
+				this.aProyectosSAP = aProyectos.map(oProyecto => ({
 					uuid: oProyecto.ProjectUuid,
 					clienteUuid: oProyecto.ClientUuid,
 					nombre: oProyecto.Nombre,
 					activo: oProyecto.Activo
 				}));
 
-				console.table(this._aClientesSAP);
-				console.table(this._aProyectosSAP);
-				console.table(this._aRequerimientosSAP);
+				console.table(this.aClientesSAP);
+				console.table(this.aProyectosSAP);
+				console.table(this.aRequerimientosSAP);
 
-				this._aRequerimientosSAP = aRequerimientos.map(oReq => ({
+				this.aRequerimientosSAP = aRequerimientos.map(oReq => ({
 					uuid: oReq.ReqUuid,
 					proyectoUuid: oReq.ProjectUuid,
 					clienteUuid: oReq.ClientUuid,
@@ -199,7 +340,7 @@ sap.ui.define([
 
 				oCatalogos.setProperty(
 					"/clientes",
-					this._aClientesSAP
+					this.aClientesSAP
 				);
 
 				console.log(
@@ -215,11 +356,11 @@ sap.ui.define([
 				oCatalogos.setProperty("/proyectos", []);
 				oCatalogos.setProperty("/requerimientos", []);
 
-				this._actualizarNombresActividades();
+				this.actualizarNombresActividades();
 
-				console.log("Clientes:", this._aClientesSAP);
-				console.log("Proyectos:", this._aProyectosSAP);
-				console.log("Requerimientos:", this._aRequerimientosSAP);
+				console.log("Clientes:", this.aClientesSAP);
+				console.log("Proyectos:", this.aProyectosSAP);
+				console.log("Requerimientos:", this.aRequerimientosSAP);
 
 			} catch (oError) {
 				console.error("Error cargando catálogos:", oError);
@@ -241,7 +382,7 @@ sap.ui.define([
 			oUI.setProperty("/proyecto", "");
 			oUI.setProperty("/requerimiento", "");
 
-			const aProyectos = (this._aProyectosSAP || []).filter(
+			const aProyectos = (this.aProyectosSAP || []).filter(
 				oProyecto =>
 					oProyecto.clienteUuid === sClienteUuid
 			);
@@ -264,7 +405,7 @@ sap.ui.define([
 			oUI.setProperty("/proyecto", sProyectoUuid);
 			oUI.setProperty("/requerimiento", "");
 
-			const aRequerimientos = (this._aRequerimientosSAP || [])
+			const aRequerimientos = (this.aRequerimientosSAP || [])
 				.filter(oReq => oReq.proyectoUuid === sProyectoUuid);
 
 			console.log("PROYECTO SELECCIONADO:", sProyectoUuid);
@@ -274,12 +415,12 @@ sap.ui.define([
 		},
 
 
-		_actualizarNombresActividades: function () {
+		actualizarNombresActividades: function () {
 			const oModelo = this.getView().getModel("modelo");
 			const aActividades = oModelo.getData() || [];
 
-			const aClientes = this._aClientesSAP || [];
-			const aRequerimientos = this._aRequerimientosSAP || [];
+			const aClientes = this.aClientesSAP || [];
+			const aRequerimientos = this.aRequerimientosSAP || [];
 
 			aActividades.forEach(oActividad => {
 				const oCliente = aClientes.find(
@@ -305,7 +446,7 @@ sap.ui.define([
 				.getModel("uiPantalla")
 				.getProperty("/fechaCaptura");
 
-			this._actualizarTablaYTotales(sFecha);
+			this.actualizarTablaYTotales(sFecha);
 		},
 
 
@@ -334,8 +475,6 @@ sap.ui.define([
 					}
 				);
 
-				// Recupera todos los registros, incluso si
-				// superan el tamaño de página del servicio.
 				const aContexts = await oBinding.requestContexts(0, 100);
 
 				const aActividades = await Promise.all(
@@ -360,12 +499,12 @@ sap.ui.define([
 				}));
 
 				oVista.getModel("modelo").setData(aFormateadas);
-				this._actualizarNombresActividades();
+				this.actualizarNombresActividades();
 
 				const sFecha = oVista.getModel("uiPantalla")
 					.getProperty("/fechaCaptura");
 
-				this._actualizarTablaYTotales(sFecha);
+				this.actualizarTablaYTotales(sFecha);
 
 			} catch (oError) {
 				console.error("Error al recuperar actividades:", oError);
@@ -378,7 +517,8 @@ sap.ui.define([
 			}
 		},
 
-		_guardarActividadSAP: async function (oNuevaActividad) {
+
+		guardarActividadSAP: async function (oNuevaActividad) {
 
 			const oOData = this.getOwnerComponent()
 				.getModel("actividadesOData");
@@ -391,6 +531,7 @@ sap.ui.define([
 			let oContexto;
 
 			try {
+
 				const oBinding = oOData.bindList(
 					"/RegistrosActividad",
 					undefined,
@@ -401,55 +542,173 @@ sap.ui.define([
 					}
 				);
 
-				console.log("DATOS QUE SE ENVIARÁN A SAP:", oNuevaActividad);
+				console.log(
+					"DATOS QUE SE ENVIARÁN A SAP:",
+					oNuevaActividad
+				);
+
 				console.log("Iniciando creación en SAP...");
 
-				oContexto = oBinding.create(oNuevaActividad);
+				const oResultadoCreacion = new Promise(
+					(resolve, reject) => {
 
-				// Esperar confirmación del backend
-				await oContexto.created();
+						const fnCreacionCompletada = (oEvent) => {
+
+							if (
+								oEvent.getParameter("context") !==
+								oContexto
+							) {
+								return;
+							}
+
+							oBinding.detachCreateCompleted(
+								fnCreacionCompletada
+							);
+
+							const bExito =
+								oEvent.getParameter("success");
+
+							if (bExito) {
+								resolve();
+							} else {
+								reject(new Error(
+									"SAP rechazó la creación"
+								));
+							}
+						};
+
+						oBinding.attachCreateCompleted(
+							fnCreacionCompletada
+						);
+
+						try {
+							oContexto = oBinding.create(
+								oNuevaActividad
+							);
+						} catch (oError) {
+							oBinding.detachCreateCompleted(
+								fnCreacionCompletada
+							);
+							reject(oError);
+						}
+					}
+				);
+
+				await oResultadoCreacion;
 
 			} catch (oError) {
 
-				console.error("ERROR AL GUARDAR EN SAP:", oError);
+				console.error(
+					"ERROR AL GUARDAR EN SAP:",
+					oError
+				);
 
-				// Descartar solamente la creación transitoria fallida
+				const sMensajeSAP =
+					this.obtenerMensajeErrorSAP();
+
+				console.log(
+					"MENSAJE RECUPERADO DE SAP:",
+					sMensajeSAP
+				);
+
 				if (oContexto && oContexto.isTransient()) {
+
 					try {
 						await oContexto.delete("$direct");
 					} catch (oEliminarError) {
 						console.warn(
-							"No se pudo descartar el registro pendiente:",
+							"No se pudo descartar el registro:",
 							oEliminarError
 						);
 					}
 				}
 
-				MessageBox.error(
-					"SAP rechazó el registro: " +
-					(oError.message || "Consulta la consola F12.")
-				);
+				if (
+					sMensajeSAP &&
+					sMensajeSAP.toLowerCase()
+						.includes("periodo mensual") &&
+					sMensajeSAP.toLowerCase()
+						.includes("cerrado")
+				) {
 
+					MessageBox.error(
+						"No es posible registrar esta actividad " +
+						"porque el periodo mensual correspondiente " +
+						"a la fecha seleccionada está cerrado.\n\n" +
+						"Selecciona una fecha de un periodo abierto.",
+						{
+							title: "Periodo mensual cerrado"
+						}
+					);
+
+				} else {
+
+					MessageBox.error(
+						sMensajeSAP ||
+						"SAP rechazó el registro de la actividad. " +
+						"Verifica los datos ingresados.",
+						{
+							title: "No se pudo guardar"
+						}
+					);
+
+				}
 				return;
 			}
 
-			// A partir de aquí SAP ya confirmó la creación
-			console.log("REGISTRO CREADO CORRECTAMENTE EN SAP");
 
-			this._limpiarFormulario();
+			console.log(
+				"REGISTRO CREADO CORRECTAMENTE EN SAP"
+			);
 
+			this.getOwnerComponent()
+				.getEventBus()
+				.publish("actividades", "actualizadas", {
+					fecha: oNuevaActividad.Fecha
+				});
+			this.limpiarFormulario();
 			MessageToast.show(
 				"Actividad guardada correctamente en SAP."
 			);
-
 			try {
+
 				await this.cargarActividades();
+
 			} catch (oError) {
+
 				console.error(
-					"La actividad se guardó, pero falló la actualización:",
+					"La actividad se guardó, " +
+					"pero falló la actualización:",
 					oError
 				);
+
 			}
+		},
+
+
+		obtenerMensajeErrorSAP: function () {
+
+			const oMessageManager =
+				sap.ui.getCore().getMessageManager();
+
+			const aMensajes =
+				oMessageManager.getMessageModel().getData() || [];
+
+			const oMensajePeriodo = aMensajes.find(oMensaje => {
+
+				const sTexto =
+					String(oMensaje.message || "").toLowerCase();
+
+				return sTexto.includes("periodo mensual") &&
+					sTexto.includes("cerrado");
+
+			});
+
+			if (oMensajePeriodo) {
+				return oMensajePeriodo.message;
+			}
+
+			return null;
 		},
 
 
@@ -464,7 +723,7 @@ sap.ui.define([
 					if (oSelectedDate) {
 						let sFechaFormateada = oSelectedDate.toLocaleDateString("es-MX");
 						this.getView().getModel("uiPantalla").setProperty("/fechaCaptura", sFechaFormateada);
-						this._actualizarTablaYTotales(sFechaFormateada);
+						this.actualizarTablaYTotales(sFechaFormateada);
 					}
 				},*/
 		onFechaChange: function (oEvent) {
@@ -474,20 +733,17 @@ sap.ui.define([
 				.getModel("uiPantalla")
 				.setProperty("/fechaCaptura", sFecha);
 
-			this._actualizarTablaYTotales(sFecha);
+			this.actualizarTablaYTotales(sFecha);
 		},
 
-		_actualizarTablaYTotales: function (sFecha) {
+		actualizarTablaYTotales: function (sFecha) {
 			let aTodas = this.getView().getModel("modelo").getData() || [];
 			//let aFiltradas = aTodas.filter(act => act.fecha === sFecha);
 			let aFiltradas = aTodas.filter(
 				act => act.fechaISO === sFecha
 			);
-			// Actualizar modelo de la tabla filtrada
 			this.getView().setModel(new JSONModel(aFiltradas), "modeloFiltrado");
 			this.getView().getModel("modeloFiltrado").refresh(true);
-
-			// Calcular total de horas del día
 			let fTotal = aFiltradas.reduce((acc, curr) => acc + parseFloat(curr.horas || 0), 0);
 			let oModelUI = this.getView().getModel("uiPantalla");
 
@@ -495,7 +751,7 @@ sap.ui.define([
 			oModelUI.setProperty("/tableTitle", this.getResourceBundle().getText("tableActividadesHoy") + " (" + sFecha + ")");
 		},
 
-		_limpiarFormulario: function () {
+		limpiarFormulario: function () {
 			let oModelUI = this.getView().getModel("uiPantalla");
 			oModelUI.setProperty("/horasInvertidas", "");
 			oModelUI.setProperty("/descripcion", "");
@@ -504,10 +760,8 @@ sap.ui.define([
 		},
 
 
-		onGuardar: function (oEvent) {
-
-			// Verificar que SAP haya identificado al usuario
-			if (!this._consultorUuid) {
+		onGuardar: async function (oEvent) {
+			if (!this.consultorUuid) {
 				MessageBox.error(
 					"No se ha identificado al consultor autenticado. " +
 					"Espera a que termine de cargar la sesión."
@@ -522,7 +776,6 @@ sap.ui.define([
 			let oProyectoSelect = this.byId("proyectoSelect");
 			let oReq = this.byId("requerimientoSelect");
 
-			// SANITIZAR DATOS
 			let sFechaCaptura = (formData.fechaCaptura || "").trim();
 			let sCliente = oClienteSelect
 				? (oClienteSelect.getSelectedKey() || "").trim()
@@ -536,7 +789,6 @@ sap.ui.define([
 			let sDescripcion = (formData.descripcion || "").trim();
 			let sHoras = parseFloat(formData.horasInvertidas);
 
-			// VALIDAR CLIENTE
 			if (!formData.esCapacitacion && sCliente === "") {
 				MessageBox.error(
 					"Recuerda seleccionar el contexto del trabajo (Cliente).",
@@ -548,8 +800,6 @@ sap.ui.define([
 				);
 				return;
 			}
-
-			// VALIDAR PROYECTO
 			if (!formData.esCapacitacion && sProyecto === "") {
 				MessageBox.error(
 					"Recuerda seleccionar el contexto del trabajo (Proyecto).",
@@ -561,8 +811,6 @@ sap.ui.define([
 				);
 				return;
 			}
-
-			// VALIDAR REQUERIMIENTO
 			if (!formData.esCapacitacion && sRequerimiento === "") {
 				MessageBox.error(
 					"Por favor, ingresa el Requerimiento.",
@@ -574,14 +822,10 @@ sap.ui.define([
 				);
 				return;
 			}
-
-			// VALIDAR FECHA
 			if (sFechaCaptura === "") {
 				MessageBox.error("Por favor, ingresa la Fecha de captura.");
 				return;
 			}
-
-			// VALIDAR HORAS
 			if (!Number.isFinite(sHoras) || sHoras <= 0) {
 				let iH = this.byId("horasInvertidasInput");
 
@@ -596,7 +840,6 @@ sap.ui.define([
 				return;
 			}
 
-			// VALIDAR DESCRIPCIÓN
 			if (sDescripcion === "") {
 				let iD = this.byId("descripcionInput");
 
@@ -611,41 +854,116 @@ sap.ui.define([
 				return;
 			}
 
-			// VALIDACIÓN DEL MÁXIMO DE HORAS
-			let aTodas = this.getView().getModel("modelo").getData() || [];
+			// CONSULTAR CONFIGURACIONES DEL PERIODO
 
-			let aFiltradas = aTodas.filter(
-				act => act.fechaISO === sFechaCaptura
+			let oReglasPeriodo;
+
+			try {
+
+				oReglasPeriodo = await this.obtenerReglasPeriodoSAP();
+
+			} catch (oError) {
+
+				console.error(
+					"Error consultando reglas del periodo:",
+					oError
+				);
+
+				MessageBox.error(
+					"No fue posible consultar las reglas " +
+					"de cierre mensual configuradas en SAP.\n\n" +
+					oError.message
+				);
+
+				return;
+			}
+
+			console.log(
+				"Día de cierre mensual:",
+				oReglasPeriodo.diaCierreMensual
 			);
 
-			let fTotal = aFiltradas.reduce(
-				(acc, curr) => acc + parseFloat(curr.horas || 0),
+			console.log(
+				"Política de días pendientes:",
+				oReglasPeriodo.politicaDiasPendientes
+			);
+
+			let nLimiteHoras;
+
+			try {
+
+				nLimiteHoras = await this.obtenerLimiteHorasSAP();
+
+			} catch (oError) {
+
+				console.error(
+					"Error consultando límite de horas SAP:",
+					oError
+				);
+
+				MessageBox.error(
+					"No fue posible consultar el límite diario " +
+					"configurado en SAP. No se registrará la actividad.\n\n" +
+					oError.message
+				);
+
+				return;
+			}
+
+			const aTodas =
+				this.getView().getModel("modelo").getData() || [];
+
+			const aFiltradas = aTodas.filter(oActividad =>
+				oActividad.fechaISO === sFechaCaptura &&
+				oActividad.ConsultorUuid === this.consultorUuid
+			);
+
+			const fTotal = aFiltradas.reduce(
+				(nAcumulado, oActividad) =>
+					nAcumulado + Number(oActividad.horas || 0),
 				0
 			);
 
-			if (fTotal + sHoras > formData.maximoHoras) {
+			const fTotalProyectado = fTotal + sHoras;
+
+			console.log("Validación dinámica de horas:", {
+				limiteSAP: nLimiteHoras,
+				horasRegistradas: fTotal,
+				horasNuevas: sHoras,
+				totalProyectado: fTotalProyectado
+			});
+
+			if (fTotalProyectado > nLimiteHoras) {
+
 				MessageBox.error(
 					this.getResourceBundle().getText(
 						"msjErrorHoras",
-						[formData.maximoHoras, (fTotal + sHoras)]
+						[
+							nLimiteHoras,
+							Number(fTotalProyectado.toFixed(2))
+						]
 					),
 					{
 						title: "Límite de horas excedido",
 						contentWidth: "400px",
 						onClose: function () {
-							let iH = this.byId("horasInvertidasInput");
-							iH.focus();
+
+							const oInput =
+								this.byId("horasInvertidasInput");
+
+							if (oInput) {
+								oInput.focus();
+							}
+
 						}.bind(this)
 					}
 				);
+
 				return;
 			}
 
-			// CONSTRUIR PAYLOAD PARA SAP
 			const oNuevaActividad = {
-
-				// UUID obtenido automáticamente de MiUsuario
-				ConsultorUuid: this._consultorUuid,
+				ConsultorUuid: this.consultorUuid,
 
 				ClientUuid: formData.esCapacitacion
 					? null
@@ -673,11 +991,11 @@ sap.ui.define([
 				JSON.stringify(oNuevaActividad, null, 2)
 			);
 
-			this._guardarActividadSAP(oNuevaActividad);
+			this.guardarActividadSAP(oNuevaActividad);
 		},
 
 
-		_guardarDatosModelo: function (sFechaCaptura, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData) {
+		guardarDatosModelo: function (sFechaCaptura, sCliente, sProyecto, sRequerimiento, sDescripcion, sHoras, formData) {
 			let actividadesRegistradas = this.getView().getModel("modelo").getData();
 
 			// Agregar actividad al modelo
@@ -696,9 +1014,9 @@ sap.ui.define([
 			MessageToast.show("Actividad registrada exitosamente.");
 
 			// Actualizar vista filtrada de la tabla y recalcular totales visuales
-			this._actualizarTablaYTotales(sFechaCaptura);
+			this.actualizarTablaYTotales(sFechaCaptura);
 
-			this._limpiarFormulario();
+			this.limpiarFormulario();
 		},
 
 		onEliminarActividad: function (oEvent) {
@@ -723,7 +1041,7 @@ sap.ui.define([
 							this.getView().getModel("modelo").setData(aTodas);
 
 							// Recalcular la tabla filtrada y los totales
-							this._actualizarTablaYTotales(oActividadAEliminar.fecha);
+							this.actualizarTablaYTotales(oActividadAEliminar.fecha);
 							MessageToast.show("Actividad eliminada correctamente.");
 						}
 					}
@@ -737,27 +1055,26 @@ sap.ui.define([
 
 			let oActividadClonada = Object.assign({}, oContext.getObject());
 
-			// modelo para el dialogo de edición
 			this.getView().setModel(new JSONModel(oActividadClonada), "modeloEdicion");
 
-			if (!this._oDialogoEdicion) {
+			if (!this.oDialogoEdicion) {
 				Fragment.load({
 					id: this.getView().getId(),
 					name: "ns.frontend.fragment.DialogEditarActividad",
 					controller: this
 				}).then(function (oDialog) {
-					this._oDialogoEdicion = oDialog;
-					this.getView().addDependent(this._oDialogoEdicion);
-					this._oDialogoEdicion.open();
+					this.oDialogoEdicion = oDialog;
+					this.getView().addDependent(this.oDialogoEdicion);
+					this.oDialogoEdicion.open();
 				}.bind(this));
 			} else {
-				this._oDialogoEdicion.open();
+				this.oDialogoEdicion.open();
 			}
 		},
 
 		onCerrarDialogoEdicion: function () {
-			if (this._oDialogoEdicion) {
-				this._oDialogoEdicion.close();
+			if (this.oDialogoEdicion) {
+				this.oDialogoEdicion.close();
 			}
 		},
 
@@ -778,7 +1095,7 @@ sap.ui.define([
 
 				this.getView().getModel("modelo").setData(aActividades);
 
-				this._actualizarTablaYTotales(oDatosEditados.fecha);
+				this.actualizarTablaYTotales(oDatosEditados.fecha);
 
 				MessageToast.show("Actividad actualizada correctamente.");
 			}
@@ -790,30 +1107,28 @@ sap.ui.define([
 			var oContext = oEvent.getSource().getBindingContext("modeloFiltrado");
 			var oView = this.getView();
 
-			if (!this._oDialogoDetalle) {
+			if (!this.oDialogoDetalle) {
 				Fragment.load({
 					id: oView.getId(),
 					name: "ns.frontend.fragment.DetalleActividad",
-					controller: this // Para que botón "Cerrar" encuentre su función aquí
+					controller: this
 				}).then(function (oDialog) {
-					this._oDialogoDetalle = oDialog;
+					this.oDialogoDetalle = oDialog;
 
-					// conectar el diálogo a la vista (para que herede los modelos de datos)
-					oView.addDependent(this._oDialogoDetalle);
+					oView.addDependent(this.oDialogoDetalle);
 
-					// Pasar el contexto de la fila clickeada y abrirlo
-					this._oDialogoDetalle.setBindingContext(oContext, "modeloFiltrado");
-					this._oDialogoDetalle.open();
+					this.oDialogoDetalle.setBindingContext(oContext, "modeloFiltrado");
+					this.oDialogoDetalle.open();
 				}.bind(this));
 			} else {
-				this._oDialogoDetalle.setBindingContext(oContext, "modeloFiltrado");
-				this._oDialogoDetalle.open();
+				this.oDialogoDetalle.setBindingContext(oContext, "modeloFiltrado");
+				this.oDialogoDetalle.open();
 			}
 		},
 
 		onCerrarDialogo: function () {
-			if (this._oDialogoDetalle) {
-				this._oDialogoDetalle.close();
+			if (this.oDialogoDetalle) {
+				this.oDialogoDetalle.close();
 			}
 		},
 
@@ -839,8 +1154,5 @@ sap.ui.define([
 			let oSheet = new Spreadsheet(oSettings);
 			oSheet.build().finally(() => oSheet.destroy());
 		}
-
-
-
 	});
 });
