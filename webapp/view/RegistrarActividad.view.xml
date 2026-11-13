@@ -308,12 +308,12 @@
                                     <Button
                                         icon="sap-icon://edit"
                                         press=".onEditarActividad"
-                                        type="Attention" />
+                                        type="Transparent" />
 
                                     <Button
                                         icon="sap-icon://delete"
                                         press=".onEliminarActividad"
-                                        type="Reject" />
+                                        type="Transparent" />
 
                                 </HBox>
 
