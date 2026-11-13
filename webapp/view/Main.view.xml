@@ -71,16 +71,5 @@
         </content>
         
     </Page>
-
-    <OverflowToolbar>
-    <Button text="Uno" type="Transparent"/>
-    <Button text="Dos" type="Transparent"/>
-    <Button text="Tres" type="Transparent"/>
-    <Button text="Cuatro" type="Transparent"/>
-    <Button text="Cinco" type="Transparent"/>
-    <Button text="Seis" type="Transparent"/>
-    <Button text="Siete" type="Transparent"/>
-    <Button text="Ocho" type="Transparent"/>
-</OverflowToolbar>
 </mvc:View>
 
