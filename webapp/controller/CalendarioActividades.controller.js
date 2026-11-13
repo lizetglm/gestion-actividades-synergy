@@ -9,17 +9,16 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend(
-         "ns.frontend.controller.CalendarioActividades",
+        "ns.frontend.controller.CalendarioActividades",
         {
             onInit: function () {
-                this._iYear = 2026;
-                this._iMonth = 8; 
-
-                this._actualizarTituloMes();
+                const oHoy = new Date();
+                this.iYear = oHoy.getFullYear();
+                this.iMonth = oHoy.getMonth();
+                this.actualizarTituloMes();
 
                 var oModel = new JSONModel({
-                    monthTitle: this._sMonthTitle,
-
+                    monthTitle: this.sMonthTitle,
                     showDetails: false,
                     selectedDateTitle: "",
                     selectedDateTotal: 0,
@@ -45,13 +44,47 @@ sap.ui.define([
                 });
 
                 this.getView().setModel(oFilterModel, "filterModel");
+                this.getOwnerComponent()
+                    .getEventBus()
+                    .subscribe(
+                        "actividades",
+                        "actualizadas",
+                        this.onActividadesActualizadas,
+                        this
+                    );
+                this.cargarActividadesOData();
 
-                //this._cargarActividadesMock();
-                this._cargarActividadesOData();
+                this.getOwnerComponent()
+                    .getRouter()
+                    .getRoute("RouteCalendarioActividades")
+                    .attachPatternMatched(
+                        this.onCalendarioMatched,
+                        this
+                    );
             },
 
-            
-            _cargarActividadesOData: async function () {
+            onCalendarioMatched: function () {
+                this.cargarActividadesOData();
+            },
+
+            onActividadesActualizadas: async function () {
+                console.log("Actualizando calendario desde SAP...");
+                await this.cargarActividadesOData();
+                console.log("Calendario actualizado correctamente.");
+            },
+
+            onExit: function () {
+                this.getOwnerComponent()
+                    .getEventBus()
+                    .unsubscribe(
+                        "actividades",
+                        "actualizadas",
+                        this.onActividadesActualizadas,
+                        this
+                    );
+            },
+
+            cargarActividadesOData: async function () {
                 var oCalendarModel = this.getView().getModel("calendarModel");
                 var oODataModel = this.getOwnerComponent().getModel("actividadesOData");
 
@@ -64,88 +97,61 @@ sap.ui.define([
                     var oBindingActividades = oODataModel.bindList("/RegistrosActividad");
                     var oBindingClientes = oODataModel.bindList("/Clientes");
                     var oBindingProyectos = oODataModel.bindList("/Proyectos");
-
                     var aResultados = await Promise.all([
                         oBindingActividades.requestContexts(0, 100),
                         oBindingClientes.requestContexts(0, 100),
                         oBindingProyectos.requestContexts(0, 100)
                     ]);
-
                     var aRegistros = aResultados[0].map(function (oContext) {
                         return oContext.getObject();
                     });
-
                     var aClientes = aResultados[1].map(function (oContext) {
                         return oContext.getObject();
                     });
-
                     var aProyectos = aResultados[2].map(function (oContext) {
                         return oContext.getObject();
                     });
-
-                    console.log("Actividades SAP:", aRegistros);
-                    console.log("Clientes SAP:", aClientes);
-                    console.log("Proyectos SAP:", aProyectos);
-
                     var mClientes = {};
                     var mProyectos = {};
-
                     aClientes.forEach(function (oCliente) {
                         mClientes[oCliente.ClientUuid] = oCliente.Nombre;
                     });
-
                     aProyectos.forEach(function (oProyecto) {
                         mProyectos[oProyecto.ProjectUuid] = oProyecto.Nombre;
                     });
-
                     var aActivities = aRegistros.map(function (oRegistro) {
                         return {
                             registroUuid: oRegistro.RegistroUuid,
                             consultorUuid: oRegistro.ConsultorUuid,
                             clientUuid: oRegistro.ClientUuid,
                             projectUuid: oRegistro.ProjectUuid,
-
                             fecha: oRegistro.Fecha,
                             horas: Number(oRegistro.Horas),
                             descripcion: oRegistro.Descripcion,
-
                             cliente: mClientes[oRegistro.ClientUuid] || "Cliente desconocido",
                             proyecto: mProyectos[oRegistro.ProjectUuid] || "Proyecto desconocido"
                         };
                     });
 
                     oCalendarModel.setProperty("/activities", aActivities);
-
-                    this._cargarOpcionesFiltros();
-                    this._crearCalendario();
-
-                    console.log("Calendario actualizado con nombres reales:", aActivities);
-
+                    this.cargarOpcionesFiltros();
+                    this.crearCalendario();
                 } catch (oError) {
                     console.error("Error al consultar datos SAP:", oError);
                 }
             },
 
-            
-            _calcularEstatusReporteMensual: function () {
-                var aActivities =
-                    this.getView().getModel("calendarModel")
-                        .getProperty("/activities") || [];
-
-                var iYear = this._iYear;
-                var iMonth = this._iMonth;
+            calcularEstatusReporteMensual: function () {
+                var aActivities = this.getView().getModel("calendarModel").getProperty("/activities") || [];
+                var iYear = this.iYear;
+                var iMonth = this.iMonth;
                 var oHoy = new Date();
-
-                var iDiasMes = new Date(
-                    iYear, iMonth + 1, 0
-                ).getDate();
-
+                var iDiasMes = new Date(iYear, iMonth + 1, 0).getDate();
                 var iDiasEvaluados = 0;
                 var iDiasCompletos = 0;
                 var iDiasPendientes = 0;
 
                 for (var iDia = 1; iDia <= iDiasMes; iDia++) {
-
                     var oFecha = new Date(iYear, iMonth, iDia);
                     var iDiaSemana = oFecha.getDay();
 
@@ -162,7 +168,6 @@ sap.ui.define([
                         String(iMonth + 1).padStart(2, "0"),
                         String(iDia).padStart(2, "0")
                     ].join("-");
-
                     var nHoras = aActivities
                         .filter(function (oActividad) {
                             return oActividad.fecha === sFecha;
@@ -180,10 +185,7 @@ sap.ui.define([
                     }
                 }
 
-                var oFinMes = new Date(
-                    iYear, iMonth + 1, 0, 23, 59, 59
-                );
-
+                var oFinMes = new Date(iYear, iMonth + 1, 0, 23, 59, 59);
                 var sEstatus;
                 var sEstadoUI5;
 
@@ -213,61 +215,14 @@ sap.ui.define([
                 };
             },
 
-            
-            _cargarActividadesMock: function () {
-                var oCalendarModel = this.getView().getModel("calendarModel");
-                var sUrl = sap.ui.require.toUrl(
-                    "ns/frontend/model/activities.json"
-                );
-
-                console.log("Buscando actividades en:", sUrl);
-
-                var oMockModel = new JSONModel();
-
-                oMockModel.attachRequestCompleted(function (oEvent) {
-                    if (!oEvent.getParameter("success")) {
-                        console.error("No se pudieron cargar las actividades.");
-                        return;
-                    }
-
-                    var aActivities = oMockModel.getProperty("/activities") || [];
-
-                    console.log("Actividades encontradas:", aActivities);
-
-                    oCalendarModel.setProperty("/activities", aActivities);
-
-                    this._cargarOpcionesFiltros();
-                    this._crearCalendario();
-
-                }.bind(this));
-
-                oMockModel.attachRequestFailed(function (oEvent) {
-                    console.error(
-                        "Error al cargar activities.json:",
-                        oEvent.getParameters()
-                    );
-                });
-
-                oMockModel.loadData(sUrl);
-            },
-
-
-
-
-            _actualizarTituloMes: function () {
-
-                var oFecha = new Date(
-                    this._iYear,
-                    this._iMonth,
-                    1
-                );
-
+            actualizarTituloMes: function () {
+                var oFecha = new Date(this.iYear, this.iMonth, 1);
                 var sTitulo = new Intl.DateTimeFormat("es-MX", {
                     month: "long",
                     year: "numeric"
                 }).format(oFecha);
 
-                this._sMonthTitle =
+                this.sMonthTitle =
                     sTitulo.charAt(0).toUpperCase() +
                     sTitulo.slice(1);
 
@@ -276,46 +231,39 @@ sap.ui.define([
                 if (oModel) {
                     oModel.setProperty(
                         "/monthTitle",
-                        this._sMonthTitle
+                        this.sMonthTitle
                     );
                 }
             },
 
             onMesAnterior: function () {
-
                 var oFecha = new Date(
-                    this._iYear,
-                    this._iMonth - 1,
+                    this.iYear,
+                    this.iMonth - 1,
                     1
                 );
-
-                this._iYear = oFecha.getFullYear();
-                this._iMonth = oFecha.getMonth();
-
-                this._actualizarTituloMes();
-                this._crearCalendario();
-
+                this.iYear = oFecha.getFullYear();
+                this.iMonth = oFecha.getMonth();
+                this.actualizarTituloMes();
+                this.crearCalendario();
                 this.onCerrarDetalle();
             },
 
             onMesSiguiente: function () {
-
                 var oFecha = new Date(
-                    this._iYear,
-                    this._iMonth + 1,
+                    this.iYear,
+                    this.iMonth + 1,
                     1
                 );
 
-                this._iYear = oFecha.getFullYear();
-                this._iMonth = oFecha.getMonth();
-
-                this._actualizarTituloMes();
-                this._crearCalendario();
-
+                this.iYear = oFecha.getFullYear();
+                this.iMonth = oFecha.getMonth();
+                this.actualizarTituloMes();
+                this.crearCalendario();
                 this.onCerrarDetalle();
             },
 
-            _obtenerEstadoDia: function (oFecha, nHoras, oHoy) {
+            obtenerEstadoDia: function (oFecha, nHoras, oHoy) {
 
                 if (nHoras >= 8) {
                     return "completo";
@@ -328,13 +276,11 @@ sap.ui.define([
                 return "sinRegistro";
             },
 
-            _actualizarKpis: function () {
-
+            actualizarKpis: function () {
                 var oModel = this.getView().getModel("calendarModel");
                 var aActivities = oModel.getProperty("/activities") || [];
-
-                var iYear = this._iYear;
-                var iMonth = this._iMonth;
+                var iYear = this.iYear;
+                var iMonth = this.iMonth;
 
                 var iDiasMes = new Date(
                     iYear,
@@ -343,12 +289,11 @@ sap.ui.define([
                 ).getDate();
 
                 var oHoy = new Date();
-
                 var nHorasMes = 0;
                 var iCompletos = 0;
                 var iPendientes = 0;
                 var iLaborablesTranscurridos = 0;
-                var oReporte = this._calcularEstatusReporteMensual();
+                var oReporte = this.calcularEstatusReporteMensual();
 
                 this.getView().getModel("calendarModel").setProperty(
                     "/reporteMensual",
@@ -360,20 +305,16 @@ sap.ui.define([
                 );
 
                 for (var iDia = 1; iDia <= iDiasMes; iDia++) {
-
                     var oFecha = new Date(iYear, iMonth, iDia);
-
                     var sFecha =
                         iYear + "-" +
                         String(iMonth + 1).padStart(2, "0") + "-" +
                         String(iDia).padStart(2, "0");
-
                     var aActividadesDia = aActivities.filter(
                         function (oActividad) {
                             return oActividad.fecha === sFecha;
                         }
                     );
-
                     var nHorasDia = aActividadesDia.reduce(
                         function (nTotal, oActividad) {
                             return nTotal + Number(oActividad.horas || 0);
@@ -383,18 +324,16 @@ sap.ui.define([
 
                     nHorasMes += nHorasDia;
 
-                    var sEstado = this._obtenerEstadoDia(
+                    var sEstado = this.obtenerEstadoDia(
                         oFecha,
                         nHorasDia,
                         oHoy
                     );
-
                     var oHoySinHora = new Date(
                         oHoy.getFullYear(),
                         oHoy.getMonth(),
                         oHoy.getDate()
                     );
-
                     var bTranscurrido = oFecha <= oHoySinHora;
 
                     if (
@@ -428,104 +367,67 @@ sap.ui.define([
                 );
             },
             
-
-            _obtenerActividadesFiltradas: function () {
-
+            obtenerActividadesFiltradas: function () {
                 var oModel = this.getView().getModel("calendarModel");
                 var oFilterModel = this.getView().getModel("filterModel");
-
                 var aActivities = oModel.getProperty("/activities") || [];
-
                 var sCliente = oFilterModel.getProperty("/clienteSeleccionado");
                 var sProyecto = oFilterModel.getProperty("/proyectoSeleccionado");
 
                 return aActivities.filter(function (oActivity) {
-
                     var bCliente =
                         sCliente === "Todos" ||
                         oActivity.cliente === sCliente;
-
                     var bProyecto =
                         sProyecto === "Todos" ||
                         oActivity.proyecto === sProyecto;
-
                     return bCliente && bProyecto;
                 });
             },
 
             onExecuteFilter: function () {
-
                 var oFilterModel = this.getView().getModel("filterModel");
-
-                console.log(
-                    "Cliente seleccionado:",
-                    oFilterModel.getProperty("/clienteSeleccionado")
-                );
-
-                console.log(
-                    "Proyecto seleccionado:",
-                    oFilterModel.getProperty("/proyectoSeleccionado")
-                );
-
-                console.log(
-                    "Actividades filtradas:",
-                    this._obtenerActividadesFiltradas()
-                );
-
-                this._crearCalendario();
+                this.crearCalendario();
                 this.onCerrarDetalle();
             },
 
-            _cargarOpcionesFiltros: function () {
-
+            cargarOpcionesFiltros: function () {
                 var oModel = this.getView().getModel("calendarModel");
                 var oFilterModel = this.getView().getModel("filterModel");
-
                 var aActivities = oModel.getProperty("/activities") || [];
-
                 var aClientes = [...new Set(
                     aActivities.map(function (oActivity) {
                         return oActivity.cliente;
                     }).filter(Boolean)
                 )];
-
                 var aProyectos = [...new Set(
                     aActivities.map(function (oActivity) {
                         return oActivity.proyecto;
                     }).filter(Boolean)
                 )];
-
                 oFilterModel.setProperty(
                     "/clientes",
                     ["Todos"].concat(aClientes)
                 );
-
                 oFilterModel.setProperty(
                     "/proyectos",
                     ["Todos"].concat(aProyectos)
                 );
             },
-            
-            _crearCalendario: function () {
 
+            crearCalendario: function () {
                 var oCalendar = this.byId("calendarGrid");
                 oCalendar.removeAllItems();
-
-                var iYear = this._iYear;
-                var iMonth = this._iMonth;
-
+                var iYear = this.iYear;
+                var iMonth = this.iMonth;
                 var oModel = this.getView().getModel("calendarModel");
-
-                var aActivities = this._obtenerActividadesFiltradas();
-
+                var aActivities = this.obtenerActividadesFiltradas();
                 var oHoy = new Date();
-
                 var iDaysInMonth = new Date(
                     iYear,
                     iMonth + 1,
                     0
                 ).getDate();
-
                 var iStartDay = (new Date(
                     iYear,
                     iMonth,
@@ -533,39 +435,32 @@ sap.ui.define([
                 ).getDay() + 6) % 7;
 
                 for (var i = 0; i < iStartDay; i++) {
-
                     var oEmptyDay = new VBox({
                         height: "70px"
                     });
 
                     oEmptyDay.addStyleClass("calendarDay");
                     oEmptyDay.addStyleClass("emptyDay");
-
                     oCalendar.addItem(oEmptyDay);
                 }
 
                 for (let iDay = 1; iDay <= iDaysInMonth; iDay++) {
-
                     let oFecha = new Date(iYear, iMonth, iDay);
-
                     let sDate =
                         iYear + "-" +
                         String(iMonth + 1).padStart(2, "0") + "-" +
                         String(iDay).padStart(2, "0");
-
                     var oDay = new VBox({
                         height: "70px"
                     });
 
                     oDay.addStyleClass("calendarDay");
-
                     var oNumber = new Text({
                         text: String(iDay)
                     });
 
                     oNumber.addStyleClass("dayNumber");
                     oDay.addItem(oNumber);
-
                     var aDayActivities = aActivities.filter(
                         function (oActivity) {
                             return oActivity.fecha === sDate;
@@ -577,13 +472,12 @@ sap.ui.define([
                         },
                         0
                     );
-
-                    var sEstado = this._obtenerEstadoDia(
+                    var sEstado = this.obtenerEstadoDia(
                         oFecha,
                         nHours,
                         oHoy
                     );
-                    
+
 
                     if (
                         iDay === oHoy.getDate() &&
@@ -616,7 +510,6 @@ sap.ui.define([
                     oDay.addItem(oStatus);
 
                     if (nHours > 0) {
-
                         var oHours = new Text({
                             text: Number(nHours.toFixed(2)) + " h"
                         });
@@ -641,20 +534,20 @@ sap.ui.define([
                     oDay.attachBrowserEvent(
                         "click",
                         function () {
-                            this._mostrarActividades(sDate);
+                            this.mostrarActividades(sDate);
                         }.bind(this)
                     );
 
                     oCalendar.addItem(oDay);
                 }
 
-                this._actualizarKpis();
+                this.actualizarKpis();
             },
 
 
-            _mostrarActividades: function (sDate) {
+            mostrarActividades: function (sDate) {
                 var oModel = this.getView().getModel("calendarModel");
-                var aActivities = this._obtenerActividadesFiltradas();
+                var aActivities = this.obtenerActividadesFiltradas();
                 var aSelectedActivities = aActivities.filter(
                     function (oActivity) {
                         return oActivity.fecha === sDate;
@@ -685,7 +578,7 @@ sap.ui.define([
                     "/selectedDateTotal",
                     nTotalHours
                 );
-                
+
                 oModel.setProperty("/showDetails", true);
             },
 
@@ -696,10 +589,10 @@ sap.ui.define([
             },
 
             onExportExcel: function () {
-                var iYear = this._iYear;
-                var iMonth = this._iMonth;
+                var iYear = this.iYear;
+                var iMonth = this.iMonth;
 
-                var aActivities = this._obtenerActividadesFiltradas().filter(
+                var aActivities = this.obtenerActividadesFiltradas().filter(
                     function (oActivity) {
 
                         var sMonth = iYear + "-" +
@@ -723,7 +616,6 @@ sap.ui.define([
                     };
                 });
 
-                // Definir las columnas del archivo Excel.
                 var oSettings = {
                     workbook: {
                         columns: [
@@ -760,14 +652,14 @@ sap.ui.define([
                     },
 
                     dataSource: aExportData,
-                    fileName: "Actividades_" +
+                    fileName: "Actividades" +
                         new Intl.DateTimeFormat("es-MX", {
                             month: "long"
-                        }).format(new Date(this._iYear, this._iMonth, 1))
-                        .replace(/^./, function (letra) {
-                            return letra.toUpperCase();
-                        }) +
-                        "_" + this._iYear + ".xlsx"
+                        }).format(new Date(this.iYear, this.iMonth, 1))
+                            .replace(/^./, function (letra) {
+                                return letra.toUpperCase();
+                            }) +
+                        "_" + this.iYear + ".xlsx"
                 };
 
                 var oSpreadsheet = new Spreadsheet(oSettings);

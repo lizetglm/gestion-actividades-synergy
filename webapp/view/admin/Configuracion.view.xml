@@ -1,66 +1,48 @@
 <mvc:View
+    id="viewConfiguracion"
     controllerName="ns.frontend.controller.admin.Configuracion"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
     displayBlock="true"
-    height="100%">
+    height="100%"
+    xmlns:layout="sap.ui.layout"
+    busyIndicatorDelay="0"
+    xmlns:f="sap.f"
+    xmlns:mc="sap.suite.ui.microchart"
+    >
 
-    <Page
-        id="pageConfiguracion"
-        showHeader="false"
-        enableScrolling="true"
-        class="settingsPage">
+    <f:DynamicPage 
+        id="pageConfig"  
+        showFooter="true">
 
-        <content>
+        <f:title>
+            <f:DynamicPageTitle id="idPanelCDynamicPageTitleConfig">
+                <f:breadcrumbs >
+                   <Breadcrumbs id="breadConfig" currentLocationText="{i18n>appAdmin4}"
+                    class="sapUiSmallMarginTopBottom">
+                        <Link id="linkConfig" text="{i18n>tituloGrupo1}" press=".onBack" />
+                    </Breadcrumbs>
+                </f:breadcrumbs>
+                
+                <f:heading>
+                    <Title 
+                        id="titleConfig"
+                        text="Ajustes y Configuración del Sistema" level="H1" />
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <f:header>
+            <f:DynamicPageHeader
+                id="headerConfig">
+                
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <f:content>
+
             <VBox id="fit" class="settingsRoot" fitContainer="true">
-
-                 <Toolbar id="more" class="settingsHeader">
-                    <Button
-                    id="more1"
-                        icon="sap-icon://nav-back"
-                        type="Transparent"
-                        tooltip="Regresar"
-                        press=".onBack"/>
-
-                    <Text id="more32" text="SAP" class="sapLogoText"/>
-
-                    <Text id="m23ore"
-                        text="System Settings &amp; Configuration"
-                        class="headerTitle"/>
-
-                    <ToolbarSpacer id="mo121re"/>
-
-                    <Button id="morasde"
-                        icon="sap-icon://search"
-                        type="Transparent"
-                        tooltip="Buscar"/>
-
-                    <Button id="mo12re"
-                        icon="sap-icon://bell"
-                        type="Transparent"
-                        tooltip="Notificaciones"/>
-
-                    <Avatar id="more1212"
-                        initials="CG"
-                        displaySize="XS"
-                        backgroundColor="Accent6"/>
-                </Toolbar>
-
-                <VBox id="mordase" class="settingsTitleArea">
-                    <HBox id="mowqwre" class="breadcrumb">
-                        <Link id="mor121e" text="Home" press=".onHome"/>
-                        <Text id="moraedae" text="/"/>
-                        <Text id="moreqewqw" text="Administration"/>
-                    </HBox>
-
-                    <Title
-                    id="mo123re"
-                        text="System Settings &amp; Configuration"
-                        level="H1"
-                        class="pageTitle"/>
-                </VBox>
-
                 <ScrollContainer id="moewqwre"
                     vertical="true"
                     horizontal="false"
@@ -183,12 +165,101 @@
                                                     type="Default"/>
                                             </HBox>
 
+
                                         </VBox>
                                     </content>
                                 </Panel>
+                                
+                        <Panel
+                            id="panelPoliticasConfig"
+                            headerText="Políticas de registro"
+                            expandable="false"
+                            class="settingsPanel">
+
+                            <content>
+                                <VBox class="panelFields">
+
+                                    <Label
+                                        text="Política de días pendientes"
+                                        labelFor="pendingDaysPolicy"/>
+
+                                    <Select
+                                        id="pendingDaysPolicy"
+                                        selectedKey="{settings>/pendingDaysPolicy}"
+                                        width="100%">
+
+                                        <core:Item
+                                            key="BLOQUEAR"
+                                            text="Bloquear registros"/>
+
+                                        <core:Item
+                                            key="ADVERTIR"
+                                            text="Mostrar advertencia"/>
+                                    </Select>
+
+                                </VBox>
+                            </content>
+                        </Panel>
+                        <Panel
+                            id="panelPdfConfig"
+                            headerText="Configuración de reportes PDF"
+                            expandable="false"
+                            class="settingsPanel">
+
+                            <content>
+                                <VBox class="panelFields">
+
+                                    <HBox
+                                        alignItems="Center"
+                                        justifyContent="SpaceBetween"
+                                        class="notificationRow">
+
+                                        <Label
+                                            text="Generación automática de PDF"/>
+
+                                        <Switch
+                                            state="{settings>/automaticPdf}"
+                                            type="Default"/>
+                                    </HBox>
+
+                                    <HBox
+                                        alignItems="Center"
+                                        justifyContent="SpaceBetween"
+                                        class="notificationRow">
+
+                                        <Label
+                                            text="Permitir regeneración de reportes"/>
+
+                                        <Switch
+                                            state="{settings>/allowRegeneration}"
+                                            type="Default"/>
+                                    </HBox>
+
+                                    <Label
+                                        text="Plantilla del reporte PDF"/>
+
+                                    <Input
+                                        value="{settings>/pdfTemplate}"
+                                        maxLength="55"
+                                        width="100%"
+                                        class="fieldInput"/>
+
+                                    <Label
+                                        text="Método de firma"/>
+
+                                    <Input
+                                        value="{settings>/signatureMethod}"
+                                        maxLength="55"
+                                        width="100%"
+                                        class="fieldInput"/>
+
+                                </VBox>
+                            </content>
+                        </Panel>
+
 
                             </VBox>
-<VBox id="morepp" class="settingsColumn">
+                <VBox id="morepp" class="settingsColumn">
 
                                 <Panel id="morffe"
                                     headerText="Scheduling &amp; Grace Periods"
@@ -202,20 +273,15 @@
                                                 text="Closing Day"
                                                 labelFor="closingDay"/>
 
-                                            <Select
-                                                id="closingDay"
-                                                selectedKey="{settings>/closingDay}"
-                                                width="100%"
-                                                class="closingDaySelect">
+                                                                
+                        <Input
+                            id="closingDay"
+                            value="{settings>/closingDay}"
+                            type="Number"
+                            width="100%"
+                            placeholder="Día del mes (1-31)"
+                            class="fieldInput"/>
 
-                                                <core:Item id="more11" key="Monday" text="Monday"/>
-                                                <core:Item id="more111" key="Tuesday" text="Tuesday"/>
-                                                <core:Item id="more1111" key="Wednesday" text="Wednesday"/>
-                                                <core:Item id="more11111" key="Thursday" text="Thursday"/>
-                                                <core:Item id="more111111" key="Friday" text="Friday"/>
-                                                <core:Item id="more1111111" key="Saturday" text="Saturday"/>
-                                                <core:Item id="more11111111" key="Sunday" text="Sunday"/>
-                                            </Select>
 
                                             <Label id="lwo"
                                                 text="Submission Deadline Grace Period"
@@ -255,33 +321,97 @@
                                     </content>
                                 </Panel>
 
+        <Panel
+            id="panelNotificacionesConfig"
+            headerText="Programación de notificaciones"
+            expandable="false"
+            class="settingsPanel">
+
+            <content>
+                <VBox class="panelFields">
+
+                    <Label
+                        text="Frecuencia de recordatorios"
+                        labelFor="reminderFrequency"/>
+
+                    <HBox
+                        alignItems="Center"
+                        class="unitField">
+
+                        <Input
+                            id="reminderFrequency"
+                            value="{settings>/reminderFrequency}"
+                            type="Number"
+                            width="100%"
+                            class="fieldInput"/>
+
+                <Text
+                    text="días"
+                    class="unitText"/>
+            </HBox>
+
+            <Label
+                text="Canal de notificación"
+                labelFor="notificationChannel"/>
+
+            <Input
+                id="notificationChannel"
+                value="{settings>/notificationChannel}"
+                maxLength="55"
+                width="100%"
+                class="fieldInput"/>
+
+                </VBox>
+            </content>
+        </Panel>
+
                             </VBox>
 
                         </HBox>
                     </VBox>
                 </ScrollContainer>
 
-                <Toolbar id="lwo23" class="settingsFooter">
-                    <Text id="lwo1212" text="Save" class="footerCaption"/>
-                    <ToolbarSpacer id="lwo111"/>
-
-                    <Button id="lwo1111"
-                        text="Save"
-                        type="Emphasized"
-                        press=".onSave"/>
-
-                    <Button id="lw22o"
-                        text="Cancel"
-                        type="Default"
-                        press=".onCancel"/>
-
-                    <Button id="lwdsdeo"
-                        text="Reset"
-                        type="Default"
-                        press=".onReset"/>
-                </Toolbar>
-
             </VBox>
-        </content>
-    </Page>
+        
+        </f:content>
+
+        <f:footer>
+            <OverflowToolbar
+                id="footerConfigToolbar">
+                <ToolbarSpacer id="spacerConfig"/>
+
+                <Text
+                    id="footerConfig"
+                    class="textAcciones"
+                    text="Selecciona el proceso que deseas realizar."/>
+    
+            <Button
+                id="btnRecordatorioMasivo"
+                text="Guardar"
+                type="Emphasized"
+                press=".onSave"
+                tooltip="Guardar configuración en SAP"
+                class="sapUiTinyMarginEnd"/>
+
+
+                            <Button
+                                id="botonCancelarConfig"
+                                text="Cancelar"
+                                class="btnCancelar"
+                                type="Reject"
+                                press=".onCancel"/>
+
+                        
+            <Button
+                id="btnConsolidarReportes"
+                text="Reiniciar"
+                press=".onReset"
+                tooltip="Restaurar valores predeterminados"
+                class="sapUiTinyMarginEnd btnGuardar"/>
+
+                        </OverflowToolbar>
+                    </f:footer>
+    
+    </f:DynamicPage>
 </mvc:View>
+
